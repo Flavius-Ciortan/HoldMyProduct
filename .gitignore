@@ -1,0 +1,29 @@
+# Ignore WordPress core folders/files if accidentally added
+wp-admin/
+wp-includes/
+index.php
+license.txt
+readme.html
+
+# Ignore node modules if using npm/yarn
+node_modules/
+
+# Ignore composer vendor folder if using composer
+vendor/
+
+# Ignore common system files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/editor folders
+.vscode/
+.idea/
+
+# Ignore log files
+*.log
+
+# Ignore any backup or temp files
+*.bak
+*.tmp
+*.swp
+
