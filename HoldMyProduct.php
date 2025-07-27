@@ -1,30 +1,31 @@
 <?php
 
- /**
- * Plugin Name: Hold My Product
- * Plugin URI: http://www.holdmyproduct.com/
- * Description: A custom plugin for product holding functionality.
- * Version: 1.0.0
- * Author: Hold My Product
- * Author URI: http://www.holdmyproduct.com/
- * Text Domain: hold-my-product
- * Domain Path: /languages
- * License: GPL2
+/**
+ * Plugin Name:       Hold My Product
+ * Plugin URI:        https://github.com/Flavius-Ciortan/HoldMyProduct
+ * Description:       Allows WooCommerce customers to reserve products for a limited time before purchase.
+ * Version:           1.0.0
+ * Author:            Flavius Ciortan
+ * Author URI:        https://github.com/Flavius-Ciortan
+ * Text Domain:       hold-my-product
+ * Domain Path:       /languages
+ * License:           GPLv3
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  *
- * == Copyright ==
- * Copyright 2015 Cozmoslabs (www.cozmoslabs.com)
+ * This file is part of Hold My Product.
  *
- * This program is free software; you can redistribute it and/or modify
+ * Hold My Product is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
+ *
+ * Hold My Product is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
