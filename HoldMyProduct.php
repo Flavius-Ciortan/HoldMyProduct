@@ -94,6 +94,7 @@ class HoldMyProduct {
                                 <input type="checkbox" id="hmp-enabled" name="hmp_enabled" value="yes" <?php checked( get_option( 'hmp_enabled', 'no' ), 'yes' ); ?> />
                                 <?php esc_html_e( 'By enabling this option a Reserve button will be displayed on the Product page, next to Add To Cart button.', 'hold-my-product' ) ?>
                             </label>
+                            <p>Test description!</p>
                         </td>
                     </tr>
                 </table>
