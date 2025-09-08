@@ -133,7 +133,8 @@ function holdmyproduct_add_admin_menu() {
         'manage_options',            // Capability
         'holdmyproduct-settings',    // Menu slug
         'holdmyproduct_settings_page', // Callback to display content
-        'dashicons-products',        // Icon
+        // 'dashicons-products',        // Icon
+        plugin_dir_url( __FILE__ ) . 'HMP-menu-icon.png',
         80                          // Position
     );
 }
