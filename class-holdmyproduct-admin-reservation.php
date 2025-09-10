@@ -79,12 +79,6 @@ add_action( 'admin_enqueue_scripts', function( $hook ) {
         'disable'   => __( 'Disabled', 'holdmyproduct' ),
     ] );
 
-
-    // Aici am nevoie de ajutor pentru ca am adaugat CSS-ul in style si nu pot sa sterg linia de mai jos ca imi da eroare. (style.css 200 line)
-    // Optional quick CSS
-
-
-    wp_add_inline_style( 'common', '.hmp-res-toggle.on{background:#dc3232;color:#fff}.hmp-res-toggle.off{background:#46b450;color:#fff}.column-hmp_reservations{width:11%}' );
 } );
 
 add_action( 'wp_ajax_hmp_toggle_res', function () {

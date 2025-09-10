@@ -110,3 +110,31 @@
     padding: 0;
     margin: 0;
 }
+
+.hmp-res-toggle.on {
+    background:#dc3232;
+    color:#fff;
+    border-color: #dc3232;
+}
+
+.hmp-res-toggle.on:hover {
+    background: #be2f2f;
+    color: #fff;
+    border-color: #be2f2f; 
+}
+
+.hmp-res-toggle.off {
+    background:#46b450;
+    color:#fff;
+    border-color: #46b450;
+}
+
+.hmp-res-toggle.off:hover {
+    background: #3f9f47;
+    color: #fff;
+    border-color: #3f9f47;
+}
+
+.column-hmp_reservations {
+    width:11%;
+}

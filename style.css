@@ -197,17 +197,3 @@ label[for="rez_check"] {
   font-size: 1rem;
   box-sizing: border-box;
 }
- /* Aici e codul la care am nevoie de ajutor/ Posibil sa fim nevoiti sa il punem in admin-style.css */
-.hmp-res-toggle.on {
-  background:#dc3232;color:#fff;
-}
-
-.hmp-res-toggle.off {
-  background:#46b450;color:#fff;
-}
-
-.column-hmp_reservations {
-  width:11%;
-}
-
-
