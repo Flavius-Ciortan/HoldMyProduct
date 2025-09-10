@@ -1,0 +1,213 @@
+/* Global reset */
+/* body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+} */
+
+/* Card container */
+/* #container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+}
+
+#container h3 {
+    text-align: center;
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form_woo p {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 10px;
+} */
+
+.checkbox_group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #0073aa; /* WooCommerce Blue */
+}
+
+label[for="rez_check"] {
+    font-size: 15px;
+    color: #333;
+}
+
+/* Policy link */
+.policy a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.policy a:hover {
+    text-decoration: underline;
+}
+
+/* Button */
+.button_container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#hmp_reserve_product {
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#hmp_reserve_product:hover {
+    background-color: #005f8d;
+}
+
+
+.wc-block-add-to-cart-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.wc-block-add-to-cart-form #hmp_reserve_product,
+.wc-block-add-to-cart-form form {
+    margin: 0 !important;
+}
+
+/* Overlay */
+/* .modal-overlay { */
+  /* position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-in-out; */
+/* } */
+
+/* Center all content inside the modal */
+/* .modal-box { */
+  /* background-color: #ffffff;  */
+  /* padding: 2rem; */
+  /* border-radius: 12px; */
+  /* max-width: 400px; */
+  /* width: 100%;  */
+  /* box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); */
+  /* position: relative; */
+
+  /* Center content */
+  /* display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  font-family: 'Segoe UI', sans-serif;
+
+  animation: scaleUp 0.3s ease-in-out; */
+/* } */
+
+#reservation-modal {
+  display: none;
+}
+
+/* Ensure form elements are stacked and centered */
+#reservation-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem; /* space between form elements */
+  width: 100%;
+}
+
+/* Input hidden stays hidden, rest are centered */
+#reservation-form input[type="hidden"] {
+  display: none;
+}
+
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.modal-close:hover {
+  color: #000;
+}
+
+/* Submit button */
+.submit-btn {
+  background-color: #1e40af;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+.submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Animations */
+/* @keyframes fadeIn {
+  from { opacity: 0; } 
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+} */
+
+#reservation-form input[type="text"],
+#reservation-form input[type="email"] {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+ /* Aici e codul la care am nevoie de ajutor/ Posibil sa fim nevoiti sa il punem in admin-style.css */
+.hmp-res-toggle.on {
+  background:#dc3232;color:#fff;
+}
+
+.hmp-res-toggle.off {
+  background:#46b450;color:#fff;
+}
+
+.column-hmp_reservations {
+  width:11%;
+}
+
+
