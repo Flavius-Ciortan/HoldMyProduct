@@ -36,15 +36,19 @@ jQuery(document).ready(function($) {
         e.preventDefault();
 
         var productId = $(this).find('input[name="product_id"]').val();
+        let formData = new FormData(this);
+        let userEmail = formData.get('email');
 
         $.post(holdmyproduct_ajax.ajax_url, {
             action: 'holdmyproduct_reserve',
             product_id: productId,
+            email: userEmail,
             security: holdmyproduct_ajax.nonce
         }, function(response) {
             if (response.success) {
                 alert('Reservation successful! The stock was updated.');
-                $('#reservation-modal').hide();
+                // $('#reservation-modal').hide();
+                jQuery('#reservation-modal').dialog('close');
                 location.reload();
             } else {
                 alert('Error: ' + response.data);
@@ -54,27 +58,6 @@ jQuery(document).ready(function($) {
 
 });
 
-jQuery(function ($) {
-  $(document).on('submit', '#reservation-form', function (e) {
-    e.preventDefault();
-
-    // Debug: see exactly what will be sent
-    console.log('SERIALIZED:', $(this).serialize());
-
-    $.post((window.hmpReserve && hmpReserve.ajax) ? hmpReserve.ajax : window.ajaxurl, $(this).serialize())
-      .done(function (resp) {
-        if (resp && resp.success) {
-          $('#reservation-modal').dialog('close');
-          alert('Reserved!');
-        } else {
-          alert((resp && resp.data) ? resp.data : 'Reservation failed.');
-        }
-      })
-      .fail(function () {
-        alert('Request failed.');
-      });
-  });
-});
 
 
 

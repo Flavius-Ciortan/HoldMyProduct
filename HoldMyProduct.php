@@ -100,7 +100,7 @@ function holdmyproduct_enqueue_scripts() {
             'holdmyproduct-js',
             plugin_dir_url(__FILE__) . 'holdmyproduct.js',
             array( 'jquery', 'jquery-ui-dialog' ),
-            '1.0',
+            '1.1',
             true
         );
 
@@ -123,14 +123,6 @@ function holdmyproduct_handle_reservation() {
     // Normalize payload so we can see fields even if the client sent `data=...` as a single string
     
 $payload = $_POST;
-if ( ! isset( $payload['email'] ) && isset( $payload['data'] ) && is_string( $payload['data'] ) ) {
-    $parsed = [];
-    parse_str( wp_unslash( $payload['data'] ), $parsed ); // unfold the serialized string
-    if ( ! empty( $parsed ) && is_array( $parsed ) ) {
-        // merge parsed fields into payload
-        $payload = array_merge( $payload, $parsed );
-    }
-}
 
     check_ajax_referer('holdmyproduct_nonce', 'security');
 
@@ -138,8 +130,6 @@ if ( ! isset( $payload['email'] ) && isset( $payload['data'] ) && is_string( $pa
     if ( ! $product_id ) {
         wp_send_json_error('Invalid product ID.');
     }
-
-
 
     // Identify reserver (user or guest email)
     if ( is_user_logged_in() ) {
@@ -157,7 +147,8 @@ if ( ! isset( $payload['email'] ) && isset( $payload['data'] ) && is_string( $pa
         ?? '';
 
     $raw_email   = is_string( $raw_email ) ? urldecode( wp_unslash( $raw_email ) ) : '';
-    $guest_email = sanitize_email( $raw_email );
+    // $guest_email = sanitize_email( $raw_email );
+    $guest_email =  $raw_email;
 
     if ( empty( $guest_email ) || ! is_email( $guest_email ) ) {
         wp_send_json_error( 'Please provide an email address.' );
