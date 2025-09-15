@@ -1,0 +1,140 @@
+/* admin-style.css */
+
+.wrap h1 {
+    font-weight: 700;
+    color: #1d2327;
+    margin-bottom: 24px;
+}
+
+.holdmyproduct-settings-section {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 20px 30px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+}
+
+.holdmyproduct-settings-section p {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.holdmyproduct-field {
+    margin-bottom: 25px;
+}
+
+.holdmyproduct-label {
+    font-weight: 600;
+    font-size: 16px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .slider {
+    background-color: #21759b;
+}
+
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+.holdmyproduct-small-input {
+    width: 80px;
+    padding: 6px 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+#holdmyproduct-max-reservations-wrapper {
+    display: none;
+}
+
+.tab-content {
+    display: none;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-top: -1px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.nav-tab-wrapper {
+    margin-bottom: 0;
+}
+
+.nav-tab {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.toplevel_page_holdmyproduct-settings .wp-menu-image img {
+    padding: 0;
+    margin: 0;
+}
+
+.hmp-res-toggle.on {
+    background:#dc3232;
+    color:#fff;
+    border-color: #dc3232;
+}
+
+.hmp-res-toggle.on:hover {
+    background: #be2f2f;
+    color: #fff;
+    border-color: #be2f2f; 
+}
+
+.hmp-res-toggle.off {
+    background:#46b450;
+    color:#fff;
+    border-color: #46b450;
+}
+
+.hmp-res-toggle.off:hover {
+    background: #3f9f47;
+    color: #fff;
+    border-color: #3f9f47;
+}
+
+.column-hmp_reservations {
+    width:11%;
+}
