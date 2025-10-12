@@ -61,6 +61,7 @@ class HMP_Admin {
         $fields = array(
             'holdmyproduct_enable_reservation' => 'Enable Reservation',
             'holdmyproduct_max_reservations' => 'Max Reservations Per User',
+            'holdmyproduct_enable_guest_reservation' => 'Enable Guest Reservations',
             'holdmyproduct_show_admin_toggle' => 'Show Admin Toggle (Products list)'
         );
         
@@ -103,6 +104,19 @@ class HMP_Admin {
         echo '<div id="holdmyproduct-max-reservations-wrapper">
                 <input type="number" min="1" name="holdmyproduct_options[max_reservations]" value="' . esc_attr( $value ) . '" class="holdmyproduct-small-input" />
               </div>';
+    }
+    
+    /**
+     * Enable guest reservation field callback
+     */
+    public function holdmyproduct_enable_guest_reservation_callback() {
+        $options = get_option( 'holdmyproduct_options' );
+        $checked = ! empty( $options['enable_guest_reservation'] ) ? 'checked' : '';
+        echo '<label class="toggle-switch">
+                <input type="checkbox" name="holdmyproduct_options[enable_guest_reservation]" value="1" ' . $checked . '>
+                <span class="slider"></span>
+              </label>
+              <p class="description">Allow users without an account to reserve products using their email address.</p>';
     }
     
     /**
@@ -209,8 +223,26 @@ class HMP_Admin {
                         $('input[name=\"holdmyproduct_options[enable_reservation]\"]').is(':checked')
                     );
                 }
+                
+                function toggleGuestReservation() {
+                    var isMainEnabled = $('input[name=\"holdmyproduct_options[enable_reservation]\"]').is(':checked');
+                    var guestField = $('input[name=\"holdmyproduct_options[enable_guest_reservation]\"]').closest('tr');
+                    
+                    if (isMainEnabled) {
+                        guestField.show();
+                    } else {
+                        guestField.hide();
+                        $('input[name=\"holdmyproduct_options[enable_guest_reservation]\"]').prop('checked', false);
+                    }
+                }
+                
                 toggleMaxReservations();
-                $('input[name=\"holdmyproduct_options[enable_reservation]\"]').on('change', toggleMaxReservations);
+                toggleGuestReservation();
+                
+                $('input[name=\"holdmyproduct_options[enable_reservation]\"]').on('change', function() {
+                    toggleMaxReservations();
+                    toggleGuestReservation();
+                });
             });
         ";
     }
