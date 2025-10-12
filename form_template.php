@@ -33,7 +33,7 @@ $show_button = $globally_on && ( is_user_logged_in() || $guest_reservations_on )
   <button type="button"
           id="hmp_reserve_product"
           data-productid="<?php echo esc_attr( $pid ); ?>">
-    <?php esc_html_e('Reserve', 'hold-my-product'); ?>
+    <?php esc_html_e('Reserve', 'holdmyproduct'); ?>
   </button>
 <?php endif; ?>
 
