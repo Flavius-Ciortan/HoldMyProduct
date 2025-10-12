@@ -1,5 +1,6 @@
 jQuery(document).ready(function($) {
 
+    // Handle reserve button click
     $('#hmp_reserve_product').on('click', function(e) {
         e.preventDefault();
         var productId = $(this).data('productid');
@@ -10,23 +11,28 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        $('#reservation-modal').show();
+        // Set product ID in form
         $('#reservation-form').find('input[name="product_id"]').val(productId);
-
-        $('#reservation-modal').dialog({
-            resizable: false,
-            height: 'auto',
-            width: 500,
-            modal: true,
-            closeOnEscape: true,
-            open: function () {
-                $('.ui-widget-overlay').bind('click', function () {
-                    $('#reservation-modal').dialog('close');
-                });
-            }
-        });
+        
+        // Show modal
+        $('#reservation-modal').show();
     });
 
+    // Close modal when clicking outside
+    $(document).on('click', '.modal-overlay', function(e) {
+        if (e.target === this) {
+            $('#reservation-modal').hide();
+        }
+    });
+
+    // Close modal on Escape key
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape') {
+            $('#reservation-modal').hide();
+        }
+    });
+
+    // Handle form submission
     $('#reservation-form').on('submit', function(e) {
         e.preventDefault();
 
@@ -52,11 +58,13 @@ jQuery(document).ready(function($) {
         var originalText = $submitBtn.text();
         $submitBtn.prop('disabled', true).text('Processing...');
 
+        // Send AJAX request
         $.post(holdmyproduct_ajax.ajax_url, ajaxData)
         .done(function(response) {
             if (response.success) {
-                alert('Reservation successful! You will receive a confirmation email shortly.');
-                $('#reservation-modal').dialog('close');
+                alert('Reservation successful!');
+                $('#reservation-modal').hide();
+                // Optionally reload the page to show updated stock
                 location.reload();
             } else {
                 alert('Error: ' + response.data);

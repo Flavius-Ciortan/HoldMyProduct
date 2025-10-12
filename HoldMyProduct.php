@@ -100,10 +100,13 @@ class HoldMyProduct {
         
         // Core classes
         require_once HMP_PLUGIN_PATH . 'includes/class-hmp-reservations.php';
+        require_once HMP_PLUGIN_PATH . 'includes/class-hmp-email-manager.php';
+        require_once HMP_PLUGIN_PATH . 'includes/class-hmp-shortcodes.php';
         
         // Admin classes
         if ( is_admin() ) {
             require_once HMP_PLUGIN_PATH . 'includes/admin/class-hmp-admin.php';
+            require_once HMP_PLUGIN_PATH . 'includes/admin/class-hmp-analytics.php';
         }
         
         // Frontend classes
@@ -122,10 +125,13 @@ class HoldMyProduct {
         
         // Initialize core
         $this->reservations = new HMP_Reservations();
+        new HMP_Email_Manager();
+        new HMP_Shortcodes();
         
         // Initialize admin
         if ( is_admin() ) {
             $this->admin = new HMP_Admin();
+            new HMP_Analytics();
         }
         
         // Initialize frontend

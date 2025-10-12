@@ -64,12 +64,11 @@ class HMP_Frontend {
             array(),
             HMP_VERSION
         );
-        wp_enqueue_style( 'wp-jquery-ui-dialog' );
         
         wp_enqueue_script(
             'holdmyproduct-js',
             HMP_PLUGIN_URL . 'holdmyproduct.js',
-            array( 'jquery', 'jquery-ui-dialog' ),
+            array( 'jquery' ),
             HMP_VERSION,
             true
         );

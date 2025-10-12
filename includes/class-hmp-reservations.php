@@ -30,6 +30,16 @@ class HMP_Reservations {
         // AJAX handlers
         add_action( 'wp_ajax_holdmyproduct_reserve', array( $this, 'handle_reservation_ajax' ) );
         add_action( 'wp_ajax_nopriv_holdmyproduct_reserve', array( $this, 'handle_reservation_ajax' ) );
+        
+        // Guest reservation lookup
+        add_action( 'wp_ajax_hmp_guest_lookup', array( $this, 'handle_guest_lookup' ) );
+        add_action( 'wp_ajax_nopriv_hmp_guest_lookup', array( $this, 'handle_guest_lookup' ) );
+        add_action( 'wp_ajax_hmp_guest_cancel', array( $this, 'handle_guest_cancel' ) );
+        add_action( 'wp_ajax_nopriv_hmp_guest_cancel', array( $this, 'handle_guest_cancel' ) );
+        
+        // Auto-fulfill reservations on purchase
+        add_action( 'woocommerce_order_status_completed', array( $this, 'fulfill_reservation_on_purchase' ) );
+        add_action( 'woocommerce_order_status_processing', array( $this, 'fulfill_reservation_on_purchase' ) );
     }
     
     /**
@@ -135,7 +145,9 @@ class HMP_Reservations {
      * Create a new reservation
      */
     public function create_reservation( $product_id, $user_id = 0, $guest_email = '' ) {
-        $expires_at = current_time( 'timestamp' ) + DAY_IN_SECONDS;
+        $options = get_option( 'holdmyproduct_options' );
+        $duration_hours = isset( $options['reservation_duration'] ) ? absint( $options['reservation_duration'] ) : 24;
+        $expires_at = current_time( 'timestamp' ) + ( $duration_hours * HOUR_IN_SECONDS );
         
         $reservation_id = wp_insert_post( array(
             'post_type'   => 'hmp_reservation',
@@ -156,10 +168,14 @@ class HMP_Reservations {
             '_hmp_qty' => 1,
         );
         
+        // Determine email address for notifications
+        $notification_email = '';
+        
         // For guest users, store email and additional info
         if ( ! $user_id && $guest_email ) {
             $meta_data['_hmp_email'] = $guest_email;
             $meta_data['_hmp_guest_reservation'] = 'yes';
+            $notification_email = $guest_email;
             
             // Store additional guest info if provided
             if ( isset( $_POST['name'] ) && ! empty( $_POST['name'] ) ) {
@@ -171,10 +187,22 @@ class HMP_Reservations {
             if ( isset( $_POST['phone'] ) && ! empty( $_POST['phone'] ) ) {
                 $meta_data['_hmp_phone'] = sanitize_text_field( $_POST['phone'] );
             }
+        } elseif ( $user_id ) {
+            // For logged-in users, get their email
+            $user = get_userdata( $user_id );
+            if ( $user ) {
+                $notification_email = $user->user_email;
+                $meta_data['_hmp_email'] = $notification_email;
+            }
         }
         
         foreach ( $meta_data as $key => $value ) {
             update_post_meta( $reservation_id, $key, $value );
+        }
+        
+        // Trigger email notification
+        if ( $notification_email ) {
+            do_action( 'hmp_reservation_created', $reservation_id, $notification_email );
         }
         
         return $reservation_id;
@@ -298,6 +326,9 @@ class HMP_Reservations {
     public function expire_reservation( $reservation_id ) {
         update_post_meta( $reservation_id, '_hmp_status', 'expired' );
         
+        // Get email for notification
+        $email = get_post_meta( $reservation_id, '_hmp_email', true );
+        
         // Restore stock
         $product_id = (int) get_post_meta( $reservation_id, '_hmp_product_id', true );
         if ( $product_id ) {
@@ -306,6 +337,11 @@ class HMP_Reservations {
                 $product->set_stock_quantity( $product->get_stock_quantity() + 1 );
                 $product->save();
             }
+        }
+        
+        // Trigger expiration email notification
+        if ( $email ) {
+            do_action( 'hmp_reservation_expired', $reservation_id, $email );
         }
     }
     
@@ -432,5 +468,114 @@ class HMP_Reservations {
         $this->cancel_reservation( $reservation_id );
         wp_safe_redirect( wc_get_account_endpoint_url( 'hmp-reservations' ) );
         exit;
+    }
+    
+    /**
+     * Handle guest reservation lookup
+     */
+    public function handle_guest_lookup() {
+        check_ajax_referer( 'holdmyproduct_nonce', 'security' );
+        
+        $email = sanitize_email( $_POST['email'] ?? '' );
+        if ( empty( $email ) || ! is_email( $email ) ) {
+            wp_send_json_error( 'Please provide a valid email address.' );
+        }
+        
+        $reservations = $this->get_guest_reservations( $email );
+        
+        if ( empty( $reservations ) ) {
+            wp_send_json_success( array( 'reservations' => array(), 'message' => 'No active reservations found.' ) );
+        } else {
+            wp_send_json_success( array( 'reservations' => $reservations ) );
+        }
+    }
+    
+    /**
+     * Get guest reservations by email
+     */
+    public function get_guest_reservations( $email ) {
+        $reservations = get_posts( array(
+            'post_type'      => 'hmp_reservation',
+            'post_status'    => 'publish',
+            'posts_per_page' => 20,
+            'meta_query'     => array(
+                array( 'key' => '_hmp_status', 'value' => 'active' ),
+                array( 'key' => '_hmp_email', 'value' => $email ),
+                array( 'key' => '_hmp_expires_at', 'value' => current_time( 'timestamp' ), 'type' => 'NUMERIC', 'compare' => '>' )
+            ),
+        ) );
+        
+        $formatted = array();
+        foreach ( $reservations as $reservation ) {
+            $product_id = (int) get_post_meta( $reservation->ID, '_hmp_product_id', true );
+            $expires_ts = (int) get_post_meta( $reservation->ID, '_hmp_expires_at', true );
+            $product = wc_get_product( $product_id );
+            
+            if ( $product ) {
+                $formatted[] = array(
+                    'id' => $reservation->ID,
+                    'product_name' => $product->get_name(),
+                    'product_url' => get_permalink( $product_id ),
+                    'expires_at' => date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $expires_ts ),
+                    'add_to_cart_url' => wc_get_cart_url() . '?add-to-cart=' . $product_id
+                );
+            }
+        }
+        
+        return $formatted;
+    }
+    
+    /**
+     * Handle guest reservation cancellation
+     */
+    public function handle_guest_cancel() {
+        check_ajax_referer( 'holdmyproduct_nonce', 'security' );
+        
+        $reservation_id = absint( $_POST['reservation_id'] ?? 0 );
+        $email = sanitize_email( $_POST['email'] ?? '' );
+        
+        if ( ! $reservation_id || ! $email ) {
+            wp_send_json_error( 'Invalid request.' );
+        }
+        
+        // Verify ownership
+        $stored_email = get_post_meta( $reservation_id, '_hmp_email', true );
+        if ( $stored_email !== $email ) {
+            wp_send_json_error( 'Unauthorized.' );
+        }
+        
+        $this->cancel_reservation( $reservation_id );
+        wp_send_json_success( 'Reservation cancelled successfully.' );
+    }
+    
+    /**
+     * Auto-fulfill reservations when order is completed
+     */
+    public function fulfill_reservation_on_purchase( $order_id ) {
+        $order = wc_get_order( $order_id );
+        if ( ! $order ) return;
+        
+        $customer_email = $order->get_billing_email();
+        
+        foreach ( $order->get_items() as $item ) {
+            $product_id = $item->get_product_id();
+            
+            // Check for active reservation
+            $reservations = get_posts( array(
+                'post_type'      => 'hmp_reservation',
+                'post_status'    => 'publish',
+                'posts_per_page' => 1,
+                'meta_query'     => array(
+                    array( 'key' => '_hmp_status', 'value' => 'active' ),
+                    array( 'key' => '_hmp_product_id', 'value' => $product_id ),
+                    array( 'key' => '_hmp_email', 'value' => $customer_email )
+                ),
+            ) );
+            
+            if ( ! empty( $reservations ) ) {
+                update_post_meta( $reservations[0]->ID, '_hmp_status', 'fulfilled' );
+                // Don't restore stock since it was purchased
+            }
+        }
     }
 }
