@@ -68,6 +68,11 @@ class HMP_Reservations {
             $user_id = get_current_user_id();
             $guest_email = wp_get_current_user()->user_email ?: '';
         } else {
+            // Check if guest reservations are enabled
+            if ( ! $this->are_guest_reservations_enabled() ) {
+                wp_send_json_error( 'Guest reservations are not enabled. Please create an account to reserve products.' );
+            }
+            
             $user_id = 0;
             $raw_email = $_POST['email'] ?? $_POST['user_email'] ?? $_POST['reservation_email'] ?? '';
             $guest_email = is_string( $raw_email ) ? sanitize_email( urldecode( wp_unslash( $raw_email ) ) ) : '';
@@ -119,6 +124,14 @@ class HMP_Reservations {
     }
     
     /**
+     * Check if guest reservations are enabled
+     */
+    public function are_guest_reservations_enabled() {
+        $options = get_option( 'holdmyproduct_options' );
+        return ! empty( $options['enable_guest_reservation'] );
+    }
+    
+    /**
      * Create a new reservation
      */
     public function create_reservation( $product_id, $user_id = 0, $guest_email = '' ) {
@@ -143,14 +156,21 @@ class HMP_Reservations {
             '_hmp_qty' => 1,
         );
         
-        if ( $guest_email ) {
+        // For guest users with email addresses, store email and additional info
+        if ( ! $user_id && $guest_email ) {
             $meta_data['_hmp_email'] = $guest_email;
-        }
-        if ( isset( $_POST['name'] ) ) {
-            $meta_data['_hmp_name'] = sanitize_text_field( $_POST['name'] );
-        }
-        if ( isset( $_POST['phone'] ) ) {
-            $meta_data['_hmp_phone'] = sanitize_text_field( $_POST['phone'] );
+            $meta_data['_hmp_guest_reservation'] = 'yes';
+            
+            // Store additional guest info if provided
+            if ( isset( $_POST['name'] ) && ! empty( $_POST['name'] ) ) {
+                $meta_data['_hmp_name'] = sanitize_text_field( $_POST['name'] );
+            }
+            if ( isset( $_POST['surname'] ) && ! empty( $_POST['surname'] ) ) {
+                $meta_data['_hmp_surname'] = sanitize_text_field( $_POST['surname'] );
+            }
+            if ( isset( $_POST['phone'] ) && ! empty( $_POST['phone'] ) ) {
+                $meta_data['_hmp_phone'] = sanitize_text_field( $_POST['phone'] );
+            }
         }
         
         foreach ( $meta_data as $key => $value ) {
@@ -167,6 +187,12 @@ class HMP_Reservations {
         if ( ! $this->are_reservations_globally_enabled() ) {
             return false;
         }
+        
+        // Check if guest reservations are required but not enabled
+        if ( ! is_user_logged_in() && ! $this->are_guest_reservations_enabled() ) {
+            return false;
+        }
+        
         return get_post_meta( $product_id, '_hmp_reservations_enabled', true ) === 'yes';
     }
     
