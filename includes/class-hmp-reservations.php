@@ -156,7 +156,7 @@ class HMP_Reservations {
             '_hmp_qty' => 1,
         );
         
-        // For guest users, store email and additional info
+        // For guest users with email addresses, store email and additional info
         if ( ! $user_id && $guest_email ) {
             $meta_data['_hmp_email'] = $guest_email;
             $meta_data['_hmp_guest_reservation'] = 'yes';
