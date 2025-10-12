@@ -26,8 +26,14 @@ class HMP_Admin {
         add_action( 'woocommerce_product_options_general_product_data', array( $this, 'add_product_reservation_option' ) );
         add_action( 'woocommerce_admin_process_product_object', array( $this, 'save_product_reservation_option' ) );
         
+        // Product reservation management
+        add_action( 'woocommerce_product_options_inventory_product_data', array( $this, 'add_product_reservations_list' ) );
+        
         // Products list customization
         add_action( 'admin_init', array( $this, 'init_products_list' ) );
+        
+        // AJAX handlers for reservation management
+        add_action( 'wp_ajax_hmp_cancel_admin_reservation', array( $this, 'handle_admin_cancel_reservation' ) );
     }
     
     /**
@@ -42,6 +48,16 @@ class HMP_Admin {
             array( $this, 'settings_page' ),
             HMP_PLUGIN_URL . 'HMP-menu-icon.png',
             80
+        );
+        
+        // Add reservations management submenu
+        add_submenu_page(
+            'holdmyproduct-settings',
+            'Manage Reservations',
+            'Manage Reservations',
+            'manage_options',
+            'holdmyproduct-manage-reservations',
+            array( $this, 'manage_reservations_page' )
         );
     }
     
@@ -193,6 +209,284 @@ class HMP_Admin {
     }
     
     /**
+     * Add product reservation option
+     */
+    public function add_product_reservation_option() {
+        echo '<div class="options_group">';
+        woocommerce_wp_checkbox( array(
+            'id'          => '_hmp_reservations_enabled',
+            'label'       => __( 'Enable reservations', 'hold-my-product' ),
+            'desc_tip'    => true,
+            'description' => __( 'Allow this product to be reserved via HoldMyProduct.', 'hold-my-product' ),
+        ) );
+        echo '</div>';
+    }
+    
+    /**
+     * Save product reservation option
+     */
+    public function save_product_reservation_option( WC_Product $product ) {
+        $enabled = isset( $_POST['_hmp_reservations_enabled'] ) ? 'yes' : 'no';
+        $product->update_meta_data( '_hmp_reservations_enabled', $enabled );
+    }
+    
+    /**
+     * Add product reservations list in inventory tab
+     */
+    public function add_product_reservations_list() {
+        global $post;
+        
+        if ( ! $post ) return;
+        
+        $reservations = $this->get_product_reservations( $post->ID );
+        
+        echo '<div class="options_group">';
+        echo '<h4>' . __( 'Active Reservations', 'hold-my-product' ) . '</h4>';
+        
+        if ( empty( $reservations ) ) {
+            echo '<p>' . __( 'No active reservations for this product.', 'hold-my-product' ) . '</p>';
+        } else {
+            echo '<table class="widefat striped" style="margin-top: 10px;">';
+            echo '<thead><tr>';
+            echo '<th>' . __( 'Customer', 'hold-my-product' ) . '</th>';
+            echo '<th>' . __( 'Expires', 'hold-my-product' ) . '</th>';
+            echo '<th>' . __( 'Action', 'hold-my-product' ) . '</th>';
+            echo '</tr></thead><tbody>';
+            
+            foreach ( $reservations as $reservation ) {
+                $this->display_product_reservation_row( $reservation );
+            }
+            
+            echo '</tbody></table>';
+        }
+        
+        echo '</div>';
+    }
+    
+    /**
+     * Get active reservations for a specific product
+     */
+    private function get_product_reservations( $product_id ) {
+        return get_posts( array(
+            'post_type'      => 'hmp_reservation',
+            'post_status'    => 'publish',
+            'posts_per_page' => 50,
+            'meta_query'     => array(
+                array( 'key' => '_hmp_status', 'value' => 'active' ),
+                array( 'key' => '_hmp_product_id', 'value' => $product_id ),
+                array( 'key' => '_hmp_expires_at', 'value' => current_time( 'timestamp' ), 'type' => 'NUMERIC', 'compare' => '>' )
+            ),
+            'orderby' => 'date',
+            'order' => 'DESC'
+        ) );
+    }
+    
+    /**
+     * Display single product reservation row
+     */
+    private function display_product_reservation_row( $reservation ) {
+        $email = get_post_meta( $reservation->ID, '_hmp_email', true );
+        $name = get_post_meta( $reservation->ID, '_hmp_name', true );
+        $surname = get_post_meta( $reservation->ID, '_hmp_surname', true );
+        $expires_ts = (int) get_post_meta( $reservation->ID, '_hmp_expires_at', true );
+        
+        // Determine customer display name
+        if ( $reservation->post_author ) {
+            $user = get_userdata( $reservation->post_author );
+            $customer = $user ? $user->display_name : 'Unknown User';
+        } else {
+            $customer = trim( $name . ' ' . $surname );
+            if ( empty( $customer ) ) {
+                $customer = $email;
+            } else {
+                $customer .= ' (' . $email . ')';
+            }
+        }
+        
+        $expires_disp = $expires_ts ? date_i18n( 'M j, Y @ H:i', $expires_ts ) : '—';
+        
+        echo '<tr>';
+        echo '<td>' . esc_html( $customer ) . '</td>';
+        echo '<td>' . esc_html( $expires_disp ) . '</td>';
+        echo '<td>';
+        echo '<button type="button" class="button hmp-cancel-reservation" ';
+        echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
+        echo 'data-customer="' . esc_attr( $customer ) . '">';
+        echo __( 'Cancel', 'hold-my-product' );
+        echo '</button>';
+        echo '</td>';
+        echo '</tr>';
+    }
+    
+    /**
+     * Manage reservations page
+     */
+    public function manage_reservations_page() {
+        $reservations = $this->get_all_active_reservations();
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e( 'Manage Reservations', 'hold-my-product' ); ?></h1>
+            
+            <div class="hmp-reservations-stats">
+                <p><strong><?php printf( __( 'Total Active Reservations: %d', 'hold-my-product' ), count( $reservations ) ); ?></strong></p>
+            </div>
+            
+            <?php if ( empty( $reservations ) ) : ?>
+                <div class="notice notice-info">
+                    <p><?php esc_html_e( 'No active reservations found.', 'hold-my-product' ); ?></p>
+                </div>
+            <?php else : ?>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;"><?php esc_html_e( 'Product', 'hold-my-product' ); ?></th>
+                            <th style="width: 25%;"><?php esc_html_e( 'Customer', 'hold-my-product' ); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e( 'Reserved', 'hold-my-product' ); ?></th>
+                            <th style="width: 15%;"><?php esc_html_e( 'Expires', 'hold-my-product' ); ?></th>
+                            <th style="width: 10%;"><?php esc_html_e( 'Time Left', 'hold-my-product' ); ?></th>
+                            <th style="width: 10%;"><?php esc_html_e( 'Actions', 'hold-my-product' ); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ( $reservations as $reservation ) : ?>
+                            <?php $this->display_admin_reservation_row( $reservation ); ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 20px;">
+                    <p class="description">
+                        <?php esc_html_e( 'Click "Cancel Reservation" to immediately cancel a customer\'s reservation and restore the product stock.', 'hold-my-product' ); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Get all active reservations
+     */
+    private function get_all_active_reservations() {
+        return get_posts( array(
+            'post_type'      => 'hmp_reservation',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                array( 'key' => '_hmp_status', 'value' => 'active' ),
+                array( 'key' => '_hmp_expires_at', 'value' => current_time( 'timestamp' ), 'type' => 'NUMERIC', 'compare' => '>' )
+            ),
+            'orderby' => 'date',
+            'order' => 'DESC'
+        ) );
+    }
+    
+    /**
+     * Display admin reservation row
+     */
+    private function display_admin_reservation_row( $reservation ) {
+        $product_id = (int) get_post_meta( $reservation->ID, '_hmp_product_id', true );
+        $email = get_post_meta( $reservation->ID, '_hmp_email', true );
+        $name = get_post_meta( $reservation->ID, '_hmp_name', true );
+        $surname = get_post_meta( $reservation->ID, '_hmp_surname', true );
+        $expires_ts = (int) get_post_meta( $reservation->ID, '_hmp_expires_at', true );
+        
+        $product = wc_get_product( $product_id );
+        $product_name = $product ? $product->get_name() : 'Unknown Product';
+        $product_edit_url = $product ? admin_url( 'post.php?post=' . $product_id . '&action=edit' ) : '#';
+        
+        // Determine customer display name
+        if ( $reservation->post_author ) {
+            $user = get_userdata( $reservation->post_author );
+            $customer = $user ? $user->display_name . ' (' . $user->user_email . ')' : 'Unknown User';
+            $customer_short = $user ? $user->display_name : 'Unknown User';
+        } else {
+            $customer_full = trim( $name . ' ' . $surname );
+            if ( empty( $customer_full ) ) {
+                $customer = $email;
+                $customer_short = $email;
+            } else {
+                $customer = $customer_full . ' (' . $email . ')';
+                $customer_short = $customer_full;
+            }
+        }
+        
+        $reserved_date = get_the_date( 'M j, Y @ H:i', $reservation );
+        $expires_disp = $expires_ts ? date_i18n( 'M j, Y @ H:i', $expires_ts ) : '—';
+        
+        // Calculate time left with color coding
+        $time_left = '';
+        $time_class = '';
+        if ( $expires_ts ) {
+            $diff = $expires_ts - current_time( 'timestamp' );
+            if ( $diff > 0 ) {
+                $hours = floor( $diff / 3600 );
+                $minutes = floor( ( $diff % 3600 ) / 60 );
+                $time_left = sprintf( '%dh %dm', $hours, $minutes );
+                
+                // Add warning colors
+                if ( $hours < 2 ) {
+                    $time_class = 'time-left-critical';
+                } elseif ( $hours < 6 ) {
+                    $time_class = 'time-left-warning';
+                }
+            } else {
+                $time_left = 'Expired';
+                $time_class = 'time-left-critical';
+            }
+        }
+        
+        echo '<tr>';
+        echo '<td><a href="' . esc_url( $product_edit_url ) . '" target="_blank">' . esc_html( $product_name ) . '</a></td>';
+        echo '<td title="' . esc_attr( $customer ) . '">' . esc_html( $customer ) . '</td>';
+        echo '<td>' . esc_html( $reserved_date ) . '</td>';
+        echo '<td>' . esc_html( $expires_disp ) . '</td>';
+        echo '<td class="' . esc_attr( $time_class ) . '">' . esc_html( $time_left ) . '</td>';
+        echo '<td>';
+        echo '<button type="button" class="button button-small hmp-cancel-reservation" ';
+        echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
+        echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
+        echo 'data-product="' . esc_attr( $product_name ) . '">';
+        echo __( 'Cancel', 'hold-my-product' );
+        echo '</button>';
+        echo '</td>';
+        echo '</tr>';
+    }
+    
+    /**
+     * Handle admin reservation cancellation
+     */
+    public function handle_admin_cancel_reservation() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'Insufficient permissions.' );
+        }
+        
+        check_ajax_referer( 'hmp_admin_cancel', 'nonce' );
+        
+        $reservation_id = absint( $_POST['reservation_id'] ?? 0 );
+        
+        if ( ! $reservation_id ) {
+            wp_send_json_error( 'Invalid reservation ID.' );
+        }
+        
+        // Verify this is an active reservation
+        $status = get_post_meta( $reservation_id, '_hmp_status', true );
+        if ( $status !== 'active' ) {
+            wp_send_json_error( 'Reservation is not active.' );
+        }
+        
+        // Cancel the reservation using existing method
+        $reservations_class = new HMP_Reservations();
+        $reservations_class->cancel_reservation( $reservation_id );
+        
+        // Add admin note
+        update_post_meta( $reservation_id, '_hmp_cancelled_by_admin', current_time( 'timestamp' ) );
+        update_post_meta( $reservation_id, '_hmp_cancelled_by_user', get_current_user_id() );
+        
+        wp_send_json_success( 'Reservation cancelled successfully.' );
+    }
+    
+    /**
      * Enqueue admin scripts
      */
     public function enqueue_admin_scripts( $hook ) {
@@ -203,6 +497,22 @@ class HMP_Admin {
             wp_enqueue_style( 'holdmyproduct-admin-style', HMP_PLUGIN_URL . 'admin-style.css', array(), HMP_VERSION );
             
             wp_add_inline_script( 'wp-components', $this->get_admin_inline_script() );
+        }
+        
+        // Manage reservations page scripts
+        if ( $hook === 'holdmyproduct_page_holdmyproduct-manage-reservations' ) {
+            wp_enqueue_script( 'jquery' );
+            wp_enqueue_style( 'holdmyproduct-admin-style', HMP_PLUGIN_URL . 'admin-style.css', array(), HMP_VERSION );
+            wp_add_inline_script( 'jquery', $this->get_manage_reservations_inline_script() );
+        }
+        
+        // Product edit page scripts
+        if ( $hook === 'post.php' || $hook === 'post-new.php' ) {
+            global $post;
+            if ( $post && $post->post_type === 'product' ) {
+                wp_enqueue_script( 'jquery' );
+                wp_add_inline_script( 'jquery', $this->get_product_page_script() );
+            }
         }
         
         // Product list scripts
@@ -229,6 +539,60 @@ class HMP_Admin {
                 HMP_VERSION
             );
         }
+    }
+    
+    /**
+     * Get manage reservations page inline script
+     */
+    private function get_manage_reservations_inline_script() {
+        $nonce = wp_create_nonce( 'hmp_admin_cancel' );
+        return "
+            jQuery(document).ready(function($) {
+                $('.hmp-cancel-reservation').on('click', function() {
+                    var \$btn = $(this);
+                    var reservationId = \$btn.data('reservation-id');
+                    var customer = \$btn.data('customer');
+                    var product = \$btn.data('product') || 'this product';
+                    
+                    if (confirm('Are you sure you want to cancel the reservation for ' + customer + ' on ' + product + '?')) {
+                        \$btn.prop('disabled', true).text('Cancelling...');
+                        
+                        $.post(ajaxurl, {
+                            action: 'hmp_cancel_admin_reservation',
+                            reservation_id: reservationId,
+                            nonce: '{$nonce}'
+                        })
+                        .done(function(response) {
+                            if (response.success) {
+                                \$btn.closest('tr').fadeOut(function() {
+                                    $(this).remove();
+                                });
+                                
+                                // Update counter
+                                var currentCount = $('.hmp-reservations-stats p strong').text().match(/\d+/);
+                                if (currentCount) {
+                                    var newCount = parseInt(currentCount[0]) - 1;
+                                    $('.hmp-reservations-stats p strong').html('Total Active Reservations: ' + newCount);
+                                }
+                                
+                                // Show success message
+                                if ($('.notice').length === 0) {
+                                    $('<div class=\"notice notice-success is-dismissible\"><p>Reservation cancelled successfully.</p></div>')
+                                        .insertAfter('.wrap h1');
+                                }
+                            } else {
+                                alert('Error: ' + response.data);
+                                \$btn.prop('disabled', false).text('Cancel');
+                            }
+                        })
+                        .fail(function() {
+                            alert('Request failed. Please try again.');
+                            \$btn.prop('disabled', false).text('Cancel');
+                        });
+                    }
+                });
+            });
+        ";
     }
     
     /**
@@ -275,25 +639,43 @@ class HMP_Admin {
     }
     
     /**
-     * Add product reservation option
+     * Get product page inline script for reservation management
      */
-    public function add_product_reservation_option() {
-        echo '<div class="options_group">';
-        woocommerce_wp_checkbox( array(
-            'id'          => '_hmp_reservations_enabled',
-            'label'       => __( 'Enable reservations', 'hold-my-product' ),
-            'desc_tip'    => true,
-            'description' => __( 'Allow this product to be reserved via HoldMyProduct.', 'hold-my-product' ),
-        ) );
-        echo '</div>';
-    }
-    
-    /**
-     * Save product reservation option
-     */
-    public function save_product_reservation_option( WC_Product $product ) {
-        $enabled = isset( $_POST['_hmp_reservations_enabled'] ) ? 'yes' : 'no';
-        $product->update_meta_data( '_hmp_reservations_enabled', $enabled );
+    private function get_product_page_script() {
+        return "
+            jQuery(document).ready(function($) {
+                $('.hmp-cancel-reservation').on('click', function() {
+                    var \$btn = $(this);
+                    var reservationId = \$btn.data('reservation-id');
+                    var customer = \$btn.data('customer');
+                    
+                    if (confirm('Are you sure you want to cancel the reservation for ' + customer + '?')) {
+                        \$btn.prop('disabled', true).text('Cancelling...');
+                        
+                        $.post(ajaxurl, {
+                            action: 'hmp_cancel_admin_reservation',
+                            reservation_id: reservationId,
+                            nonce: '" . wp_create_nonce( 'hmp_admin_cancel' ) . "'
+                        })
+                        .done(function(response) {
+                            if (response.success) {
+                                \$btn.closest('tr').fadeOut(function() {
+                                    $(this).remove();
+                                });
+                                alert('Reservation cancelled successfully.');
+                            } else {
+                                alert('Error: ' + response.data);
+                                \$btn.prop('disabled', false).text('Cancel');
+                            }
+                        })
+                        .fail(function() {
+                            alert('Request failed. Please try again.');
+                            \$btn.prop('disabled', false).text('Cancel');
+                        });
+                    }
+                });
+            });
+        ";
     }
     
     /**
