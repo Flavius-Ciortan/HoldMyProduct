@@ -138,3 +138,131 @@
 .column-hmp_reservations {
     width:11%;
 }
+
+/* Reservation Management Styles */
+.hmp-reservations-stats {
+    background: #f8f9fa;
+    border-left: 4px solid #0073aa;
+    padding: 15px 20px;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.hmp-reservations-stats p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.hmp-cancel-reservation {
+    background-color: #d63638 !important;
+    color: #fff !important;
+    border-color: #d63638 !important;
+    padding: 4px 12px !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    border-radius: 3px !important;
+}
+
+.hmp-cancel-reservation:hover {
+    background-color: #b32d2e !important;
+    border-color: #b32d2e !important;
+}
+
+.hmp-cancel-reservation:disabled {
+    background-color: #ccc !important;
+    border-color: #ccc !important;
+    cursor: not-allowed !important;
+}
+
+/* Product page reservations table */
+.options_group table.widefat {
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+.options_group table.widefat th,
+.options_group table.widefat td {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.options_group table.widefat th {
+    background-color: #f1f1f1;
+    font-weight: 600;
+}
+
+/* Manage reservations page */
+.hmp-reservation-row {
+    transition: opacity 0.3s ease;
+}
+
+.hmp-reservation-row.cancelled {
+    opacity: 0.5;
+}
+
+/* Time left styling */
+td:nth-child(5) {
+    font-weight: 600;
+}
+
+tr:has(.time-left-warning) {
+    background-color: #fff3cd;
+}
+
+.time-left-warning {
+    color: #d63638;
+    font-weight: 600;
+}
+
+.time-left-critical {
+    color: #d63638;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Notice styling */
+.notice.hmp-success {
+    border-left-color: #46b450;
+}
+
+/* Table improvements */
+.wp-list-table.widefat.fixed.striped {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.wp-list-table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #ddd;
+    font-weight: 600;
+    padding: 12px 10px;
+}
+
+.wp-list-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.wp-list-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* No reservations notice */
+.notice.notice-info {
+    border-left-color: #72aee6;
+    background-color: #f0f6fc;
+}
+
+/* Success notice */
+.notice.notice-success {
+    border-left-color: #00a32a;
+    background-color: #f0f9ff;
+}
