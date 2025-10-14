@@ -38,6 +38,11 @@ $show_button = $globally_on && ( is_user_logged_in() || $guest_reservations_on )
       <?php esc_html_e('Reserve Product', 'hold-my-product'); ?>
     </button>
   </div>
+  <button type="button"
+          id="hmp_reserve_product"
+          data-productid="<?php echo esc_attr( $pid ); ?>">
+    <?php esc_html_e('Reserve', 'holdmyproduct'); ?>
+  </button>
 <?php endif; ?>
 
 <!-- Modal for Guest Users -->
