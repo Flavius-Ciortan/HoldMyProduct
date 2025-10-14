@@ -30,6 +30,14 @@ $show_button = $globally_on && ( is_user_logged_in() || $guest_reservations_on )
 ?>
 
 <?php if ( $show_button ) : ?>
+  <div style="margin-top: 10px;">
+    <button type="button"
+            id="hmp_reserve_product"
+            data-productid="<?php echo esc_attr( $pid ); ?>"
+            style="margin-left: 10px;">
+      <?php esc_html_e('Reserve Product', 'hold-my-product'); ?>
+    </button>
+  </div>
   <button type="button"
           id="hmp_reserve_product"
           data-productid="<?php echo esc_attr( $pid ); ?>">
@@ -39,7 +47,7 @@ $show_button = $globally_on && ( is_user_logged_in() || $guest_reservations_on )
 
 <!-- Modal for Guest Users -->
 <?php if ( ! is_user_logged_in() && $guest_reservations_on ) : ?>
-  <div id="reservation-modal" class="modal-overlay" title="Reserve Product">
+  <div id="reservation-modal" class="modal-overlay" title="Reserve Product" style="display: none;">
       <div class="modal-box">
           <form id="reservation-form">
               <input type="hidden" name="action" value="holdmyproduct_reserve">
@@ -62,7 +70,7 @@ $show_button = $globally_on && ( is_user_logged_in() || $guest_reservations_on )
 
 <!-- Modal for Logged-in Users -->
 <?php elseif ( is_user_logged_in() && $globally_on ) : ?>
-  <div id="reservation-modal" class="modal-overlay" title="Reserve Product">
+  <div id="reservation-modal" class="modal-overlay" title="Reserve Product" style="display: none;">
     <div class="modal-box">
       <form id="reservation-form">
         <input type="hidden" name="action" value="holdmyproduct_reserve">
@@ -77,10 +85,6 @@ $show_button = $globally_on && ( is_user_logged_in() || $guest_reservations_on )
     </div>
   </div>
 <?php endif; ?>
-        <p>Are you sure you want to reserve this product?</p>
-        <button type="submit" class="submit-btn">Yes, Reserve</button>
-      </form>
     </div>
   </div>
-<?php endif; ?>
 
