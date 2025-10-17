@@ -66,6 +66,10 @@ class HoldMyProduct {
         
         // Initialize plugin
         add_action( 'init', array( $this, 'init_plugin' ) );
+        
+        // Activation and deactivation hooks
+        register_activation_hook( __FILE__, array( $this, 'activate_plugin' ) );
+        register_deactivation_hook( __FILE__, array( $this, 'deactivate_plugin' ) );
     }
     
     /**
@@ -138,6 +142,30 @@ class HoldMyProduct {
         if ( ! is_admin() ) {
             $this->frontend = new HMP_Frontend();
         }
+    }
+    
+    /**
+     * Plugin activation
+     */
+    public function activate_plugin() {
+        if ( ! $this->check_dependencies() ) {
+            return;
+        }
+        
+        // Load reservations class to register endpoints
+        require_once HMP_PLUGIN_PATH . 'includes/class-hmp-reservations.php';
+        $reservations = new HMP_Reservations();
+        
+        // Flush rewrite rules to register the new endpoint
+        $reservations->flush_rewrite_rules();
+    }
+    
+    /**
+     * Plugin deactivation
+     */
+    public function deactivate_plugin() {
+        // Flush rewrite rules on deactivation to clean up
+        flush_rewrite_rules();
     }
 }
 

@@ -25,7 +25,11 @@ class HMP_Reservations {
         // WooCommerce account integration
         add_filter( 'woocommerce_account_menu_items', array( $this, 'add_account_menu_item' ) );
         add_action( 'woocommerce_account_hmp-reservations_endpoint', array( $this, 'reservations_endpoint_content' ) );
+        add_filter( 'woocommerce_get_query_vars', array( $this, 'add_query_vars' ) );
         add_action( 'template_redirect', array( $this, 'handle_reservation_actions' ) );
+        
+        // Flush rewrite rules on activation
+        register_activation_hook( HMP_PLUGIN_PATH . 'HoldMyProduct.php', array( $this, 'flush_rewrite_rules' ) );
         
         // AJAX handlers
         add_action( 'wp_ajax_holdmyproduct_reserve', array( $this, 'handle_reservation_ajax' ) );
@@ -60,6 +64,22 @@ class HMP_Reservations {
      */
     public function register_endpoints() {
         add_rewrite_endpoint( 'hmp-reservations', EP_ROOT | EP_PAGES );
+    }
+    
+    /**
+     * Add query vars for WooCommerce
+     */
+    public function add_query_vars( $vars ) {
+        $vars['hmp-reservations'] = 'hmp-reservations';
+        return $vars;
+    }
+    
+    /**
+     * Flush rewrite rules (call this on plugin activation)
+     */
+    public function flush_rewrite_rules() {
+        $this->register_endpoints();
+        flush_rewrite_rules();
     }
     
     /**
