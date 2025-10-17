@@ -34,6 +34,7 @@ class HMP_Admin {
         
         // AJAX handlers for reservation management
         add_action( 'wp_ajax_hmp_cancel_admin_reservation', array( $this, 'handle_admin_cancel_reservation' ) );
+        add_action( 'wp_ajax_hmp_delete_admin_reservation', array( $this, 'handle_admin_delete_reservation' ) );
     }
     
     /**
@@ -322,77 +323,374 @@ class HMP_Admin {
      * Manage reservations page
      */
     public function manage_reservations_page() {
-        $reservations = $this->get_all_active_reservations();
+        // Get filter parameters
+        $status_filter = isset( $_GET['status'] ) ? sanitize_text_field( $_GET['status'] ) : 'all';
+        $search_query = isset( $_GET['search'] ) ? sanitize_text_field( $_GET['search'] ) : '';
+        $search_type = isset( $_GET['search_type'] ) ? sanitize_text_field( $_GET['search_type'] ) : 'email';
+        
+        // Get reservations based on filters
+        $reservations = $this->get_filtered_reservations( $status_filter, $search_query, $search_type );
+        $active_count = $this->count_reservations_by_status( 'active' );
+        $stats = $this->get_reservations_summary();
         ?>
         <div class="wrap">
             <h1><?php esc_html_e( 'Manage Reservations', 'hold-my-product' ); ?></h1>
             
+            <!-- Summary Stats -->
             <div class="hmp-reservations-stats">
-                <p><strong><?php printf( __( 'Total Active Reservations: %d', 'hold-my-product' ), count( $reservations ) ); ?></strong></p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                    <div><strong>Active:</strong> <?php echo esc_html( $stats['active'] ); ?></div>
+                    <div><strong>Expired:</strong> <?php echo esc_html( $stats['expired'] ); ?></div>
+                    <div><strong>Cancelled:</strong> <?php echo esc_html( $stats['cancelled'] ); ?></div>
+                    <div><strong>Fulfilled:</strong> <?php echo esc_html( $stats['fulfilled'] ); ?></div>
+                    <div><strong>Total:</strong> <?php echo esc_html( $stats['total'] ); ?></div>
+                </div>
+            </div>
+            
+            <!-- Filters and Search -->
+            <div class="tablenav top" style="margin: 20px 0;">
+                <div class="alignleft actions">
+                    <!-- Status Filter -->
+                    <select name="status_filter" id="status-filter">
+                        <option value="all" <?php selected( $status_filter, 'all' ); ?>><?php esc_html_e( 'All Statuses', 'hold-my-product' ); ?></option>
+                        <option value="active" <?php selected( $status_filter, 'active' ); ?>><?php esc_html_e( 'Active', 'hold-my-product' ); ?></option>
+                        <option value="expired" <?php selected( $status_filter, 'expired' ); ?>><?php esc_html_e( 'Expired', 'hold-my-product' ); ?></option>
+                        <option value="cancelled" <?php selected( $status_filter, 'cancelled' ); ?>><?php esc_html_e( 'Cancelled', 'hold-my-product' ); ?></option>
+                        <option value="fulfilled" <?php selected( $status_filter, 'fulfilled' ); ?>><?php esc_html_e( 'Fulfilled', 'hold-my-product' ); ?></option>
+                    </select>
+                    
+                    <!-- Search Type -->
+                    <select name="search_type" id="search-type">
+                        <option value="email" <?php selected( $search_type, 'email' ); ?>><?php esc_html_e( 'Email', 'hold-my-product' ); ?></option>
+                        <option value="product" <?php selected( $search_type, 'product' ); ?>><?php esc_html_e( 'Product Name', 'hold-my-product' ); ?></option>
+                        <option value="product_id" <?php selected( $search_type, 'product_id' ); ?>><?php esc_html_e( 'Product ID', 'hold-my-product' ); ?></option>
+                        <option value="customer_name" <?php selected( $search_type, 'customer_name' ); ?>><?php esc_html_e( 'Customer Name', 'hold-my-product' ); ?></option>
+                    </select>
+                    
+                    <!-- Search Input -->
+                    <input type="search" id="reservation-search" placeholder="<?php esc_attr_e( 'Search reservations...', 'hold-my-product' ); ?>" value="<?php echo esc_attr( $search_query ); ?>" style="width: 200px;">
+                    
+                    <button type="button" class="button" id="filter-reservations"><?php esc_html_e( 'Filter', 'hold-my-product' ); ?></button>
+                    <button type="button" class="button" id="clear-filters"><?php esc_html_e( 'Clear', 'hold-my-product' ); ?></button>
+                </div>
+                
+                <div class="alignright">
+                    <span class="displaying-num"><?php printf( __( '%d reservations', 'hold-my-product' ), count( $reservations ) ); ?></span>
+                </div>
             </div>
             
             <?php if ( empty( $reservations ) ) : ?>
                 <div class="notice notice-info">
-                    <p><?php esc_html_e( 'No active reservations found.', 'hold-my-product' ); ?></p>
+                    <p><?php esc_html_e( 'No reservations found matching your criteria.', 'hold-my-product' ); ?></p>
                 </div>
             <?php else : ?>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th style="width: 25%;"><?php esc_html_e( 'Product', 'hold-my-product' ); ?></th>
-                            <th style="width: 25%;"><?php esc_html_e( 'Customer', 'hold-my-product' ); ?></th>
-                            <th style="width: 15%;"><?php esc_html_e( 'Reserved', 'hold-my-product' ); ?></th>
-                            <th style="width: 15%;"><?php esc_html_e( 'Expires', 'hold-my-product' ); ?></th>
-                            <th style="width: 10%;"><?php esc_html_e( 'Time Left', 'hold-my-product' ); ?></th>
-                            <th style="width: 10%;"><?php esc_html_e( 'Actions', 'hold-my-product' ); ?></th>
+                            <th style="width: 20%;"><?php esc_html_e( 'Product', 'hold-my-product' ); ?></th>
+                            <th style="width: 20%;"><?php esc_html_e( 'Customer', 'hold-my-product' ); ?></th>
+                            <th style="width: 12%;"><?php esc_html_e( 'Status', 'hold-my-product' ); ?></th>
+                            <th style="width: 12%;"><?php esc_html_e( 'Reserved', 'hold-my-product' ); ?></th>
+                            <th style="width: 12%;"><?php esc_html_e( 'Expires', 'hold-my-product' ); ?></th>
+                            <th style="width: 12%;"><?php esc_html_e( 'Time Left', 'hold-my-product' ); ?></th>
+                            <th style="width: 12%;"><?php esc_html_e( 'Actions', 'hold-my-product' ); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ( $reservations as $reservation ) : ?>
-                            <?php $this->display_admin_reservation_row( $reservation ); ?>
+                            <?php $this->display_filterable_reservation_row( $reservation ); ?>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
                 
                 <div style="margin-top: 20px;">
                     <p class="description">
-                        <?php esc_html_e( 'Click "Cancel Reservation" to immediately cancel a customer\'s reservation and restore the product stock.', 'hold-my-product' ); ?>
+                        <?php esc_html_e( 'Use the filters above to find specific reservations. Only active reservations can be cancelled.', 'hold-my-product' ); ?>
                     </p>
                 </div>
             <?php endif; ?>
         </div>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            // Filter functionality
+            $('#filter-reservations').on('click', function() {
+                var status = $('#status-filter').val();
+                var searchType = $('#search-type').val();
+                var search = $('#reservation-search').val();
+                
+                var url = new URL(window.location);
+                url.searchParams.set('status', status);
+                url.searchParams.set('search_type', searchType);
+                if (search) {
+                    url.searchParams.set('search', search);
+                } else {
+                    url.searchParams.delete('search');
+                }
+                window.location.href = url.toString();
+            });
+            
+            // Clear filters
+            $('#clear-filters').on('click', function() {
+                var url = new URL(window.location);
+                url.searchParams.delete('status');
+                url.searchParams.delete('search');
+                url.searchParams.delete('search_type');
+                window.location.href = url.toString();
+            });
+            
+            // Enter key to filter
+            $('#reservation-search').on('keypress', function(e) {
+                if (e.which === 13) {
+                    $('#filter-reservations').click();
+                }
+            });
+            
+            // Reservation cancellation (only for active reservations)
+            $('.hmp-cancel-reservation').on('click', function() {
+                var $btn = $(this);
+                var reservationId = $btn.data('reservation-id');
+                var customer = $btn.data('customer');
+                var product = $btn.data('product') || 'this product';
+                
+                if (confirm('Are you sure you want to cancel the reservation for ' + customer + ' on ' + product + '?')) {
+                    $btn.prop('disabled', true).text('Cancelling...');
+                    
+                    $.post(ajaxurl, {
+                        action: 'hmp_cancel_admin_reservation',
+                        reservation_id: reservationId,
+                        nonce: '<?php echo wp_create_nonce( 'hmp_admin_cancel' ); ?>'
+                    })
+                    .done(function(response) {
+                        if (response.success) {
+                            // Change the button to Delete after successful cancellation
+                            $btn.removeClass('hmp-cancel-reservation')
+                                .addClass('hmp-delete-reservation button-link-delete')
+                                .text('Delete')
+                                .prop('disabled', false);
+                            
+                            // Update the status display
+                            var $statusCell = $btn.closest('tr').find('td:nth-child(3) span');
+                            $statusCell.removeClass('status-active').addClass('status-cancelled').text('Cancelled');
+                            
+                            // Clear time left column
+                            $btn.closest('tr').find('td:nth-child(6)').text('—').removeClass('time-left-critical time-left-warning');
+                            
+                            // Show success message
+                            if ($('.notice.notice-success').length === 0) {
+                                $('<div class="notice notice-success is-dismissible"><p>Reservation cancelled successfully.</p></div>')
+                                    .insertAfter('.wrap h1');
+                            }
+                        } else {
+                            alert('Error: ' + response.data);
+                            $btn.prop('disabled', false).text('Cancel');
+                        }
+                    })
+                    .fail(function() {
+                        alert('Request failed. Please try again.');
+                        $btn.prop('disabled', false).text('Cancel');
+                    });
+                }
+            });
+            
+            // Reservation deletion (for non-active reservations)
+            $(document).on('click', '.hmp-delete-reservation', function() {
+                var $btn = $(this);
+                var reservationId = $btn.data('reservation-id');
+                var customer = $btn.data('customer');
+                var product = $btn.data('product') || 'this product';
+                
+                if (confirm('Are you sure you want to permanently delete the reservation for ' + customer + ' on ' + product + '? This action cannot be undone.')) {
+                    $btn.prop('disabled', true).text('Deleting...');
+                    
+                    $.post(ajaxurl, {
+                        action: 'hmp_delete_admin_reservation',
+                        reservation_id: reservationId,
+                        nonce: '<?php echo wp_create_nonce( 'hmp_admin_delete' ); ?>'
+                    })
+                    .done(function(response) {
+                        if (response.success) {
+                            // Remove the row completely
+                            $btn.closest('tr').fadeOut(function() {
+                                $(this).remove();
+                                
+                                // Update counter if visible
+                                var $statsDiv = $('.hmp-reservations-stats');
+                                if ($statsDiv.length > 0) {
+                                    var $displayNum = $('.displaying-num');
+                                    if ($displayNum.length > 0) {
+                                        var currentText = $displayNum.text();
+                                        var currentNum = parseInt(currentText.match(/\d+/));
+                                        if (currentNum > 0) {
+                                            $displayNum.text((currentNum - 1) + ' reservations');
+                                        }
+                                    }
+                                }
+                            });
+                            
+                            // Show success message
+                            if ($('.notice.notice-success').length === 0) {
+                                $('<div class="notice notice-success is-dismissible"><p>Reservation deleted successfully.</p></div>')
+                                    .insertAfter('.wrap h1');
+                            }
+                        } else {
+                            alert('Error: ' + response.data);
+                            $btn.prop('disabled', false).text('Delete');
+                        }
+                    })
+                    .fail(function() {
+                        alert('Request failed. Please try again.');
+                        $btn.prop('disabled', false).text('Delete');
+                    });
+                }
+            });
+        });
+        </script>
         <?php
     }
     
     /**
-     * Get all active reservations
+     * Get filtered reservations
      */
-    private function get_all_active_reservations() {
-        return get_posts( array(
-            'post_type'      => 'hmp_reservation',
-            'post_status'    => 'publish',
-            'posts_per_page' => -1,
-            'meta_query'     => array(
-                array( 'key' => '_hmp_status', 'value' => 'active' ),
-                array( 'key' => '_hmp_expires_at', 'value' => current_time( 'timestamp' ), 'type' => 'NUMERIC', 'compare' => '>' )
-            ),
+    private function get_filtered_reservations( $status_filter = 'all', $search_query = '', $search_type = 'email' ) {
+        global $wpdb;
+        
+        $meta_query = array();
+        $where_clause = '';
+        $join_clause = '';
+        
+        // Status filter
+        if ( $status_filter !== 'all' ) {
+            $meta_query[] = array(
+                'key' => '_hmp_status',
+                'value' => $status_filter,
+                'compare' => '='
+            );
+        }
+        
+        // Search functionality
+        if ( ! empty( $search_query ) ) {
+            switch ( $search_type ) {
+                case 'email':
+                    $meta_query[] = array(
+                        'key' => '_hmp_email',
+                        'value' => $search_query,
+                        'compare' => 'LIKE'
+                    );
+                    break;
+                    
+                case 'product':
+                    // Search in product titles
+                    $product_ids = $wpdb->get_col( $wpdb->prepare(
+                        "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'product' AND post_title LIKE %s",
+                        '%' . $wpdb->esc_like( $search_query ) . '%'
+                    ) );
+                    
+                    if ( ! empty( $product_ids ) ) {
+                        $meta_query[] = array(
+                            'key' => '_hmp_product_id',
+                            'value' => $product_ids,
+                            'compare' => 'IN'
+                        );
+                    } else {
+                        // No products found, return empty
+                        return array();
+                    }
+                    break;
+                    
+                case 'product_id':
+                    if ( is_numeric( $search_query ) ) {
+                        $meta_query[] = array(
+                            'key' => '_hmp_product_id',
+                            'value' => absint( $search_query ),
+                            'compare' => '='
+                        );
+                    } else {
+                        return array();
+                    }
+                    break;
+                    
+                case 'customer_name':
+                    $meta_query['relation'] = 'OR';
+                    $meta_query[] = array(
+                        'key' => '_hmp_name',
+                        'value' => $search_query,
+                        'compare' => 'LIKE'
+                    );
+                    $meta_query[] = array(
+                        'key' => '_hmp_surname',
+                        'value' => $search_query,
+                        'compare' => 'LIKE'
+                    );
+                    break;
+            }
+        }
+        
+        $args = array(
+            'post_type' => 'hmp_reservation',
+            'post_status' => 'publish',
+            'posts_per_page' => 100, // Limit for performance
             'orderby' => 'date',
             'order' => 'DESC'
+        );
+        
+        if ( ! empty( $meta_query ) ) {
+            $args['meta_query'] = $meta_query;
+        }
+        
+        return get_posts( $args );
+    }
+    
+    /**
+     * Count reservations by status
+     */
+    private function count_reservations_by_status( $status ) {
+        global $wpdb;
+        
+        return $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->posts} p
+            JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+            WHERE p.post_type = 'hmp_reservation' 
+            AND p.post_status = 'publish'
+            AND pm.meta_key = '_hmp_status' 
+            AND pm.meta_value = %s",
+            $status
         ) );
     }
     
     /**
-     * Display admin reservation row
+     * Get reservations summary
      */
-    private function display_admin_reservation_row( $reservation ) {
+    private function get_reservations_summary() {
+        global $wpdb;
+        
+        $total = $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} 
+            WHERE post_type = 'hmp_reservation' AND post_status = 'publish'"
+        );
+        
+        return array(
+            'total' => (int) $total,
+            'active' => (int) $this->count_reservations_by_status( 'active' ),
+            'expired' => (int) $this->count_reservations_by_status( 'expired' ),
+            'cancelled' => (int) $this->count_reservations_by_status( 'cancelled' ),
+            'fulfilled' => (int) $this->count_reservations_by_status( 'fulfilled' )
+        );
+    }
+    
+    /**
+     * Display filterable reservation row (includes all statuses)
+     */
+    private function display_filterable_reservation_row( $reservation ) {
         $product_id = (int) get_post_meta( $reservation->ID, '_hmp_product_id', true );
         $email = get_post_meta( $reservation->ID, '_hmp_email', true );
         $name = get_post_meta( $reservation->ID, '_hmp_name', true );
         $surname = get_post_meta( $reservation->ID, '_hmp_surname', true );
         $expires_ts = (int) get_post_meta( $reservation->ID, '_hmp_expires_at', true );
+        $status = get_post_meta( $reservation->ID, '_hmp_status', true );
         
         $product = wc_get_product( $product_id );
-        $product_name = $product ? $product->get_name() : 'Unknown Product';
+        $product_name = $product ? $product->get_name() : 'Unknown Product (ID: ' . $product_id . ')';
         $product_edit_url = $product ? admin_url( 'post.php?post=' . $product_id . '&action=edit' ) : '#';
         
         // Determine customer display name
@@ -403,8 +701,8 @@ class HMP_Admin {
         } else {
             $customer_full = trim( $name . ' ' . $surname );
             if ( empty( $customer_full ) ) {
-                $customer = $email;
-                $customer_short = $email;
+                $customer = $email ?: __('No email', 'hold-my-product');
+                $customer_short = $email ?: __('No email', 'hold-my-product');
             } else {
                 $customer = $customer_full . ' (' . $email . ')';
                 $customer_short = $customer_full;
@@ -417,38 +715,72 @@ class HMP_Admin {
         // Calculate time left with color coding
         $time_left = '';
         $time_class = '';
-        if ( $expires_ts ) {
+        if ( $expires_ts && $status === 'active' ) {
             $diff = $expires_ts - current_time( 'timestamp' );
             if ( $diff > 0 ) {
-                $hours = floor( $diff / 3600 );
-                $minutes = floor( ( $diff % 3600 ) / 60 );
-                $time_left = sprintf( '%dh %dm', $hours, $minutes );
+                $days = floor( $diff / DAY_IN_SECONDS );
+                $hours = floor( ( $diff % DAY_IN_SECONDS ) / HOUR_IN_SECONDS );
+                $minutes = floor( ( $diff % HOUR_IN_SECONDS ) / MINUTE_IN_SECONDS );
+                
+                if ( $days > 0 ) {
+                    $time_left = sprintf( '%dd %dh', $days, $hours );
+                } elseif ( $hours > 0 ) {
+                    $time_left = sprintf( '%dh %dm', $hours, $minutes );
+                } else {
+                    $time_left = sprintf( '%dm', $minutes );
+                }
                 
                 // Add warning colors
-                if ( $hours < 2 ) {
+                if ( $diff < 2 * HOUR_IN_SECONDS ) {
                     $time_class = 'time-left-critical';
-                } elseif ( $hours < 6 ) {
+                } elseif ( $diff < 6 * HOUR_IN_SECONDS ) {
                     $time_class = 'time-left-warning';
                 }
             } else {
                 $time_left = 'Expired';
                 $time_class = 'time-left-critical';
             }
+        } else {
+            $time_left = '—';
         }
         
+        // Status display with color
+        $status_class = 'status-' . $status;
+        $status_display = ucfirst( $status );
+        
         echo '<tr>';
-        echo '<td><a href="' . esc_url( $product_edit_url ) . '" target="_blank">' . esc_html( $product_name ) . '</a></td>';
+        echo '<td>';
+        if ( $product ) {
+            echo '<a href="' . esc_url( $product_edit_url ) . '" target="_blank">' . esc_html( $product_name ) . '</a>';
+        } else {
+            echo esc_html( $product_name );
+        }
+        echo '</td>';
         echo '<td title="' . esc_attr( $customer ) . '">' . esc_html( $customer ) . '</td>';
+        echo '<td><span class="' . esc_attr( $status_class ) . '">' . esc_html( $status_display ) . '</span></td>';
         echo '<td>' . esc_html( $reserved_date ) . '</td>';
         echo '<td>' . esc_html( $expires_disp ) . '</td>';
         echo '<td class="' . esc_attr( $time_class ) . '">' . esc_html( $time_left ) . '</td>';
         echo '<td>';
-        echo '<button type="button" class="button button-small hmp-cancel-reservation" ';
-        echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
-        echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
-        echo 'data-product="' . esc_attr( $product_name ) . '">';
-        echo __( 'Cancel', 'hold-my-product' );
-        echo '</button>';
+        
+        // Show appropriate action button based on status
+        if ( $status === 'active' ) {
+            echo '<button type="button" class="button button-small hmp-cancel-reservation" ';
+            echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
+            echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
+            echo 'data-product="' . esc_attr( $product_name ) . '">';
+            echo __( 'Cancel', 'hold-my-product' );
+            echo '</button>';
+        } else {
+            // Show delete button for non-active reservations
+            echo '<button type="button" class="button button-small button-link-delete hmp-delete-reservation" ';
+            echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
+            echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
+            echo 'data-product="' . esc_attr( $product_name ) . '">';
+            echo __( 'Delete', 'hold-my-product' );
+            echo '</button>';
+        }
+        
         echo '</td>';
         echo '</tr>';
     }
@@ -484,6 +816,38 @@ class HMP_Admin {
         update_post_meta( $reservation_id, '_hmp_cancelled_by_user', get_current_user_id() );
         
         wp_send_json_success( 'Reservation cancelled successfully.' );
+    }
+    
+    /**
+     * Handle admin reservation deletion
+     */
+    public function handle_admin_delete_reservation() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'Insufficient permissions.' );
+        }
+        
+        check_ajax_referer( 'hmp_admin_delete', 'nonce' );
+        
+        $reservation_id = absint( $_POST['reservation_id'] ?? 0 );
+        
+        if ( ! $reservation_id ) {
+            wp_send_json_error( 'Invalid reservation ID.' );
+        }
+        
+        // Verify this is not an active reservation (should not delete active ones)
+        $status = get_post_meta( $reservation_id, '_hmp_status', true );
+        if ( $status === 'active' ) {
+            wp_send_json_error( 'Cannot delete active reservations. Cancel them first.' );
+        }
+        
+        // Delete the reservation post
+        $result = wp_delete_post( $reservation_id, true );
+        
+        if ( $result ) {
+            wp_send_json_success( 'Reservation deleted successfully.' );
+        } else {
+            wp_send_json_error( 'Failed to delete reservation.' );
+        }
     }
     
     /**
