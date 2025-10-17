@@ -701,8 +701,8 @@ class HMP_Admin {
         } else {
             $customer_full = trim( $name . ' ' . $surname );
             if ( empty( $customer_full ) ) {
-                $customer = $email ?: 'No email';
-                $customer_short = $email ?: 'No email';
+                $customer = $email ?: __('No email', 'hold-my-product');
+                $customer_short = $email ?: __('No email', 'hold-my-product');
             } else {
                 $customer = $customer_full . ' (' . $email . ')';
                 $customer_short = $customer_full;
