@@ -154,6 +154,28 @@
 }
 
 .hmp-cancel-reservation {
+    background-color: #0073aa !important;
+    color: #fff !important;
+    border-color: #0073aa !important;
+    padding: 4px 12px !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    border-radius: 3px !important;
+}
+
+.hmp-cancel-reservation:hover {
+    background-color: #005a87 !important;
+    border-color: #005a87 !important;
+}
+
+.hmp-cancel-reservation:disabled {
+    background-color: #ccc !important;
+    border-color: #ccc !important;
+    cursor: not-allowed !important;
+}
+
+/* Delete reservation button */
+.hmp-delete-reservation {
     background-color: #d63638 !important;
     color: #fff !important;
     border-color: #d63638 !important;
@@ -163,12 +185,12 @@
     border-radius: 3px !important;
 }
 
-.hmp-cancel-reservation:hover {
+.hmp-delete-reservation:hover {
     background-color: #b32d2e !important;
     border-color: #b32d2e !important;
 }
 
-.hmp-cancel-reservation:disabled {
+.hmp-delete-reservation:disabled {
     background-color: #ccc !important;
     border-color: #ccc !important;
     cursor: not-allowed !important;
@@ -265,4 +287,31 @@ tr:has(.time-left-warning) {
 .notice.notice-success {
     border-left-color: #00a32a;
     background-color: #f0f9ff;
+}
+
+/* Status styling for analytics */
+.status-active {
+    color: #46b450;
+}
+
+.status-expired {
+    color: #ff8c00;
+}
+
+.status-cancelled {
+    color: #d63638;
+}
+
+.status-fulfilled {
+    color: #00a32a;
+}
+
+/* Analytics stat cards */
+.hmp-stats-grid .hmp-stat-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }

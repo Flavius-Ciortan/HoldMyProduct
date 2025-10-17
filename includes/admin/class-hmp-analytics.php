@@ -19,6 +19,7 @@ class HMP_Analytics {
      */
     private function init() {
         add_action( 'admin_menu', array( $this, 'add_analytics_submenu' ), 11 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_analytics_scripts' ) );
     }
     
     /**
@@ -36,9 +37,26 @@ class HMP_Analytics {
     }
     
     /**
+     * Enqueue analytics page scripts and styles
+     */
+    public function enqueue_analytics_scripts( $hook ) {
+        if ( $hook === 'holdmyproduct_page_holdmyproduct-analytics' ) {
+            wp_enqueue_style(
+                'holdmyproduct-admin-style',
+                HMP_PLUGIN_URL . 'admin-style.css',
+                array(),
+                HMP_VERSION
+            );
+        }
+    }
+    
+    /**
      * Display analytics page
      */
     public function analytics_page() {
+        // First, expire old reservations to get accurate stats
+        $this->expire_old_reservations_for_analytics();
+        
         $stats = $this->get_reservation_stats();
         ?>
         <div class="wrap">
@@ -56,6 +74,16 @@ class HMP_Analytics {
                 </div>
                 
                 <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                    <h3>Expired Reservations</h3>
+                    <p style="font-size: 32px; margin: 0; color: #ff8c00;"><?php echo esc_html( $stats['expired'] ); ?></p>
+                </div>
+                
+                <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                    <h3>Cancelled Reservations</h3>
+                    <p style="font-size: 32px; margin: 0; color: #d63638;"><?php echo esc_html( $stats['cancelled'] ); ?></p>
+                </div>
+                
+                <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Fulfilled Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #00a32a;"><?php echo esc_html( $stats['fulfilled'] ); ?></p>
                 </div>
@@ -70,6 +98,49 @@ class HMP_Analytics {
             <?php $this->display_recent_reservations(); ?>
         </div>
         <?php
+    }
+    
+    /**
+     * Expire old reservations for analytics accuracy
+     */
+    private function expire_old_reservations_for_analytics() {
+        global $wpdb;
+        
+        // Find reservations that are marked as 'active' but have passed their expiration time
+        $expired_reservations = $wpdb->get_col("
+            SELECT p.ID FROM {$wpdb->posts} p
+            JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_hmp_status' AND pm1.meta_value = 'active'
+            JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_hmp_expires_at'
+            WHERE p.post_type = 'hmp_reservation' 
+            AND p.post_status = 'publish'
+            AND CAST(pm2.meta_value AS UNSIGNED) < UNIX_TIMESTAMP()
+        ");
+        
+        // Update expired reservations
+        if ( ! empty( $expired_reservations ) ) {
+            // Load the reservations class to use its expire method
+            if ( class_exists( 'HMP_Reservations' ) ) {
+                $reservations_handler = new HMP_Reservations();
+                foreach ( $expired_reservations as $reservation_id ) {
+                    $reservations_handler->expire_reservation( $reservation_id );
+                }
+            } else {
+                // Fallback: update status directly
+                foreach ( $expired_reservations as $reservation_id ) {
+                    update_post_meta( $reservation_id, '_hmp_status', 'expired' );
+                    
+                    // Restore stock
+                    $product_id = (int) get_post_meta( $reservation_id, '_hmp_product_id', true );
+                    if ( $product_id ) {
+                        $product = wc_get_product( $product_id );
+                        if ( $product && $product->managing_stock() ) {
+                            $product->set_stock_quantity( $product->get_stock_quantity() + 1 );
+                            $product->save();
+                        }
+                    }
+                }
+            }
+        }
     }
     
     /**
@@ -92,6 +163,15 @@ class HMP_Analytics {
             AND pm.meta_value = 'active'
         ");
         
+        $expired = $wpdb->get_var("
+            SELECT COUNT(*) FROM {$wpdb->posts} p
+            JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+            WHERE p.post_type = 'hmp_reservation' 
+            AND p.post_status = 'publish'
+            AND pm.meta_key = '_hmp_status' 
+            AND pm.meta_value = 'expired'
+        ");
+        
         $fulfilled = $wpdb->get_var("
             SELECT COUNT(*) FROM {$wpdb->posts} p
             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
@@ -101,12 +181,23 @@ class HMP_Analytics {
             AND pm.meta_value = 'fulfilled'
         ");
         
+        $cancelled = $wpdb->get_var("
+            SELECT COUNT(*) FROM {$wpdb->posts} p
+            JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+            WHERE p.post_type = 'hmp_reservation' 
+            AND p.post_status = 'publish'
+            AND pm.meta_key = '_hmp_status' 
+            AND pm.meta_value = 'cancelled'
+        ");
+        
         $conversion_rate = $total > 0 ? round( ( $fulfilled / $total ) * 100, 1 ) : 0;
         
         return array(
-            'total' => $total,
-            'active' => $active,
-            'fulfilled' => $fulfilled,
+            'total' => (int) $total,
+            'active' => (int) $active,
+            'expired' => (int) $expired,
+            'fulfilled' => (int) $fulfilled,
+            'cancelled' => (int) $cancelled,
             'conversion_rate' => $conversion_rate
         );
     }
@@ -141,13 +232,27 @@ class HMP_Analytics {
             $product = wc_get_product( $product_id );
             $product_name = $product ? $product->get_name() : 'Unknown Product';
             
-            $customer = $reservation->post_author ? get_userdata( $reservation->post_author )->display_name : $email;
+            // Determine customer display name
+            if ( $reservation->post_author ) {
+                $user = get_userdata( $reservation->post_author );
+                $customer = $user ? $user->display_name : $email;
+            } else {
+                $name = get_post_meta( $reservation->ID, '_hmp_name', true );
+                $surname = get_post_meta( $reservation->ID, '_hmp_surname', true );
+                $full_name = trim( $name . ' ' . $surname );
+                $customer = ! empty( $full_name ) ? $full_name : $email;
+            }
+            
             $expires = $expires_ts ? date_i18n( 'Y-m-d H:i', $expires_ts ) : '—';
+            
+            // Add CSS class for status styling with proper fallback
+            $status_class = 'status-' . esc_attr( $status ?: 'unknown' );
+            $status_display = ucfirst( $status ?: 'Unknown' );
             
             echo '<tr>';
             echo '<td>' . esc_html( $product_name ) . '</td>';
             echo '<td>' . esc_html( $customer ) . '</td>';
-            echo '<td><span class="status-' . esc_attr( $status ) . '">' . esc_html( ucfirst( $status ) ) . '</span></td>';
+            echo '<td><span class="' . $status_class . '">' . esc_html( $status_display ) . '</span></td>';
             echo '<td>' . esc_html( get_the_date( 'Y-m-d H:i', $reservation ) ) . '</td>';
             echo '<td>' . esc_html( $expires ) . '</td>';
             echo '</tr>';
