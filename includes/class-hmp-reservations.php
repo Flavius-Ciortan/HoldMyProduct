@@ -404,8 +404,15 @@ class HMP_Reservations {
      * Display reservations in My Account
      */
     public function reservations_endpoint_content() {
+        // Prevent double rendering
+        static $rendered = false;
+        if ( $rendered ) {
+            return;
+        }
+        $rendered = true;
+        
         if ( ! is_user_logged_in() ) {
-            echo '<p>' . esc_html__( 'Please log in to see your reservations.', 'hold-my-product' ) . '</p>';
+            wc_print_notice( __( 'Please log in to see your reservations.', 'hold-my-product' ), 'notice' );
             return;
         }
         
@@ -418,25 +425,19 @@ class HMP_Reservations {
                 array( 'key' => '_hmp_status', 'value' => 'active' ),
                 array( 'key' => '_hmp_expires_at', 'value' => current_time( 'timestamp' ), 'type' => 'NUMERIC', 'compare' => '>' )
             ),
+            'orderby' => 'date',
+            'order' => 'DESC'
         ) );
         
         if ( empty( $reservations ) ) {
-            echo '<p>' . esc_html__( 'You have no active reservations.', 'hold-my-product' ) . '</p>';
+            wc_print_notice( __( 'You have no active reservations.', 'hold-my-product' ), 'notice' );
             return;
         }
         
-        echo '<table class="shop_table shop_table_responsive my_account_reservations">';
-        echo '<thead><tr>
-                <th>' . esc_html__( 'Product', 'hold-my-product' ) . '</th>
-                <th>' . esc_html__( 'Expires', 'hold-my-product' ) . '</th>
-                <th>' . esc_html__( 'Actions', 'hold-my-product' ) . '</th>
-              </tr></thead><tbody>';
-        
-        foreach ( $reservations as $reservation ) {
-            $this->display_reservation_row( $reservation );
-        }
-        
-        echo '</tbody></table>';
+        // Use WooCommerce's built-in table structure for consistency
+        wc_get_template( 'myaccount/my-reservations.php', array(
+            'reservations' => $reservations,
+        ), '', HMP_PLUGIN_PATH . 'templates/' );
     }
     
     /**
@@ -452,20 +453,71 @@ class HMP_Reservations {
         }
         
         $expires_disp = $expires_ts ? date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $expires_ts ) : '—';
+        
+        // Calculate time left
+        $time_left = '';
+        if ( $expires_ts ) {
+            $diff = $expires_ts - current_time( 'timestamp' );
+            if ( $diff > 0 ) {
+                $days = floor( $diff / DAY_IN_SECONDS );
+                $hours = floor( ( $diff % DAY_IN_SECONDS ) / HOUR_IN_SECONDS );
+                $minutes = floor( ( $diff % HOUR_IN_SECONDS ) / MINUTE_IN_SECONDS );
+                
+                if ( $days > 0 ) {
+                    $time_left = sprintf( '%d days, %d hours', $days, $hours );
+                } elseif ( $hours > 0 ) {
+                    $time_left = sprintf( '%d hours, %d minutes', $hours, $minutes );
+                } else {
+                    $time_left = sprintf( '%d minutes', $minutes );
+                }
+                
+                // Add urgency class for styling
+                $urgency_class = '';
+                if ( $diff < 2 * HOUR_IN_SECONDS ) {
+                    $urgency_class = 'urgent';
+                } elseif ( $diff < 6 * HOUR_IN_SECONDS ) {
+                    $urgency_class = 'warning';
+                }
+            } else {
+                $time_left = esc_html__( 'Expired', 'hold-my-product' );
+                $urgency_class = 'expired';
+            }
+        }
+        
         $add_to_cart_url = esc_url( wc_get_cart_url() . '?add-to-cart=' . $product_id );
         $cancel_url = wp_nonce_url(
             add_query_arg( array( 'hmp_cancel_res' => $reservation->ID ) ),
             'hmp_cancel_res_' . $reservation->ID
         );
+        ?>
         
-        echo '<tr>';
-        echo '<td><a href="' . esc_url( get_permalink( $product_id ) ) . '">' . esc_html( $product->get_name() ) . '</a></td>';
-        echo '<td>' . esc_html( $expires_disp ) . '</td>';
-        echo '<td>
-                <a class="button" href="' . $add_to_cart_url . '">' . esc_html__( 'Add to cart', 'hold-my-product' ) . '</a>
-                <a class="button cancel" href="' . esc_url( $cancel_url ) . '">' . esc_html__( 'Cancel', 'hold-my-product' ) . '</a>
-              </td>';
-        echo '</tr>';
+        <tr class="woocommerce-orders-table__row woocommerce-orders-table__row--status-active order">
+            <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-product" data-title="<?php esc_attr_e( 'Product', 'hold-my-product' ); ?>">
+                <a href="<?php echo esc_url( get_permalink( $product_id ) ); ?>" class="woocommerce-LoopProduct-link">
+                    <?php echo esc_html( $product->get_name() ); ?>
+                </a>
+            </td>
+            <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-expires" data-title="<?php esc_attr_e( 'Expires', 'hold-my-product' ); ?>">
+                <time datetime="<?php echo esc_attr( date( 'c', $expires_ts ) ); ?>">
+                    <?php echo esc_html( $expires_disp ); ?>
+                </time>
+            </td>
+            <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-time-left <?php echo esc_attr( $urgency_class ); ?>" data-title="<?php esc_attr_e( 'Time Left', 'hold-my-product' ); ?>">
+                <span class="time-left <?php echo esc_attr( $urgency_class ); ?>">
+                    <?php echo esc_html( $time_left ); ?>
+                </span>
+            </td>
+            <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-actions" data-title="<?php esc_attr_e( 'Actions', 'hold-my-product' ); ?>">
+                <a href="<?php echo $add_to_cart_url; ?>" class="woocommerce-button button add-to-cart">
+                    <?php esc_html_e( 'Add to Cart', 'hold-my-product' ); ?>
+                </a>
+                <a href="<?php echo esc_url( $cancel_url ); ?>" class="woocommerce-button button cancel-reservation" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to cancel this reservation?', 'hold-my-product' ); ?>')">
+                    <?php esc_html_e( 'Cancel', 'hold-my-product' ); ?>
+                </a>
+            </td>
+        </tr>
+        
+        <?php
     }
     
     /**
