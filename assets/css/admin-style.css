@@ -1,0 +1,864 @@
+/* HoldMyProduct Modern Admin Styles - Darcyan Theme */
+
+:root {
+    --hmp-primary: #008B8B;        /* Dark Cyan */
+    --hmp-primary-light: #20B2AA;  /* Light Sea Green */
+    --hmp-primary-dark: #006666;   /* Darker Cyan */
+    --hmp-secondary: #F0F8FF;      /* Alice Blue */
+    --hmp-accent: #40E0D0;         /* Turquoise */
+    --hmp-text-dark: #1f2937;      /* Dark Gray */
+    --hmp-text-light: #6b7280;     /* Light Gray */
+    --hmp-white: #ffffff;
+    --hmp-border: #e5e7eb;
+    --hmp-success: #10b981;
+    --hmp-warning: #f59e0b;
+    --hmp-error: #ef4444;
+    --hmp-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --hmp-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Reset and Base Styles */
+.hmp-admin-wrapper {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+    margin: -20px -20px -20px -2px;
+    padding: 0;
+}
+
+/* Header Styles */
+.hmp-admin-header {
+    background: linear-gradient(135deg, var(--hmp-primary) 0%, var(--hmp-primary-dark) 100%);
+    color: var(--hmp-white);
+    padding: 1.25rem 1.5rem 1rem;
+    box-shadow: var(--hmp-shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.hmp-admin-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.hmp-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.hmp-title-section {
+    flex: 1;
+}
+
+.hmp-main-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    color: var(--hmp-white);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hmp-subtitle {
+    font-size: 0.95rem;
+    margin: 0;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* Logo Styles */
+.hmp-logo-section {
+    flex-shrink: 0;
+    margin-left: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hmp-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    background: var(--hmp-white);
+    padding: 6px;
+    box-shadow: var(--hmp-shadow);
+    transition: all 0.3s ease;
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+.hmp-logo:hover {
+    transform: scale(1.05);
+    box-shadow: var(--hmp-shadow-lg);
+}
+
+/* Logo fallback */
+.hmp-logo-fallback {
+    background: linear-gradient(135deg, var(--hmp-primary) 0%, var(--hmp-primary-dark) 100%);
+    color: var(--hmp-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+/* Main Content */
+.hmp-admin-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* Navigation Tabs */
+.hmp-nav-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.hmp-nav-tabs {
+    display: flex;
+    gap: 1rem;
+    border-bottom: 2px solid var(--hmp-border);
+    padding-bottom: 0;
+}
+
+.hmp-nav-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--hmp-white);
+    border: 2px solid var(--hmp-border);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--hmp-text-light);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    top: 2px;
+}
+
+.hmp-nav-tab:hover {
+    background: var(--hmp-secondary);
+    color: var(--hmp-primary);
+    transform: translateY(-2px);
+}
+
+.hmp-nav-tab-active {
+    background: var(--hmp-primary);
+    border-color: var(--hmp-primary);
+    color: var(--hmp-white);
+    box-shadow: var(--hmp-shadow);
+}
+
+.hmp-nav-tab-active:hover {
+    background: var(--hmp-primary-dark);
+    border-color: var(--hmp-primary-dark);
+    color: var(--hmp-white);
+    transform: translateY(-2px);
+}
+
+.hmp-tab-icon {
+    font-size: 1rem;
+}
+
+/* Remove color from user and guests emoji icons */
+.hmp-nav-tab[data-target="logged-in"] .hmp-tab-icon,
+.hmp-nav-tab[data-target="logged-out"] .hmp-tab-icon {
+    filter: grayscale(1);
+}
+
+/* Keep them colorless even when active or hover */
+.hmp-nav-tab-active[data-target="logged-in"] .hmp-tab-icon,
+.hmp-nav-tab-active[data-target="logged-out"] .hmp-tab-icon,
+.hmp-nav-tab[data-target="logged-in"]:hover .hmp-tab-icon,
+.hmp-nav-tab[data-target="logged-out"]:hover .hmp-tab-icon {
+    filter: grayscale(1);
+}
+
+.hmp-tab-text {
+    font-weight: 600;
+}
+
+/* Tab Content */
+.hmp-tab-container {
+    position: relative;
+}
+
+.hmp-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.hmp-tab-content.hmp-tab-active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Settings Cards */
+.hmp-settings-card {
+    background: var(--hmp-white);
+    border-radius: 12px;
+    box-shadow: var(--hmp-shadow);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.hmp-settings-card:hover {
+    box-shadow: var(--hmp-shadow-lg);
+}
+
+.hmp-card-header {
+    background: linear-gradient(135deg, var(--hmp-secondary) 0%, #e0f2fe 100%);
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--hmp-border);
+}
+
+.hmp-card-header h3 {
+    margin: 0 0 0.375rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--hmp-text-dark);
+}
+
+.hmp-card-header p {
+    margin: 0;
+    color: var(--hmp-text-light);
+    font-size: 0.8rem;
+}
+
+.hmp-card-body {
+    padding: 1.5rem;
+}
+
+/* Coming Soon Styles */
+.hmp-coming-soon {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    color: var(--hmp-text-light);
+}
+
+.hmp-coming-soon-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.hmp-coming-soon h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.25rem;
+    color: var(--hmp-text-dark);
+}
+
+.hmp-coming-soon p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Form Styles */
+.hmp-settings-form {
+    max-width: 500px;
+}
+
+.hmp-settings-form .form-table {
+    background: transparent;
+    border: none;
+}
+
+.hmp-settings-form .form-table th {
+    background: transparent;
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    color: var(--hmp-text-dark);
+    border: 1px solid var(--hmp-border);
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+
+.hmp-settings-form .form-table td {
+    background: transparent;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--hmp-border);
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    vertical-align: middle;
+    text-align: right;
+}
+
+.hmp-settings-form .form-table tr {
+    margin-bottom: 0.875rem;
+    display: table-row;
+}
+
+.hmp-settings-form .form-table th,
+.hmp-settings-form .form-table td {
+    display: table-cell;
+    vertical-align: middle;
+    width: auto;
+}
+
+.hmp-settings-form .form-table {
+    background: transparent;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    position: relative;
+    display: block;
+    width: 46px;
+    height: 24px;
+    margin-left: auto;
+    margin-right: 1.25rem;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .slider {
+    background-color: var(--hmp-primary);
+}
+
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* Input Styles */
+.hmp-settings-form input[type="text"],
+.hmp-settings-form input[type="number"],
+.hmp-settings-form select {
+    width: 100%;
+    max-width: 250px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--hmp-border);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    transition: border-color 0.3s ease;
+    text-align: left;
+    margin-left: 0;
+}
+
+/* Override right alignment for text inputs */
+.hmp-settings-form .form-table td:has(input[type="text"]),
+.hmp-settings-form .form-table td:has(input[type="number"]),
+.hmp-settings-form .form-table td:has(select) {
+    text-align: left;
+}
+
+/* Keep toggle switches right-aligned */
+.hmp-settings-form .form-table td:has(.toggle-switch) {
+    text-align: right;
+}
+
+/* Description text under form elements */
+.hmp-settings-form .description {
+    font-size: 0.75rem;
+    color: var(--hmp-text-light);
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+.hmp-settings-form input[type="text"]:focus,
+.hmp-settings-form input[type="number"]:focus,
+.hmp-settings-form select:focus {
+    outline: none;
+    border-color: var(--hmp-primary);
+    box-shadow: 0 0 0 3px rgba(0, 139, 139, 0.1);
+}
+
+.holdmyproduct-small-input {
+    width: 80px !important;
+    max-width: 80px !important;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+}
+
+/* Button Styles */
+.hmp-form-actions {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--hmp-border);
+}
+
+.hmp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.hmp-btn-primary {
+    background: linear-gradient(135deg, var(--hmp-primary) 0%, var(--hmp-primary-dark) 100%);
+    color: var(--hmp-white);
+    box-shadow: var(--hmp-shadow);
+}
+
+.hmp-btn-primary:hover {
+    background: linear-gradient(135deg, var(--hmp-primary-dark) 0%, #004d4d 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--hmp-shadow-lg);
+    color: var(--hmp-white);
+}
+
+/* Save Settings Button - Primary Dark Cyan Style */
+.hmp-form-actions .button-primary,
+.hmp-form-actions input[type="submit"],
+.hmp-form-actions .hmp-save-btn,
+.hmp-settings-form .button-primary,
+.hmp-settings-form input[type="submit"] {
+    background: var(--hmp-primary) !important;
+    border: 2px solid var(--hmp-primary) !important;
+    color: var(--hmp-white) !important;
+    padding: 0.625rem 1.5rem !important;
+    border-radius: 6px !important;
+    box-shadow: var(--hmp-shadow) !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+}
+
+.hmp-form-actions .button-primary:hover,
+.hmp-form-actions .button-primary:focus,
+.hmp-form-actions input[type="submit"]:hover,
+.hmp-form-actions input[type="submit"]:focus,
+.hmp-form-actions .hmp-save-btn:hover,
+.hmp-form-actions .hmp-save-btn:focus,
+.hmp-settings-form .button-primary:hover,
+.hmp-settings-form .button-primary:focus,
+.hmp-settings-form input[type="submit"]:hover,
+.hmp-settings-form input[type="submit"]:focus {
+    background: var(--hmp-primary-dark) !important;
+    border-color: var(--hmp-primary-dark) !important;
+    color: var(--hmp-white) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--hmp-shadow-lg) !important;
+}
+
+/* Global HMP Admin Button Overrides - Comprehensive Coverage */
+.hmp-admin-wrapper .button-primary,
+.hmp-admin-wrapper input[type="submit"].button-primary,
+.hmp-admin-wrapper input[type="submit"][name="submit"],
+.hmp-admin-wrapper .submit .button-primary,
+.hmp-admin-wrapper #submit,
+body.holdmyproduct_page_holdmyproduct-settings .button-primary,
+body.toplevel_page_holdmyproduct-settings .button-primary,
+body.toplevel_page_holdmyproduct-settings input[type="submit"] {
+    background: var(--hmp-primary) !important;
+    border: 2px solid var(--hmp-primary) !important;
+    color: var(--hmp-white) !important;
+    font-weight: 700 !important;
+    padding: 0.625rem 1.5rem !important;
+    border-radius: 6px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.8rem !important;
+}
+
+.hmp-admin-wrapper .button-primary:hover,
+.hmp-admin-wrapper .button-primary:focus,
+.hmp-admin-wrapper input[type="submit"].button-primary:hover,
+.hmp-admin-wrapper input[type="submit"].button-primary:focus,
+.hmp-admin-wrapper input[type="submit"][name="submit"]:hover,
+.hmp-admin-wrapper input[type="submit"][name="submit"]:focus,
+.hmp-admin-wrapper .submit .button-primary:hover,
+.hmp-admin-wrapper .submit .button-primary:focus,
+.hmp-admin-wrapper #submit:hover,
+.hmp-admin-wrapper #submit:focus,
+body.holdmyproduct_page_holdmyproduct-settings .button-primary:hover,
+body.holdmyproduct_page_holdmyproduct-settings .button-primary:focus,
+body.toplevel_page_holdmyproduct-settings .button-primary:hover,
+body.toplevel_page_holdmyproduct-settings .button-primary:focus,
+body.toplevel_page_holdmyproduct-settings input[type="submit"]:hover,
+body.toplevel_page_holdmyproduct-settings input[type="submit"]:focus {
+    background: var(--hmp-primary-dark) !important;
+    border-color: var(--hmp-primary-dark) !important;
+    color: var(--hmp-white) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Legacy Support - Keep existing functionality */
+#holdmyproduct-max-reservations-wrapper {
+    display: none;
+}
+
+.column-hmp_reservations {
+    width: 11%;
+}
+
+/* Product Toggle Styles (Enhanced) */
+.hmp-res-toggle {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hmp-res-toggle.on {
+    background: linear-gradient(135deg, var(--hmp-error) 0%, #dc2626 100%);
+    color: var(--hmp-white);
+    border-color: var(--hmp-error);
+}
+
+.hmp-res-toggle.on:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+.hmp-res-toggle.off {
+    background: linear-gradient(135deg, var(--hmp-success) 0%, #059669 100%);
+    color: var(--hmp-white);
+    border-color: var(--hmp-success);
+}
+
+.hmp-res-toggle.off:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    border-color: #059669;
+    transform: translateY(-1px);
+}
+
+/* Menu Icon Styling */
+.toplevel_page_holdmyproduct-settings .wp-menu-image img {
+    padding: 0;
+    margin: 0;
+}
+
+/* Reservation Management Styles (Enhanced) */
+.hmp-reservations-stats {
+    background: linear-gradient(135deg, var(--hmp-secondary) 0%, #e0f2fe 100%);
+    border-left: 4px solid var(--hmp-primary);
+    padding: 1.5rem 2rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    box-shadow: var(--hmp-shadow);
+}
+
+.hmp-reservations-stats p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--hmp-text-dark);
+}
+
+/* Action Button Styles (Enhanced) */
+.hmp-cancel-reservation {
+    background: linear-gradient(135deg, var(--hmp-primary) 0%, var(--hmp-primary-dark) 100%) !important;
+    color: var(--hmp-white) !important;
+    border: 2px solid var(--hmp-primary) !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.hmp-cancel-reservation:hover {
+    background: linear-gradient(135deg, var(--hmp-primary-dark) 0%, #004d4d 100%) !important;
+    border-color: var(--hmp-primary-dark) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--hmp-shadow) !important;
+}
+
+.hmp-cancel-reservation:disabled {
+    background: #e5e7eb !important;
+    border-color: #e5e7eb !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+.hmp-delete-reservation {
+    background: linear-gradient(135deg, var(--hmp-error) 0%, #dc2626 100%) !important;
+    color: var(--hmp-white) !important;
+    border: 2px solid var(--hmp-error) !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.hmp-delete-reservation:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    border-color: #dc2626 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--hmp-shadow) !important;
+}
+
+.hmp-delete-reservation:disabled {
+    background: #e5e7eb !important;
+    border-color: #e5e7eb !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+/* Product Page Reservations Table (Enhanced) */
+.options_group table.widefat {
+    max-width: 100%;
+    margin-top: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--hmp-shadow);
+}
+
+.options_group table.widefat th,
+.options_group table.widefat td {
+    padding: 12px 16px;
+    font-size: 13px;
+}
+
+.options_group table.widefat th {
+    /* Removed custom background - using default WordPress styling */
+    font-weight: 600;
+}
+
+.options_group table.widefat td {
+    background: var(--hmp-white);
+    border-bottom: 1px solid var(--hmp-border);
+}
+
+.options_group table.widefat tr:nth-child(even) td {
+    background: var(--hmp-secondary);
+}
+
+/* Manage Reservations Page (Enhanced) */
+.hmp-reservation-row {
+    transition: all 0.3s ease;
+}
+
+.hmp-reservation-row:hover {
+    background-color: var(--hmp-secondary) !important;
+    transform: translateY(-1px);
+    box-shadow: var(--hmp-shadow);
+}
+
+.hmp-reservation-row.cancelled {
+    opacity: 0.6;
+    background-color: #f9fafb !important;
+}
+
+/* Time Left Styling (Enhanced) */
+td:nth-child(5) {
+    font-weight: 700;
+}
+
+.time-left-warning {
+    color: var(--hmp-warning);
+    font-weight: 700;
+    background: #fffbeb;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #fbbf24;
+}
+
+.time-left-critical {
+    color: var(--hmp-error);
+    font-weight: 700;
+    background: #fef2f2;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #f87171;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.02); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Notice Styling (Enhanced) */
+.notice.hmp-success {
+    border-left-color: var(--hmp-success);
+    background: #f0fdf4;
+}
+
+/* Table Improvements */
+.wp-list-table.widefat.fixed.striped {
+    border: 1px solid var(--hmp-border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--hmp-shadow);
+}
+
+.wp-list-table th {
+    /* Removed custom background - using default WordPress styling */
+    font-weight: 600;
+}
+
+.wp-list-table tr:nth-child(even) {
+    background-color: var(--hmp-secondary);
+}
+
+.wp-list-table tr:hover {
+    background-color: #e0f2fe !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hmp-header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .hmp-logo-section {
+        margin-left: 0;
+    }
+    
+    .hmp-nav-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .hmp-nav-tab {
+        justify-content: center;
+        border-radius: 8px;
+        border: 2px solid var(--hmp-border);
+        top: 0;
+    }
+    
+    .hmp-admin-content {
+        padding: 1rem;
+    }
+    
+    .hmp-card-body {
+        padding: 1.25rem;
+    }
+    
+    .hmp-card-header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .hmp-settings-form .form-table th,
+    .hmp-settings-form .form-table td {
+        display: block;
+        width: 100%;
+        border: 1px solid var(--hmp-border);
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.wp-list-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.wp-list-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* No reservations notice */
+.notice.notice-info {
+    border-left-color: #72aee6;
+    background-color: #f0f6fc;
+}
+
+/* Success notice */
+.notice.notice-success {
+    border-left-color: #00a32a;
+    background-color: #f0f9ff;
+}
+
+/* Status styling for analytics */
+.status-active {
+    color: #46b450;
+}
+
+.status-expired {
+    color: #ff8c00;
+}
+
+.status-cancelled {
+    color: #d63638;
+}
+
+.status-fulfilled {
+    color: #00a32a;
+}
+
+/* Analytics stat cards */
+.hmp-stats-grid .hmp-stat-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
