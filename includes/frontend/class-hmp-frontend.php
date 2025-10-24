@@ -60,14 +60,14 @@ class HMP_Frontend {
     public function enqueue_frontend_assets() {
         wp_enqueue_style(
             'holdmyproduct-style',
-            HMP_PLUGIN_URL . 'style.css',
+            HMP_PLUGIN_URL . 'assets/css/style.css',
             array(),
             HMP_VERSION
         );
         
         wp_enqueue_script(
             'holdmyproduct-js',
-            HMP_PLUGIN_URL . 'holdmyproduct.js',
+            HMP_PLUGIN_URL . 'assets/js/holdmyproduct.js',
             array( 'jquery' ),
             HMP_VERSION,
             true
@@ -85,6 +85,6 @@ class HMP_Frontend {
      * Include the form template
      */
     private function include_form_template() {
-        include HMP_PLUGIN_PATH . 'form_template.php';
+        include HMP_PLUGIN_PATH . 'templates/form_template.php';
     }
 }

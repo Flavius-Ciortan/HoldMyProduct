@@ -47,7 +47,7 @@ class HMP_Admin {
             'manage_options',
             'holdmyproduct-settings',
             array( $this, 'settings_page' ),
-            HMP_PLUGIN_URL . 'HMP-menu-icon.png',
+            HMP_PLUGIN_URL . 'assets/images/HMP-menu-icon.png',
             80
         );
         
@@ -180,32 +180,177 @@ class HMP_Admin {
      */
     public function settings_page() {
         ?>
-        <div class="wrap">
-            <h1>HoldMyProduct Settings</h1>
-            <h2 class="nav-tab-wrapper">
-                <a href="#general" class="nav-tab nav-tab-active">General Settings</a>
-                <a href="#logged-in" class="nav-tab">Logged In Users</a>
-                <a href="#logged-out" class="nav-tab">Logged Out Users</a>
-            </h2>
-
-            <div id="general" class="tab-content active">
-                <form method="post" action="options.php">
-                    <?php
-                    settings_fields( 'holdmyproduct_options_group' );
-                    do_settings_sections( 'holdmyproduct-settings' );
-                    submit_button();
-                    ?>
-                </form>
+        <div class="hmp-admin-wrapper">
+            <!-- Header with Logo -->
+            <div class="hmp-admin-header">
+                <div class="hmp-header-content">
+                    <div class="hmp-title-section">
+                        <h1 class="hmp-main-title">HoldMyProduct Settings</h1>
+                        <p class="hmp-subtitle">Manage your product reservation system</p>
+                    </div>
+                    <div class="hmp-logo-section">
+                        <?php
+                        $logo_files = array('HMP Logo.png', 'HMP-menu-icon.png');
+                        $logo_src = '';
+                        $found_file = '';
+                        
+                        foreach ($logo_files as $logo_file) {
+                            $logo_path = HMP_PLUGIN_PATH . 'assets/images/' . $logo_file;
+                            if (file_exists($logo_path)) {
+                                $logo_src = HMP_PLUGIN_URL . 'assets/images/' . rawurlencode($logo_file);
+                                $found_file = $logo_file;
+                                break;
+                            }
+                        }
+                        
+                        if ($logo_src): ?>
+                            <img src="<?php echo esc_url($logo_src); ?>" alt="HoldMyProduct Logo" class="hmp-logo" title="Logo: <?php echo esc_attr($found_file); ?>">
+                        <?php else: ?>
+                            <div class="hmp-logo hmp-logo-fallback" title="No logo file found. Checked: <?php echo implode(', ', $logo_files); ?>">HMP</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
 
-            <div id="logged-in" class="tab-content">
-                <p><strong>Coming soon:</strong> Settings for logged-in users.</p>
-            </div>
+            <!-- Main Content -->
+            <div class="hmp-admin-content">
+                <!-- Navigation Tabs -->
+                <div class="hmp-nav-wrapper">
+                    <div class="hmp-nav-tabs">
+                        <button type="button" class="hmp-nav-tab hmp-nav-tab-active" data-target="general">
+                            <span class="hmp-tab-icon">⚙️</span>
+                            <span class="hmp-tab-text">General Settings</span>
+                        </button>
+                        <button type="button" class="hmp-nav-tab" data-target="logged-in">
+                            <span class="hmp-tab-icon">👤</span>
+                            <span class="hmp-tab-text">Logged In Users</span>
+                        </button>
+                        <button type="button" class="hmp-nav-tab" data-target="logged-out">
+                            <span class="hmp-tab-icon">👥</span>
+                            <span class="hmp-tab-text">Guests</span>
+                        </button>
+                    </div>
+                </div>
 
-            <div id="logged-out" class="tab-content">
-                <p><strong>Coming soon:</strong> Settings for guests (logged-out users).</p>
+                <!-- Tab Content -->
+                <div class="hmp-tab-container">
+                    <!-- General Settings Tab -->
+                    <div id="hmp-general" class="hmp-tab-content hmp-tab-active">
+                        <div class="hmp-settings-card">
+                            <div class="hmp-card-header">
+                                <h3>Configuration</h3>
+                                <p>Configure the basic settings for your reservation system</p>
+                            </div>
+                            <div class="hmp-card-body">
+                                <form method="post" action="options.php" class="hmp-settings-form">
+                                    <?php
+                                    settings_fields( 'holdmyproduct_options_group' );
+                                    do_settings_sections( 'holdmyproduct-settings' );
+                                    ?>
+                                    <div class="hmp-form-actions">
+                                        <?php submit_button( 'Save Settings', 'primary hmp-save-btn', 'submit', false ); ?>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logged In Users Tab -->
+                    <div id="hmp-logged-in" class="hmp-tab-content">
+                        <div class="hmp-settings-card">
+                            <div class="hmp-card-header">
+                                <h3>Logged In User Settings</h3>
+                                <p>Configure reservation options for registered users</p>
+                            </div>
+                            <div class="hmp-card-body">
+                                <div class="hmp-coming-soon">
+                                    <div class="hmp-coming-soon-icon">🚀</div>
+                                    <h4>Coming Soon</h4>
+                                    <p>Advanced settings for logged-in users are in development. Stay tuned for exciting new features!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Guests Tab -->
+                    <div id="hmp-logged-out" class="hmp-tab-content">
+                        <div class="hmp-settings-card">
+                            <div class="hmp-card-header">
+                                <h3>Guest User Settings</h3>
+                                <p>Configure reservation options for non-registered visitors</p>
+                            </div>
+                            <div class="hmp-card-body">
+                                <div class="hmp-coming-soon">
+                                    <div class="hmp-coming-soon-icon">👥</div>
+                                    <h4>Coming Soon</h4>
+                                    <p>Guest reservation settings will allow you to customize the experience for visitors who aren't logged in.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <script>
+        jQuery(document).ready(function($) {
+            // Tab switching functionality
+            $('.hmp-nav-tab').on('click', function() {
+                const target = $(this).data('target');
+                
+                // Update active tab button
+                $('.hmp-nav-tab').removeClass('hmp-nav-tab-active');
+                $(this).addClass('hmp-nav-tab-active');
+                
+                // Update active tab content
+                $('.hmp-tab-content').removeClass('hmp-tab-active');
+                $('#hmp-' + target).addClass('hmp-tab-active');
+            });
+            
+            // Force Save Settings button styling
+            function styleHMPButtons() {
+                $('.hmp-form-actions input[type="submit"], .hmp-form-actions .button-primary, #submit').each(function() {
+                    $(this).addClass('hmp-styled-button');
+                    $(this).css({
+                        'background': '#008B8B',
+                        'border': '2px solid #008B8B',
+                        'color': '#ffffff',
+                        'padding': '10px 24px',
+                        'border-radius': '6px',
+                        'font-weight': '700',
+                        'font-size': '13px',
+                        'text-transform': 'uppercase',
+                        'letter-spacing': '0.5px',
+                        'cursor': 'pointer',
+                        'transition': 'all 0.3s ease',
+                        'box-shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    });
+                });
+            }
+            
+            // Apply styling immediately and after any DOM changes
+            styleHMPButtons();
+            setTimeout(styleHMPButtons, 100);
+            setTimeout(styleHMPButtons, 500);
+            
+            // Add hover effects
+            $(document).on('mouseenter', '.hmp-styled-button', function() {
+                $(this).css({
+                    'background': '#006666',
+                    'border-color': '#006666',
+                    'transform': 'translateY(-2px)',
+                    'box-shadow': '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                });
+            }).on('mouseleave', '.hmp-styled-button', function() {
+                $(this).css({
+                    'background': '#008B8B',
+                    'border-color': '#008B8B',
+                    'transform': 'translateY(0)',
+                    'box-shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                });
+            });
+        });
+        </script>
         <?php
     }
     
@@ -856,9 +1001,10 @@ class HMP_Admin {
     public function enqueue_admin_scripts( $hook ) {
         // Settings page scripts
         if ( $hook === 'toplevel_page_holdmyproduct-settings' ) {
+            wp_enqueue_script( 'jquery' );
             wp_enqueue_style( 'wp-components' );
             wp_enqueue_script( 'wp-components' );
-            wp_enqueue_style( 'holdmyproduct-admin-style', HMP_PLUGIN_URL . 'admin-style.css', array(), HMP_VERSION );
+            wp_enqueue_style( 'holdmyproduct-admin-style', HMP_PLUGIN_URL . 'assets/css/admin-style.css', array(), HMP_VERSION );
             
             wp_add_inline_script( 'wp-components', $this->get_admin_inline_script() );
         }
@@ -866,7 +1012,7 @@ class HMP_Admin {
         // Manage reservations page scripts
         if ( $hook === 'holdmyproduct_page_holdmyproduct-manage-reservations' ) {
             wp_enqueue_script( 'jquery' );
-            wp_enqueue_style( 'holdmyproduct-admin-style', HMP_PLUGIN_URL . 'admin-style.css', array(), HMP_VERSION );
+            wp_enqueue_style( 'holdmyproduct-admin-style', HMP_PLUGIN_URL . 'assets/css/admin-style.css', array(), HMP_VERSION );
             wp_add_inline_script( 'jquery', $this->get_manage_reservations_inline_script() );
         }
         
@@ -883,7 +1029,7 @@ class HMP_Admin {
         if ( $hook === 'edit.php' && ( $_GET['post_type'] ?? '' ) === 'product' && $this->show_admin_toggle_enabled() ) {
             wp_enqueue_script(
                 'hmp-res-toggle',
-                HMP_PLUGIN_URL . 'hmp-res-toggle.js',
+                HMP_PLUGIN_URL . 'assets/js/hmp-res-toggle.js',
                 array( 'jquery' ),
                 HMP_VERSION,
                 true
@@ -898,7 +1044,7 @@ class HMP_Admin {
             
             wp_enqueue_style(
                 'holdmyproduct-admin-style',
-                HMP_PLUGIN_URL . 'admin-style.css',
+                HMP_PLUGIN_URL . 'assets/css/admin-style.css',
                 array(),
                 HMP_VERSION
             );
