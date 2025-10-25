@@ -12,7 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<table class="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table">
+<div class="hmp-reservations-container">
+    <div class="hmp-reservations-wrapper">
+        <div class="hmp-reservations-header">
+            <h2><?php esc_html_e( 'My Reservations', 'hold-my-product' ); ?></h2>
+            <p><?php esc_html_e( 'Manage your product reservations below. Don\'t forget to complete your purchase before the expiration time.', 'hold-my-product' ); ?></p>
+        </div>
+        
+        <table class="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table hmp-reservations-table">
     <thead>
         <tr>
             <th class="woocommerce-orders-table__header woocommerce-orders-table__header-order-product">
@@ -114,3 +121,5 @@ if ( ! defined( 'ABSPATH' ) ) {
         <?php endforeach; ?>
     </tbody>
 </table>
+    </div>
+</div>
