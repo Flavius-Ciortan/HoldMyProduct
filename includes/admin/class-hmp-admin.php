@@ -227,7 +227,7 @@ class HMP_Admin {
                 <!-- Navigation Tabs -->
                 <div class="hmp-nav-wrapper">
                     <div class="hmp-nav-tabs">
-                        <button type="button" class="hmp-nav-tab hmp-nav-tab-active" data-target="general">
+                        <button type="button" class="hmp-nav-tab" data-target="general">
                             <span class="hmp-tab-icon">⚙️</span>
                             <span class="hmp-tab-text">General Settings</span>
                         </button>
@@ -247,7 +247,7 @@ class HMP_Admin {
                     <?php settings_fields( 'holdmyproduct_options_group' ); ?>
                     <div class="hmp-tab-container">
                         <!-- General Settings Tab -->
-                        <div id="hmp-general" class="hmp-tab-content hmp-tab-active">
+                        <div id="hmp-general" class="hmp-tab-content">
                             <div class="hmp-settings-card">
                                 <div class="hmp-card-header">
                                     <h3>Configuration</h3>
@@ -453,13 +453,22 @@ class HMP_Admin {
             const urlParams = new URLSearchParams(window.location.search);
             const activeTab = urlParams.get('active_tab') || localStorage.getItem('hmp_active_tab') || 'general';
             
+            // Immediately set the correct tab without animation to prevent flash
+            $('.hmp-nav-tab').removeClass('hmp-nav-tab-active');
+            $('.hmp-tab-content').removeClass('hmp-tab-active').hide();
+            
             // Set the active tab
             if (activeTab && $('#hmp-' + activeTab).length) {
-                $('.hmp-nav-tab').removeClass('hmp-nav-tab-active');
                 $('.hmp-nav-tab[data-target="' + activeTab + '"]').addClass('hmp-nav-tab-active');
-                $('.hmp-tab-content').removeClass('hmp-tab-active');
-                $('#hmp-' + activeTab).addClass('hmp-tab-active');
+                $('#hmp-' + activeTab).addClass('hmp-tab-active').show();
+            } else {
+                // Fallback to general tab
+                $('.hmp-nav-tab[data-target="general"]').addClass('hmp-nav-tab-active');
+                $('#hmp-general').addClass('hmp-tab-active').show();
             }
+            
+            // Show form actions after tab is properly set
+            $('.hmp-form-actions').addClass('hmp-ready');
             
             // Tab switching functionality
             $('.hmp-nav-tab').on('click', function() {
@@ -472,9 +481,9 @@ class HMP_Admin {
                 $('.hmp-nav-tab').removeClass('hmp-nav-tab-active');
                 $(this).addClass('hmp-nav-tab-active');
                 
-                // Update active tab content
-                $('.hmp-tab-content').removeClass('hmp-tab-active');
-                $('#hmp-' + target).addClass('hmp-tab-active');
+                // Update active tab content with proper show/hide
+                $('.hmp-tab-content').removeClass('hmp-tab-active').hide();
+                $('#hmp-' + target).addClass('hmp-tab-active').show();
             });
             
             // Add hidden field to form to preserve active tab on submission
