@@ -50,7 +50,17 @@ class HMP_Admin {
             HMP_PLUGIN_URL . 'assets/images/HMP-menu-icon.png',
             80
         );
-        
+
+        // Add Settings submenu (points to the same page as the main menu)
+        add_submenu_page(
+            'holdmyproduct-settings',
+            'Settings',
+            'Settings',
+            'manage_options',
+            'holdmyproduct-settings',
+            array( $this, 'settings_page' )
+        );
+
         // Add reservations management submenu
         add_submenu_page(
             'holdmyproduct-settings',
