@@ -64,8 +64,8 @@ class HMP_Admin {
         // Add reservations management submenu
         add_submenu_page(
             'holdmyproduct-settings',
-            'Manage Reservations',
-            'Manage Reservations',
+            'Reservations',
+            'Reservations',
             'manage_options',
             'holdmyproduct-manage-reservations',
             array( $this, 'manage_reservations_page' )
@@ -130,7 +130,7 @@ class HMP_Admin {
     public function holdmyproduct_max_reservations_callback() {
         $options = get_option( 'holdmyproduct_options' );
         $value = isset( $options['max_reservations'] ) ? absint( $options['max_reservations'] ) : 1;
-        echo '<div id="holdmyproduct-max-reservations-wrapper">
+        echo '<div class="hmp-input-right-align">
                 <input type="number" min="1" name="holdmyproduct_options[max_reservations]" value="' . esc_attr( $value ) . '" class="holdmyproduct-small-input" />
               </div>';
     }
@@ -141,7 +141,7 @@ class HMP_Admin {
     public function holdmyproduct_reservation_duration_callback() {
         $options = get_option( 'holdmyproduct_options' );
         $value = isset( $options['reservation_duration'] ) ? absint( $options['reservation_duration'] ) : 24;
-        echo '<div id="holdmyproduct-duration-wrapper">
+        echo '<div class="hmp-input-right-align">
                 <input type="number" min="1" max="168" name="holdmyproduct_options[reservation_duration]" value="' . esc_attr( $value ) . '" class="holdmyproduct-small-input" />
                 <p class="description">How long reservations last (1-168 hours, default: 24)</p>
               </div>';
@@ -243,70 +243,230 @@ class HMP_Admin {
                 </div>
 
                 <!-- Tab Content -->
-                <div class="hmp-tab-container">
-                    <!-- General Settings Tab -->
-                    <div id="hmp-general" class="hmp-tab-content hmp-tab-active">
-                        <div class="hmp-settings-card">
-                            <div class="hmp-card-header">
-                                <h3>Configuration</h3>
-                                <p>Configure the basic settings for your reservation system</p>
+                <form method="post" action="options.php" class="hmp-settings-form">
+                    <?php settings_fields( 'holdmyproduct_options_group' ); ?>
+                    <div class="hmp-tab-container">
+                        <!-- General Settings Tab -->
+                        <div id="hmp-general" class="hmp-tab-content hmp-tab-active">
+                            <div class="hmp-settings-card">
+                                <div class="hmp-card-header">
+                                    <h3>Configuration</h3>
+                                    <p>Configure the basic settings for your reservation system</p>
+                                </div>
+                                <div class="hmp-card-body">
+                                    <?php do_settings_sections( 'holdmyproduct-settings' ); ?>
+                                </div>
                             </div>
-                            <div class="hmp-card-body">
-                                <form method="post" action="options.php" class="hmp-settings-form">
-                                    <?php
-                                    settings_fields( 'holdmyproduct_options_group' );
-                                    do_settings_sections( 'holdmyproduct-settings' );
-                                    ?>
-                                    <div class="hmp-form-actions">
-                                        <?php submit_button( 'Save Settings', 'primary hmp-save-btn', 'submit', false ); ?>
+                        </div>
+
+                        <!-- Logged In Users Tab -->
+                        <div id="hmp-logged-in" class="hmp-tab-content">
+                            <div class="hmp-settings-card">
+                                <div class="hmp-card-header">
+                                    <h3>Logged In User Settings</h3>
+                                    <p>Configure pop-up customization for registered users</p>
+                                </div>
+                                <div class="hmp-card-body">
+                                    <!-- COMING SOON MESSAGE - UNCOMMENT FOR PAID VERSION
+                                    <div class="hmp-coming-soon-message">
+                                        <h4>🚀 Coming Soon in Pro Version!</h4>
+                                        <p>Advanced pop-up customization for logged-in users will be available in our premium version.</p>
+                                        <p><strong>Features include:</strong></p>
+                                        <ul>
+                                            <li>Custom border radius settings</li>
+                                            <li>Background color customization</li>
+                                            <li>Font family selection</li>
+                                            <li>Font size adjustment</li>
+                                            <li>Text color customization</li>
+                                        </ul>
+                                        <p>Stay tuned for updates!</p>
                                     </div>
-                                </form>
+                                    END COMING SOON MESSAGE -->
+                                    
+                                    <?php
+                                    $options = get_option('holdmyproduct_options');
+                                    $enable_popup_customization_logged_in = isset($options['enable_popup_customization_logged_in']) ? (bool)$options['enable_popup_customization_logged_in'] : false;
+                                    $popup_settings_logged_in = isset($options['popup_customization_logged_in']) ? $options['popup_customization_logged_in'] : [];
+                                    ?>
+                                    <table class="form-table">
+                                        <tr>
+                                            <th scope="row">Enable Pop-up Customization</th>
+                                            <td>
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" name="holdmyproduct_options[enable_popup_customization_logged_in]" value="1" <?php checked($enable_popup_customization_logged_in); ?>>
+                                                    <span class="slider"></span>
+                                                </label>
+                                                <p class="description">Customize the appearance of the reservation pop-up for logged-in users.</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="hmp-popup-customization-fields-logged-in" style="display:<?php echo $enable_popup_customization_logged_in ? 'block' : 'none'; ?>;margin-top:1rem;">
+                                        <table class="form-table">
+                                            <tr>
+                                                <th scope="row">Border Radius (px)</th>
+                                                <td><input type="number" name="holdmyproduct_options[popup_customization_logged_in][border_radius]" value="<?php echo esc_attr($popup_settings_logged_in['border_radius'] ?? '12'); ?>" min="0" max="50" class="hmp-input-right-align"></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Background Color</th>
+                                                <td><input type="color" name="holdmyproduct_options[popup_customization_logged_in][background_color]" value="<?php echo esc_attr($popup_settings_logged_in['background_color'] ?? '#ffffff'); ?>" class="hmp-input-right-align"></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Font Family</th>
+                                                <td>
+                                                    <select name="holdmyproduct_options[popup_customization_logged_in][font_family]" class="hmp-input-right-align">
+                                                        <?php
+                                                        $fonts = [
+                                                            'Arial, Helvetica, sans-serif' => 'Arial',
+                                                            'Verdana, Geneva, sans-serif' => 'Verdana',
+                                                            'Georgia, serif' => 'Georgia',
+                                                            'Times New Roman, Times, serif' => 'Times New Roman',
+                                                            'Tahoma, Geneva, sans-serif' => 'Tahoma',
+                                                            'Trebuchet MS, Helvetica, sans-serif' => 'Trebuchet MS',
+                                                            'Courier New, Courier, monospace' => 'Courier New',
+                                                            'Roboto, sans-serif' => 'Roboto (Google)',
+                                                            'Open Sans, sans-serif' => 'Open Sans (Google)',
+                                                            'Lato, sans-serif' => 'Lato (Google)',
+                                                            'Montserrat, sans-serif' => 'Montserrat (Google)'
+                                                        ];
+                                                        $selected_font = $popup_settings_logged_in['font_family'] ?? 'Arial, Helvetica, sans-serif';
+                                                        foreach ($fonts as $value => $label) {
+                                                            echo '<option value="' . esc_attr($value) . '"' . selected($selected_font, $value, false) . '>' . esc_html($label) . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Font Size (px)</th>
+                                                <td><input type="number" name="holdmyproduct_options[popup_customization_logged_in][font_size]" value="<?php echo esc_attr($popup_settings_logged_in['font_size'] ?? '16'); ?>" min="10" max="40" class="hmp-input-right-align"></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Text Color</th>
+                                                <td><input type="color" name="holdmyproduct_options[popup_customization_logged_in][text_color]" value="<?php echo esc_attr($popup_settings_logged_in['text_color'] ?? '#222222'); ?>" class="hmp-input-right-align"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Logged In Users Tab -->
-                    <div id="hmp-logged-in" class="hmp-tab-content">
-                        <div class="hmp-settings-card">
-                            <div class="hmp-card-header">
-                                <h3>Logged In User Settings</h3>
-                                <p>Configure reservation options for registered users</p>
-                            </div>
-                            <div class="hmp-card-body">
-                                <div class="hmp-coming-soon">
-                                    <div class="hmp-coming-soon-icon">🚀</div>
-                                    <h4>Coming Soon</h4>
-                                    <p>Advanced settings for logged-in users are in development. Stay tuned for exciting new features!</p>
+                        <!-- Guests Tab -->
+                        <div id="hmp-logged-out" class="hmp-tab-content">
+                            <div class="hmp-settings-card">
+                                <div class="hmp-card-header">
+                                    <h3>Guest User Settings</h3>
+                                    <p>Configure pop-up customization for guest users</p>
+                                </div>
+                                <div class="hmp-card-body">
+                                    <!-- COMING SOON MESSAGE - UNCOMMENT FOR PAID VERSION
+                                    <div class="hmp-coming-soon-message">
+                                        <h4>🚀 Coming Soon in Pro Version!</h4>
+                                        <p>Advanced pop-up customization for guest users will be available in our premium version.</p>
+                                        <p><strong>Features include:</strong></p>
+                                        <ul>
+                                            <li>Custom border radius settings</li>
+                                            <li>Background color customization</li>
+                                            <li>Font family selection</li>
+                                            <li>Font size adjustment</li>
+                                            <li>Text color customization</li>
+                                        </ul>
+                                        <p>Stay tuned for updates!</p>
+                                    </div>
+                                    END COMING SOON MESSAGE -->
+                                    
+                                    <?php
+                                    $enable_popup_customization_guests = isset($options['enable_popup_customization_guests']) ? (bool)$options['enable_popup_customization_guests'] : false;
+                                    $popup_settings_guests = isset($options['popup_customization_guests']) ? $options['popup_customization_guests'] : [];
+                                    ?>
+                                    <table class="form-table">
+                                        <tr>
+                                            <th scope="row">Enable Pop-up Customization</th>
+                                            <td>
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" name="holdmyproduct_options[enable_popup_customization_guests]" value="1" <?php checked($enable_popup_customization_guests); ?>>
+                                                    <span class="slider"></span>
+                                                </label>
+                                                <p class="description">Customize the appearance of the reservation pop-up for guest users.</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="hmp-popup-customization-fields-guests" style="display:<?php echo $enable_popup_customization_guests ? 'block' : 'none'; ?>;margin-top:1rem;">
+                                        <table class="form-table">
+                                            <tr>
+                                                <th scope="row">Border Radius (px)</th>
+                                                <td><input type="number" name="holdmyproduct_options[popup_customization_guests][border_radius]" value="<?php echo esc_attr($popup_settings_guests['border_radius'] ?? '12'); ?>" min="0" max="50" class="hmp-input-right-align"></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Background Color</th>
+                                                <td><input type="color" name="holdmyproduct_options[popup_customization_guests][background_color]" value="<?php echo esc_attr($popup_settings_guests['background_color'] ?? '#ffffff'); ?>" class="hmp-input-right-align"></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Font Family</th>
+                                                <td>
+                                                    <select name="holdmyproduct_options[popup_customization_guests][font_family]" class="hmp-input-right-align">
+                                                        <?php
+                                                        $fonts = [
+                                                            'Arial, Helvetica, sans-serif' => 'Arial',
+                                                            'Verdana, Geneva, sans-serif' => 'Verdana',
+                                                            'Georgia, serif' => 'Georgia',
+                                                            'Times New Roman, Times, serif' => 'Times New Roman',
+                                                            'Tahoma, Geneva, sans-serif' => 'Tahoma',
+                                                            'Trebuchet MS, Helvetica, sans-serif' => 'Trebuchet MS',
+                                                            'Courier New, Courier, monospace' => 'Courier New',
+                                                            'Roboto, sans-serif' => 'Roboto (Google)',
+                                                            'Open Sans, sans-serif' => 'Open Sans (Google)',
+                                                            'Lato, sans-serif' => 'Lato (Google)',
+                                                            'Montserrat, sans-serif' => 'Montserrat (Google)'
+                                                        ];
+                                                        $selected_font = $popup_settings_guests['font_family'] ?? 'Arial, Helvetica, sans-serif';
+                                                        foreach ($fonts as $value => $label) {
+                                                            echo '<option value="' . esc_attr($value) . '"' . selected($selected_font, $value, false) . '>' . esc_html($label) . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Font Size (px)</th>
+                                                <td><input type="number" name="holdmyproduct_options[popup_customization_guests][font_size]" value="<?php echo esc_attr($popup_settings_guests['font_size'] ?? '16'); ?>" min="10" max="40" class="hmp-input-right-align"></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Text Color</th>
+                                                <td><input type="color" name="holdmyproduct_options[popup_customization_guests][text_color]" value="<?php echo esc_attr($popup_settings_guests['text_color'] ?? '#222222'); ?>" class="hmp-input-right-align"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Guests Tab -->
-                    <div id="hmp-logged-out" class="hmp-tab-content">
-                        <div class="hmp-settings-card">
-                            <div class="hmp-card-header">
-                                <h3>Guest User Settings</h3>
-                                <p>Configure reservation options for non-registered visitors</p>
-                            </div>
-                            <div class="hmp-card-body">
-                                <div class="hmp-coming-soon">
-                                    <div class="hmp-coming-soon-icon">👥</div>
-                                    <h4>Coming Soon</h4>
-                                    <p>Guest reservation settings will allow you to customize the experience for visitors who aren't logged in.</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="hmp-form-actions">
+                        <?php submit_button( 'Save Settings', 'primary hmp-save-btn', 'submit', false ); ?>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
 
         <script>
         jQuery(document).ready(function($) {
+            // Check if there's a saved active tab after form submission
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeTab = urlParams.get('active_tab') || localStorage.getItem('hmp_active_tab') || 'general';
+            
+            // Set the active tab
+            if (activeTab && $('#hmp-' + activeTab).length) {
+                $('.hmp-nav-tab').removeClass('hmp-nav-tab-active');
+                $('.hmp-nav-tab[data-target="' + activeTab + '"]').addClass('hmp-nav-tab-active');
+                $('.hmp-tab-content').removeClass('hmp-tab-active');
+                $('#hmp-' + activeTab).addClass('hmp-tab-active');
+            }
+            
             // Tab switching functionality
             $('.hmp-nav-tab').on('click', function() {
                 const target = $(this).data('target');
+                
+                // Save the active tab to localStorage
+                localStorage.setItem('hmp_active_tab', target);
                 
                 // Update active tab button
                 $('.hmp-nav-tab').removeClass('hmp-nav-tab-active');
@@ -315,6 +475,45 @@ class HMP_Admin {
                 // Update active tab content
                 $('.hmp-tab-content').removeClass('hmp-tab-active');
                 $('#hmp-' + target).addClass('hmp-tab-active');
+            });
+            
+            // Add hidden field to form to preserve active tab on submission
+            $('.hmp-settings-form').append('<input type="hidden" name="active_tab" id="hmp-active-tab-field" value="' + activeTab + '">');
+            
+            // Update the hidden field when tabs are switched
+            $('.hmp-nav-tab').on('click', function() {
+                $('#hmp-active-tab-field').val($(this).data('target'));
+            });
+            
+            // Popup customization sub-tabs functionality
+            $('.hmp-popup-tab').on('click', function(){
+                var tab = $(this).data('popup-tab');
+                $('.hmp-popup-tab').removeClass('hmp-popup-tab-active');
+                $(this).addClass('hmp-popup-tab-active');
+                $('.hmp-popup-tab-content').hide();
+                $('.hmp-popup-tab-content-' + tab).show();
+            });
+            
+            // Toggle fields for logged in users
+            var $toggleLoggedIn = $('input[name="holdmyproduct_options[enable_popup_customization_logged_in]"]');
+            var $fieldsLoggedIn = $('.hmp-popup-customization-fields-logged-in');
+            $toggleLoggedIn.on('change', function(){
+                if($(this).is(':checked')){
+                    $fieldsLoggedIn.slideDown();
+                }else{
+                    $fieldsLoggedIn.slideUp();
+                }
+            });
+            
+            // Toggle fields for guests
+            var $toggleGuests = $('input[name="holdmyproduct_options[enable_popup_customization_guests]"]');
+            var $fieldsGuests = $('.hmp-popup-customization-fields-guests');
+            $toggleGuests.on('change', function(){
+                if($(this).is(':checked')){
+                    $fieldsGuests.slideDown();
+                }else{
+                    $fieldsGuests.slideUp();
+                }
             });
             
             // Force Save Settings button styling

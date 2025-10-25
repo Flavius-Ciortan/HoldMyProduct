@@ -278,7 +278,32 @@
 
 /* Form Styles */
 .hmp-settings-form {
+    max-width: none;
+}
+
+/* General Settings Tab - Constrained width for better readability */
+#hmp-general .hmp-card-body {
     max-width: 500px;
+}
+
+/* Logged In Users and Guests tabs - Match General Settings width */
+#hmp-logged-in .hmp-card-body,
+#hmp-logged-out .hmp-card-body {
+    max-width: 500px;
+}
+
+/* Smaller input fields for specific settings */
+.hmp-settings-form input[name="holdmyproduct_options[max_reservations]"],
+.hmp-settings-form input[name="holdmyproduct_options[reservation_duration]"],
+.hmp-settings-form input[name*="[border_radius]"],
+.hmp-settings-form input[name*="[font_size]"] {
+    width: 80px !important;
+    max-width: 80px !important;
+}
+
+.hmp-settings-form select[name*="[font_family]"] {
+    width: 180px !important;
+    max-width: 180px !important;
 }
 
 .hmp-settings-form .form-table {
@@ -861,4 +886,111 @@ td:nth-child(5) {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+/* Popup Customization Sub-tabs */
+#hmp-popup-tabs-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+#hmp-popup-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--hmp-border);
+    padding-bottom: 0;
+}
+
+.hmp-popup-tab {
+    padding: 0.5rem 1rem;
+    background: var(--hmp-white);
+    border: 2px solid var(--hmp-border);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--hmp-text-light);
+    transition: all 0.3s ease;
+    position: relative;
+    top: 2px;
+}
+
+.hmp-popup-tab:hover {
+    background: var(--hmp-secondary);
+    color: var(--hmp-primary);
+    transform: translateY(-2px);
+}
+
+.hmp-popup-tab-active {
+    background: var(--hmp-accent);
+    border-color: var(--hmp-accent);
+    color: var(--hmp-white);
+    box-shadow: var(--hmp-shadow);
+}
+
+.hmp-popup-tab-active:hover {
+    background: var(--hmp-primary);
+    border-color: var(--hmp-primary);
+    color: var(--hmp-white);
+}
+
+.hmp-popup-tab-content {
+    padding: 1rem 0;
+}
+
+.hmp-popup-customization-fields-logged-in,
+.hmp-popup-customization-fields-guests {
+    background: var(--hmp-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+/* Right-align input fields to match toggle position */
+.hmp-input-right-align {
+    text-align: right;
+}
+
+.hmp-input-right-align input {
+    margin-right: 1.25rem;
+}
+
+/* Coming Soon Message Styling */
+.hmp-coming-soon-message {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 2px dashed var(--hmp-primary);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.hmp-coming-soon-message h4 {
+    color: var(--hmp-primary);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.hmp-coming-soon-message p {
+    color: var(--hmp-text-dark);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.hmp-coming-soon-message ul {
+    text-align: left;
+    max-width: 300px;
+    margin: 1rem auto;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.hmp-coming-soon-message li {
+    color: var(--hmp-text-light);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
 }
