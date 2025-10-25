@@ -27,6 +27,8 @@ class HMP_Reservations {
         add_action( 'woocommerce_account_hmp-reservations_endpoint', array( $this, 'reservations_endpoint_content' ) );
         add_filter( 'woocommerce_get_query_vars', array( $this, 'add_query_vars' ) );
         add_action( 'template_redirect', array( $this, 'handle_reservation_actions' ) );
+        add_filter( 'woocommerce_endpoint_hmp-reservations_title', array( $this, 'reservations_endpoint_title' ) );
+        add_filter( 'woocommerce_page_title', array( $this, 'change_reservations_page_title' ) );
         
         // Flush rewrite rules on activation
         register_activation_hook( HMP_PLUGIN_PATH . 'HoldMyProduct.php', array( $this, 'flush_rewrite_rules' ) );
@@ -398,6 +400,30 @@ class HMP_Reservations {
             $new['hmp-reservations'] = __( 'Reservations', 'hold-my-product' );
         }
         return $new;
+    }
+    
+    /**
+     * Change endpoint title for reservations
+     */
+    public function reservations_endpoint_title( $title ) {
+        return __( 'Reservations', 'hold-my-product' );
+    }
+    
+    /**
+     * Change page title when on reservations page
+     */
+    public function change_reservations_page_title( $title ) {
+        global $wp_query;
+        
+        if ( ! is_admin() && is_main_query() && in_the_loop() && is_account_page() ) {
+            // Check if we're on the reservations endpoint
+            if ( isset( $wp_query->query_vars['hmp-reservations'] ) || 
+                 ( function_exists( 'wc_get_page_id' ) && is_wc_endpoint_url( 'hmp-reservations' ) ) ) {
+                return __( 'Reservations', 'hold-my-product' );
+            }
+        }
+        
+        return $title;
     }
     
     /**
