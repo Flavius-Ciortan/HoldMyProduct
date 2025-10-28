@@ -182,10 +182,14 @@ class HMP_Reservations {
             return false;
         }
         
+        // Determine initial status based on admin approval setting
+        $require_approval = ! empty( $options['require_admin_approval'] );
+        $initial_status = $require_approval ? 'pending_approval' : 'active';
+        
         // Save meta data
         $meta_data = array(
             '_hmp_product_id' => $product_id,
-            '_hmp_status' => 'active',
+            '_hmp_status' => $initial_status,
             '_hmp_expires_at' => $expires_at,
             '_hmp_qty' => 1,
         );
@@ -223,9 +227,13 @@ class HMP_Reservations {
             update_post_meta( $reservation_id, $key, $value );
         }
         
-        // Trigger email notification
+        // Trigger appropriate email notification
         if ( $notification_email ) {
-            do_action( 'hmp_reservation_created', $reservation_id, $notification_email );
+            if ( $require_approval ) {
+                do_action( 'hmp_reservation_pending_approval', $reservation_id, $notification_email );
+            } else {
+                do_action( 'hmp_reservation_created', $reservation_id, $notification_email );
+            }
         }
         
         return $reservation_id;
@@ -676,5 +684,54 @@ class HMP_Reservations {
                 // Don't restore stock since it was purchased
             }
         }
+    }
+    
+    /**
+     * Approve a pending reservation
+     */
+    public function approve_reservation( $reservation_id ) {
+        $current_status = get_post_meta( $reservation_id, '_hmp_status', true );
+        
+        if ( $current_status !== 'pending_approval' ) {
+            return false;
+        }
+        
+        // Update status to active
+        update_post_meta( $reservation_id, '_hmp_status', 'active' );
+        
+        // Send confirmation email
+        $email = get_post_meta( $reservation_id, '_hmp_email', true );
+        if ( $email ) {
+            do_action( 'hmp_reservation_approved', $reservation_id, $email );
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Deny a pending reservation
+     */
+    public function deny_reservation( $reservation_id, $reason = '' ) {
+        $current_status = get_post_meta( $reservation_id, '_hmp_status', true );
+        
+        if ( $current_status !== 'pending_approval' ) {
+            return false;
+        }
+        
+        // Update status to denied
+        update_post_meta( $reservation_id, '_hmp_status', 'denied' );
+        
+        // Store denial reason if provided
+        if ( $reason ) {
+            update_post_meta( $reservation_id, '_hmp_denial_reason', sanitize_text_field( $reason ) );
+        }
+        
+        // Send denial email
+        $email = get_post_meta( $reservation_id, '_hmp_email', true );
+        if ( $email ) {
+            do_action( 'hmp_reservation_denied', $reservation_id, $email, $reason );
+        }
+        
+        return true;
     }
 }

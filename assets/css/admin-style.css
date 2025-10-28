@@ -700,6 +700,63 @@ body.toplevel_page_holdmyproduct-settings input[type="submit"]:focus {
     transform: none !important;
 }
 
+/* Approval/Denial Button Styles */
+.hmp-approve-reservation {
+    background: linear-gradient(135deg, var(--hmp-success) 0%, #059669 100%) !important;
+    color: var(--hmp-white) !important;
+    border: 2px solid var(--hmp-success) !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.hmp-approve-reservation:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    border-color: #059669 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--hmp-shadow) !important;
+}
+
+.hmp-approve-reservation:disabled {
+    background: #e5e7eb !important;
+    border-color: #e5e7eb !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+.hmp-deny-reservation {
+    background: linear-gradient(135deg, var(--hmp-error) 0%, #dc2626 100%) !important;
+    color: var(--hmp-white) !important;
+    border: 2px solid var(--hmp-error) !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.hmp-deny-reservation:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    border-color: #dc2626 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--hmp-shadow) !important;
+}
+
+.hmp-deny-reservation:disabled {
+    background: #e5e7eb !important;
+    border-color: #e5e7eb !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
 /* Product Page Reservations Table (Enhanced) */
 .options_group table.widefat {
     max-width: 100%;
@@ -885,6 +942,15 @@ td:nth-child(5) {
 
 .status-fulfilled {
     color: #00a32a;
+}
+
+.status-pending-approval {
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+.status-denied {
+    color: #991b1b;
 }
 
 /* Analytics stat cards */
