@@ -35,6 +35,8 @@ class HMP_Admin {
         // AJAX handlers for reservation management
         add_action( 'wp_ajax_hmp_cancel_admin_reservation', array( $this, 'handle_admin_cancel_reservation' ) );
         add_action( 'wp_ajax_hmp_delete_admin_reservation', array( $this, 'handle_admin_delete_reservation' ) );
+        add_action( 'wp_ajax_hmp_approve_reservation', array( $this, 'handle_approve_reservation' ) );
+        add_action( 'wp_ajax_hmp_deny_reservation', array( $this, 'handle_deny_reservation' ) );
     }
     
     /**
@@ -91,6 +93,7 @@ class HMP_Admin {
             'holdmyproduct_reservation_duration' => 'Reservation Duration (hours)',
             'holdmyproduct_enable_guest_reservation' => 'Enable Guest Reservations',
             'holdmyproduct_enable_email_notifications' => 'Enable Email Notifications',
+            'holdmyproduct_require_admin_approval' => 'Require Admin Approval for Reservations',
             'holdmyproduct_show_admin_toggle' => 'Show Admin Toggle (Products list)'
         );
         
@@ -171,6 +174,19 @@ class HMP_Admin {
                 <span class="slider"></span>
               </label>
               <p class="description">Send email confirmations and reminders to customers.</p>';
+    }
+    
+    /**
+     * Require admin approval field callback
+     */
+    public function holdmyproduct_require_admin_approval_callback() {
+        $options = get_option( 'holdmyproduct_options' );
+        $checked = ! empty( $options['require_admin_approval'] ) ? 'checked' : '';
+        echo '<label class="toggle-switch">
+                <input type="checkbox" name="holdmyproduct_options[require_admin_approval]" value="1" ' . $checked . '>
+                <span class="slider"></span>
+              </label>
+              <p class="description">Reservations require admin approval before becoming active.</p>';
     }
     
     /**
@@ -702,10 +718,12 @@ class HMP_Admin {
             <!-- Summary Stats -->
             <div class="hmp-reservations-stats">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                    <div><strong>Pending Approval:</strong> <?php echo esc_html( $stats['pending_approval'] ); ?></div>
                     <div><strong>Active:</strong> <?php echo esc_html( $stats['active'] ); ?></div>
                     <div><strong>Expired:</strong> <?php echo esc_html( $stats['expired'] ); ?></div>
                     <div><strong>Cancelled:</strong> <?php echo esc_html( $stats['cancelled'] ); ?></div>
                     <div><strong>Fulfilled:</strong> <?php echo esc_html( $stats['fulfilled'] ); ?></div>
+                    <div><strong>Denied:</strong> <?php echo esc_html( $stats['denied'] ); ?></div>
                     <div><strong>Total:</strong> <?php echo esc_html( $stats['total'] ); ?></div>
                 </div>
             </div>
@@ -716,10 +734,12 @@ class HMP_Admin {
                     <!-- Status Filter -->
                     <select name="status_filter" id="status-filter">
                         <option value="all" <?php selected( $status_filter, 'all' ); ?>><?php esc_html_e( 'All Statuses', 'hold-my-product' ); ?></option>
+                        <option value="pending_approval" <?php selected( $status_filter, 'pending_approval' ); ?>><?php esc_html_e( 'Pending Approval', 'hold-my-product' ); ?></option>
                         <option value="active" <?php selected( $status_filter, 'active' ); ?>><?php esc_html_e( 'Active', 'hold-my-product' ); ?></option>
                         <option value="expired" <?php selected( $status_filter, 'expired' ); ?>><?php esc_html_e( 'Expired', 'hold-my-product' ); ?></option>
                         <option value="cancelled" <?php selected( $status_filter, 'cancelled' ); ?>><?php esc_html_e( 'Cancelled', 'hold-my-product' ); ?></option>
                         <option value="fulfilled" <?php selected( $status_filter, 'fulfilled' ); ?>><?php esc_html_e( 'Fulfilled', 'hold-my-product' ); ?></option>
+                        <option value="denied" <?php selected( $status_filter, 'denied' ); ?>><?php esc_html_e( 'Denied', 'hold-my-product' ); ?></option>
                     </select>
                     
                     <!-- Search Type -->
@@ -809,53 +829,6 @@ class HMP_Admin {
                 }
             });
             
-            // Reservation cancellation (only for active reservations)
-            $('.hmp-cancel-reservation').on('click', function() {
-                var $btn = $(this);
-                var reservationId = $btn.data('reservation-id');
-                var customer = $btn.data('customer');
-                var product = $btn.data('product') || 'this product';
-                
-                if (confirm('Are you sure you want to cancel the reservation for ' + customer + ' on ' + product + '?')) {
-                    $btn.prop('disabled', true).text('Cancelling...');
-                    
-                    $.post(ajaxurl, {
-                        action: 'hmp_cancel_admin_reservation',
-                        reservation_id: reservationId,
-                        nonce: '<?php echo wp_create_nonce( 'hmp_admin_cancel' ); ?>'
-                    })
-                    .done(function(response) {
-                        if (response.success) {
-                            // Change the button to Delete after successful cancellation
-                            $btn.removeClass('hmp-cancel-reservation')
-                                .addClass('hmp-delete-reservation button-link-delete')
-                                .text('Delete')
-                                .prop('disabled', false);
-                            
-                            // Update the status display
-                            var $statusCell = $btn.closest('tr').find('td:nth-child(3) span');
-                            $statusCell.removeClass('status-active').addClass('status-cancelled').text('Cancelled');
-                            
-                            // Clear time left column
-                            $btn.closest('tr').find('td:nth-child(6)').text('—').removeClass('time-left-critical time-left-warning');
-                            
-                            // Show success message
-                            if ($('.notice.notice-success').length === 0) {
-                                $('<div class="notice notice-success is-dismissible"><p>Reservation cancelled successfully.</p></div>')
-                                    .insertAfter('.wrap h1');
-                            }
-                        } else {
-                            alert('Error: ' + response.data);
-                            $btn.prop('disabled', false).text('Cancel');
-                        }
-                    })
-                    .fail(function() {
-                        alert('Request failed. Please try again.');
-                        $btn.prop('disabled', false).text('Cancel');
-                    });
-                }
-            });
-            
             // Reservation deletion (for non-active reservations)
             $(document).on('click', '.hmp-delete-reservation', function() {
                 var $btn = $(this);
@@ -904,6 +877,110 @@ class HMP_Admin {
                     .fail(function() {
                         alert('Request failed. Please try again.');
                         $btn.prop('disabled', false).text('Delete');
+                    });
+                }
+            });
+            
+            // Reservation approval
+            $(document).on('click', '.hmp-approve-reservation', function() {
+                var $btn = $(this);
+                var reservationId = $btn.data('reservation-id');
+                var customer = $btn.data('customer');
+                var product = $btn.data('product') || 'this product';
+                
+                console.log('Approve button clicked, reservation ID:', reservationId);
+                
+                if (confirm('Are you sure you want to approve the reservation for ' + customer + ' on ' + product + '?')) {
+                    $btn.prop('disabled', true).text('Approving...');
+                    
+                    console.log('Starting AJAX request for approval');
+                    
+                    $.post(ajaxurl, {
+                        action: 'hmp_approve_reservation',
+                        reservation_id: reservationId,
+                        nonce: '<?php echo wp_create_nonce( 'hmp_admin_approve' ); ?>'
+                    })
+                    .done(function(response) {
+                        console.log('AJAX response received:', response);
+                        if (response.success) {
+                            // Update buttons to show cancel option
+                            var $row = $btn.closest('tr');
+                            var $actionsCell = $row.find('td:last-child');
+                            $actionsCell.html('<button type="button" class="button button-small hmp-cancel-reservation" ' +
+                                'data-reservation-id="' + reservationId + '" ' +
+                                'data-customer="' + customer + '" ' +
+                                'data-product="' + product + '">Cancel</button>');
+                            
+                            // Update the status display
+                            var $statusCell = $row.find('td:nth-child(3) span');
+                            $statusCell.removeClass('status-pending-approval').addClass('status-active').text('Active');
+                            
+                            // Show success message
+                            if ($('.notice.notice-success').length === 0) {
+                                $('<div class="notice notice-success is-dismissible"><p>Reservation approved successfully.</p></div>')
+                                    .insertAfter('.wrap h1');
+                            }
+                        } else {
+                            console.log('AJAX error:', response.data);
+                            alert('Error: ' + response.data);
+                            $btn.prop('disabled', false).text('Approve');
+                        }
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.log('AJAX request failed:', xhr, status, error);
+                        alert('Request failed. Please try again.');
+                        $btn.prop('disabled', false).text('Approve');
+                    });
+                }
+            });
+            
+            // Reservation denial
+            $(document).on('click', '.hmp-deny-reservation', function() {
+                var $btn = $(this);
+                var reservationId = $btn.data('reservation-id');
+                var customer = $btn.data('customer');
+                var product = $btn.data('product') || 'this product';
+                
+                var reason = prompt('Please provide a reason for denying this reservation (optional):');
+                if (reason !== null) { // User didn't cancel the prompt
+                    $btn.prop('disabled', true).text('Denying...');
+                    
+                    $.post(ajaxurl, {
+                        action: 'hmp_deny_reservation',
+                        reservation_id: reservationId,
+                        reason: reason,
+                        nonce: '<?php echo wp_create_nonce( 'hmp_admin_deny' ); ?>'
+                    })
+                    .done(function(response) {
+                        if (response.success) {
+                            // Update buttons to show delete option
+                            var $row = $btn.closest('tr');
+                            var $actionsCell = $row.find('td:last-child');
+                            $actionsCell.html('<button type="button" class="button button-small button-link-delete hmp-delete-reservation" ' +
+                                'data-reservation-id="' + reservationId + '" ' +
+                                'data-customer="' + customer + '" ' +
+                                'data-product="' + product + '">Delete</button>');
+                            
+                            // Update the status display
+                            var $statusCell = $row.find('td:nth-child(3) span');
+                            $statusCell.removeClass('status-pending-approval').addClass('status-denied').text('Denied');
+                            
+                            // Clear time left column
+                            $row.find('td:nth-child(6)').text('—').removeClass('time-left-critical time-left-warning');
+                            
+                            // Show success message
+                            if ($('.notice.notice-success').length === 0) {
+                                $('<div class="notice notice-success is-dismissible"><p>Reservation denied successfully.</p></div>')
+                                    .insertAfter('.wrap h1');
+                            }
+                        } else {
+                            alert('Error: ' + response.data);
+                            $btn.prop('disabled', false).text('Deny');
+                        }
+                    })
+                    .fail(function() {
+                        alert('Request failed. Please try again.');
+                        $btn.prop('disabled', false).text('Deny');
                     });
                 }
             });
@@ -1034,10 +1111,12 @@ class HMP_Admin {
         
         return array(
             'total' => (int) $total,
+            'pending_approval' => (int) $this->count_reservations_by_status( 'pending_approval' ),
             'active' => (int) $this->count_reservations_by_status( 'active' ),
             'expired' => (int) $this->count_reservations_by_status( 'expired' ),
             'cancelled' => (int) $this->count_reservations_by_status( 'cancelled' ),
-            'fulfilled' => (int) $this->count_reservations_by_status( 'fulfilled' )
+            'fulfilled' => (int) $this->count_reservations_by_status( 'fulfilled' ),
+            'denied' => (int) $this->count_reservations_by_status( 'denied' )
         );
     }
     
@@ -1108,8 +1187,8 @@ class HMP_Admin {
         }
         
         // Status display with color
-        $status_class = 'status-' . $status;
-        $status_display = ucfirst( $status );
+        $status_class = 'status-' . str_replace('_', '-', $status);
+        $status_display = str_replace('_', ' ', ucfirst( $status ));
         
         echo '<tr>';
         echo '<td>';
@@ -1126,8 +1205,23 @@ class HMP_Admin {
         echo '<td class="' . esc_attr( $time_class ) . '">' . esc_html( $time_left ) . '</td>';
         echo '<td>';
         
-        // Show appropriate action button based on status
-        if ( $status === 'active' ) {
+        // Show appropriate action buttons based on status
+        if ( $status === 'pending_approval' ) {
+            // Show approve and deny buttons for pending reservations
+            echo '<button type="button" class="button button-small hmp-approve-reservation" ';
+            echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
+            echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
+            echo 'data-product="' . esc_attr( $product_name ) . '" style="margin-right: 5px;">';
+            echo __( 'Approve', 'hold-my-product' );
+            echo '</button>';
+            
+            echo '<button type="button" class="button button-small button-link-delete hmp-deny-reservation" ';
+            echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
+            echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
+            echo 'data-product="' . esc_attr( $product_name ) . '">';
+            echo __( 'Deny', 'hold-my-product' );
+            echo '</button>';
+        } elseif ( $status === 'active' ) {
             echo '<button type="button" class="button button-small hmp-cancel-reservation" ';
             echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
             echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
@@ -1484,6 +1578,79 @@ class HMP_Admin {
             'new'   => $new_status,
             'label' => ( $new_status === 'yes' ) ? __( 'Enabled', 'hold-my-product' ) : __( 'Disabled', 'hold-my-product' ),
         ) );
+    }
+    
+    /**
+     * Handle reservation approval
+     */
+    public function handle_approve_reservation() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'Insufficient permissions.' );
+        }
+        
+        check_ajax_referer( 'hmp_admin_approve', 'nonce' );
+        
+        $reservation_id = absint( $_POST['reservation_id'] ?? 0 );
+        
+        if ( ! $reservation_id ) {
+            wp_send_json_error( 'Invalid reservation ID.' );
+        }
+        
+        // Check if reservation exists
+        $post = get_post( $reservation_id );
+        if ( ! $post || $post->post_type !== 'hmp_reservation' ) {
+            wp_send_json_error( 'Invalid reservation.' );
+        }
+        
+        if ( ! class_exists( 'HMP_Reservations' ) ) {
+            wp_send_json_error( 'Reservations class not found.' );
+        }
+        
+        $reservations_class = new HMP_Reservations();
+        $result = $reservations_class->approve_reservation( $reservation_id );
+        
+        if ( $result ) {
+            wp_send_json_success( 'Reservation approved successfully.' );
+        } else {
+            wp_send_json_error( 'Failed to approve reservation.' );
+        }
+    }
+    
+    /**
+     * Handle reservation denial
+     */
+    public function handle_deny_reservation() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'Insufficient permissions.' );
+        }
+        
+        check_ajax_referer( 'hmp_admin_deny', 'nonce' );
+        
+        $reservation_id = absint( $_POST['reservation_id'] ?? 0 );
+        $reason = sanitize_text_field( $_POST['reason'] ?? '' );
+        
+        if ( ! $reservation_id ) {
+            wp_send_json_error( 'Invalid reservation ID.' );
+        }
+        
+        // Check if reservation exists
+        $post = get_post( $reservation_id );
+        if ( ! $post || $post->post_type !== 'hmp_reservation' ) {
+            wp_send_json_error( 'Invalid reservation.' );
+        }
+        
+        if ( ! class_exists( 'HMP_Reservations' ) ) {
+            wp_send_json_error( 'Reservations class not found.' );
+        }
+        
+        $reservations_class = new HMP_Reservations();
+        $result = $reservations_class->deny_reservation( $reservation_id, $reason );
+        
+        if ( $result ) {
+            wp_send_json_success( 'Reservation denied successfully.' );
+        } else {
+            wp_send_json_error( 'Failed to deny reservation.' );
+        }
     }
     
     /**
