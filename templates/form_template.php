@@ -73,14 +73,9 @@ if ($enable_popup_customization) {
 ?>
 
 <?php if ( $show_button ) : ?>
-  <div style="margin-top: 10px;">
-    <button type="button"
-            id="hmp_reserve_product"
-            data-productid="<?php echo esc_attr( $pid ); ?>"
-            style="margin-left: 10px;">
+    <button type="button" id="hmp_reserve_product" class="single_add_to_cart_button button alt wp-element-button" data-productid="<?php echo esc_attr( $pid ); ?>" >
       <?php esc_html_e('Reserve Product', 'hold-my-product'); ?>
     </button>
-  </div>
 <?php endif; ?>
 
 <!-- Google Fonts link if needed -->

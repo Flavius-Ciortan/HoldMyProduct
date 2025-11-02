@@ -298,12 +298,12 @@ label[for="rez_check"] {
 }
 
 /* Button */
-.button_container {
+/* .button_container {
     text-align: center;
     margin-top: 20px;
-}
+} */
 
-#hmp_reserve_product {
+/* #hmp_reserve_product {
     background-color: #0073aa;
     color: #fff;
     border: none;
@@ -317,6 +317,11 @@ label[for="rez_check"] {
 
 #hmp_reserve_product:hover {
     background-color: #005f8d;
+} */
+
+
+#hmp_reserve_product:hover {
+    margin: 0 !important;
 }
 
 
