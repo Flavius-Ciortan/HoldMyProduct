@@ -237,10 +237,6 @@ class HMP_Admin {
                             <span class="hmp-tab-icon">👤</span>
                             <span class="hmp-tab-text">Logged In Users</span>
                         </button>
-                        <button type="button" class="hmp-nav-tab" data-target="logged-out">
-                            <span class="hmp-tab-icon">👥</span>
-                            <span class="hmp-tab-text">Guests</span>
-                        </button>
                     </div>
                 </div>
 
@@ -351,96 +347,6 @@ class HMP_Admin {
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Guests Tab -->
-                        <div id="hmp-logged-out" class="hmp-tab-content">
-                            <div class="hmp-settings-card">
-                                <div class="hmp-card-header">
-                                    <h3>Guest User Settings</h3>
-                                    <p>Configure pop-up customization for guest users</p>
-                                </div>
-                                <div class="hmp-card-body">
-                                    <!-- COMING SOON MESSAGE - UNCOMMENT FOR PAID VERSION
-                                    <div class="hmp-coming-soon-message">
-                                        <h4>🚀 Coming Soon in Pro Version!</h4>
-                                        <p>Advanced pop-up customization for guest users will be available in our premium version.</p>
-                                        <p><strong>Features include:</strong></p>
-                                        <ul>
-                                            <li>Custom border radius settings</li>
-                                            <li>Background color customization</li>
-                                            <li>Font family selection</li>
-                                            <li>Font size adjustment</li>
-                                            <li>Text color customization</li>
-                                        </ul>
-                                        <p>Stay tuned for updates!</p>
-                                    </div>
-                                    END COMING SOON MESSAGE -->
-                                    
-                                    <?php
-                                    $enable_popup_customization_guests = isset($options['enable_popup_customization_guests']) ? (bool)$options['enable_popup_customization_guests'] : false;
-                                    $popup_settings_guests = isset($options['popup_customization_guests']) ? $options['popup_customization_guests'] : [];
-                                    ?>
-                                    <table class="form-table">
-                                        <tr>
-                                            <th scope="row">Enable Pop-up Customization</th>
-                                            <td>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox" name="holdmyproduct_options[enable_popup_customization_guests]" value="1" <?php checked($enable_popup_customization_guests); ?>>
-                                                    <span class="slider"></span>
-                                                </label>
-                                                <p class="description">Customize the appearance of the reservation pop-up for guest users.</p>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <div class="hmp-popup-customization-fields-guests" style="display:<?php echo $enable_popup_customization_guests ? 'block' : 'none'; ?>;margin-top:1rem;">
-                                        <table class="form-table">
-                                            <tr>
-                                                <th scope="row">Border Radius (px)</th>
-                                                <td><input type="number" name="holdmyproduct_options[popup_customization_guests][border_radius]" value="<?php echo esc_attr($popup_settings_guests['border_radius'] ?? '12'); ?>" min="0" max="50" class="hmp-input-right-align"></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Background Color</th>
-                                                <td><input type="color" name="holdmyproduct_options[popup_customization_guests][background_color]" value="<?php echo esc_attr($popup_settings_guests['background_color'] ?? '#ffffff'); ?>" class="hmp-input-right-align"></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Font Family</th>
-                                                <td>
-                                                    <select name="holdmyproduct_options[popup_customization_guests][font_family]" class="hmp-input-right-align">
-                                                        <?php
-                                                        $fonts = [
-                                                            'Arial, Helvetica, sans-serif' => 'Arial',
-                                                            'Verdana, Geneva, sans-serif' => 'Verdana',
-                                                            'Georgia, serif' => 'Georgia',
-                                                            'Times New Roman, Times, serif' => 'Times New Roman',
-                                                            'Tahoma, Geneva, sans-serif' => 'Tahoma',
-                                                            'Trebuchet MS, Helvetica, sans-serif' => 'Trebuchet MS',
-                                                            'Courier New, Courier, monospace' => 'Courier New',
-                                                            'Roboto, sans-serif' => 'Roboto (Google)',
-                                                            'Open Sans, sans-serif' => 'Open Sans (Google)',
-                                                            'Lato, sans-serif' => 'Lato (Google)',
-                                                            'Montserrat, sans-serif' => 'Montserrat (Google)'
-                                                        ];
-                                                        $selected_font = $popup_settings_guests['font_family'] ?? 'Arial, Helvetica, sans-serif';
-                                                        foreach ($fonts as $value => $label) {
-                                                            echo '<option value="' . esc_attr($value) . '"' . selected($selected_font, $value, false) . '>' . esc_html($label) . '</option>';
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Font Size (px)</th>
-                                                <td><input type="number" name="holdmyproduct_options[popup_customization_guests][font_size]" value="<?php echo esc_attr($popup_settings_guests['font_size'] ?? '16'); ?>" min="10" max="40" class="hmp-input-right-align"></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Text Color</th>
-                                                <td><input type="color" name="holdmyproduct_options[popup_customization_guests][text_color]" value="<?php echo esc_attr($popup_settings_guests['text_color'] ?? '#222222'); ?>" class="hmp-input-right-align"></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="hmp-form-actions">
                         <?php submit_button( 'Save Settings', 'primary hmp-save-btn', 'submit', false ); ?>
@@ -513,17 +419,6 @@ class HMP_Admin {
                     $fieldsLoggedIn.slideDown();
                 }else{
                     $fieldsLoggedIn.slideUp();
-                }
-            });
-            
-            // Toggle fields for guests
-            var $toggleGuests = $('input[name="holdmyproduct_options[enable_popup_customization_guests]"]');
-            var $fieldsGuests = $('.hmp-popup-customization-fields-guests');
-            $toggleGuests.on('change', function(){
-                if($(this).is(':checked')){
-                    $fieldsGuests.slideDown();
-                }else{
-                    $fieldsGuests.slideUp();
                 }
             });
             
