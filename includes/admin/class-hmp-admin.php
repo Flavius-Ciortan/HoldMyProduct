@@ -1282,24 +1282,10 @@ class HMP_Admin {
                     );
                 }
                 
-                function toggleGuestReservation() {
-                    var isMainEnabled = $('input[name=\"holdmyproduct_options[enable_reservation]\"]').is(':checked');
-                    var guestField = $('input[name=\"holdmyproduct_options[enable_guest_reservation]\"]').closest('tr');
-                    
-                    if (isMainEnabled) {
-                        guestField.show();
-                    } else {
-                        guestField.hide();
-                        $('input[name=\"holdmyproduct_options[enable_guest_reservation]\"]').prop('checked', false);
-                    }
-                }
-                
                 toggleMaxReservations();
-                toggleGuestReservation();
                 
                 $('input[name=\"holdmyproduct_options[enable_reservation]\"]').on('change', function() {
                     toggleMaxReservations();
-                    toggleGuestReservation();
                 });
             });
         ";

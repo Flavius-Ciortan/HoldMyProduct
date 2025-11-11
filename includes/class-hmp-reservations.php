@@ -95,7 +95,6 @@ class HMP_Reservations {
         }
         
         $user_id = get_current_user_id();
-        $guest_email = '';
         
         // Validation
         if ( ! $this->is_product_reservable( $product_id ) ) {
@@ -114,18 +113,18 @@ class HMP_Reservations {
         
         // Check limits
         $limit = $this->get_max_reservations_per_user();
-        $active = $this->count_active_reservations( $user_id, $guest_email );
+        $active = $this->count_active_reservations( $user_id );
         
         if ( $active >= $limit ) {
             wp_send_json_error( sprintf( 'You have reached the maximum of %d active reservations.', $limit ) );
         }
         
-        if ( $this->user_has_active_reservation_for_product( $product_id, $user_id, $guest_email ) ) {
+        if ( $this->user_has_active_reservation_for_product( $product_id, $user_id ) ) {
             wp_send_json_error( 'You already have an active reservation for this product.' );
         }
         
         // Create reservation
-        $reservation_id = $this->create_reservation( $product_id, $user_id, $guest_email );
+        $reservation_id = $this->create_reservation( $product_id, $user_id );
         
         if ( $reservation_id ) {
             // Update stock
