@@ -56,7 +56,7 @@ label[for="rez_check"] {
 
 .hmp-reservations-wrapper {
     background: #ffffff;
-    border: 3px solid #008B8B; /* Dark Cyan */
+    border: 1px solid #008B8B; /* Dark Cyan */
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 139, 139, 0.1);
     overflow: hidden;
@@ -68,33 +68,21 @@ label[for="rez_check"] {
 .hmp-reservations-header {
     background: linear-gradient(135deg, #008B8B 0%, #20B2AA 100%);
     color: #ffffff;
-    padding: 2rem;
+    padding: 1.2rem;
     text-align: center;
     position: relative;
 }
 
-.hmp-reservations-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 4px;
-    background: #ffffff;
-    border-radius: 2px;
-}
-
 .hmp-reservations-header h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.8rem;
+    margin: 0 0 0.3rem 0;
+    font-size: 1.3rem;
     font-weight: 600;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .hmp-reservations-header p {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.85rem;
     opacity: 0.95;
     line-height: 1.5;
 }
@@ -122,7 +110,7 @@ label[for="rez_check"] {
 .hmp-reservations-table tbody td {
     padding: 1.5rem 1.2rem !important;
     vertical-align: middle !important;
-    border-right: 1px solid #000000;
+    border-right: 1px solid #008B8B;
 }
 
 .hmp-reservations-table tbody td:last-child {
@@ -134,8 +122,8 @@ label[for="rez_check"] {
     color: #006666 !important;
     font-weight: 600 !important;
     padding: 1.2rem !important;
-    border-bottom: 2px solid #008B8B !important;
-    border-right: 1px solid #000000 !important;
+    border-bottom: 1px solid #008B8B !important;
+    border-right: 1px solid #008B8B !important;
     border-top: none !important;
     text-transform: uppercase;
     font-size: 0.85rem;

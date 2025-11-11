@@ -23,21 +23,13 @@ if ( ! $product instanceof WC_Product ) {
 $pid = $product->get_id();
 $options = get_option('holdmyproduct_options');
 $globally_on = ! empty( $options['enable_reservation'] );
-$guest_reservations_on = ! empty( $options['enable_guest_reservation'] );
 
-// Only show button if reservations are globally enabled AND
-// (user is logged in OR guest reservations are enabled)
-$show_button = $globally_on && ( is_user_logged_in() || $guest_reservations_on );
+// Only show button if reservations are globally enabled AND user is logged in
+$show_button = $globally_on && is_user_logged_in();
 
-// Get customization settings
-$is_logged_in = is_user_logged_in();
-if ($is_logged_in) {
-    $enable_popup_customization = !empty($options['enable_popup_customization_logged_in']);
-    $popup_settings = $options['popup_customization_logged_in'] ?? [];
-} else {
-    $enable_popup_customization = !empty($options['enable_popup_customization_guests']);
-    $popup_settings = $options['popup_customization_guests'] ?? [];
-}
+// Get customization settings (only for logged-in users now)
+$enable_popup_customization = !empty($options['enable_popup_customization_logged_in']);
+$popup_settings = $options['popup_customization_logged_in'] ?? [];
 
 // Defaults
 $border_radius = isset($popup_settings['border_radius']) ? intval($popup_settings['border_radius']) : 8;
@@ -83,31 +75,8 @@ if ($enable_popup_customization) {
     <link href="<?php echo esc_url($google_font_link); ?>" rel="stylesheet" />
 <?php endif; ?>
 
-<!-- Modal for Guest Users -->
-<?php if ( ! is_user_logged_in() && $guest_reservations_on ) : ?>
-  <div id="reservation-modal" class="modal-overlay" title="Reserve Product" style="display: none;">
-      <div class="modal-box" style="<?php echo $modal_box_style; ?>">
-          <form id="reservation-form">
-              <input type="hidden" name="action" value="holdmyproduct_reserve">
-              <input type="hidden" name="security" value="<?php echo esc_attr( wp_create_nonce('holdmyproduct_nonce') ); ?>">
-              <input type="hidden" name="product_id" value="<?php echo esc_attr( $pid ); ?>">
-              
-              <p><strong>Reserve this product</strong></p>
-              <p>Fill in your details to reserve this product for 24 hours:</p>
-              
-              <input type="text" name="name" placeholder="First Name" required>
-              <input type="text" name="surname" placeholder="Last Name" required>
-              <input type="email" name="email" id="hmp_email" placeholder="Email Address" required>
-              
-              <p class="description">We'll send you a confirmation email with your reservation details.</p>
-              
-              <button type="submit" class="submit-btn">Reserve Product</button>
-          </form>
-      </div>
-  </div>
-
 <!-- Modal for Logged-in Users -->
-<?php elseif ( is_user_logged_in() && $globally_on ) : ?>
+<?php if ( is_user_logged_in() && $globally_on ) : ?>
   <div id="reservation-modal" class="modal-overlay" title="Reserve Product" style="display: none;">
     <div class="modal-box" style="<?php echo $modal_box_style; ?>">
       <form id="reservation-form">

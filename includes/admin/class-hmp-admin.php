@@ -91,10 +91,8 @@ class HMP_Admin {
             'holdmyproduct_enable_reservation' => 'Enable Reservation',
             'holdmyproduct_max_reservations' => 'Max Reservations Per User',
             'holdmyproduct_reservation_duration' => 'Reservation Duration (hours)',
-            'holdmyproduct_enable_guest_reservation' => 'Enable Guest Reservations',
             'holdmyproduct_enable_email_notifications' => 'Enable Email Notifications',
-            'holdmyproduct_require_admin_approval' => 'Require Admin Approval for Reservations',
-            'holdmyproduct_show_admin_toggle' => 'Show Admin Toggle (Products list)'
+            'holdmyproduct_require_admin_approval' => 'Require Admin Approval for Reservations'
         );
         
         foreach ( $fields as $id => $title ) {
@@ -151,19 +149,6 @@ class HMP_Admin {
     }
     
     /**
-     * Enable guest reservation field callback
-     */
-    public function holdmyproduct_enable_guest_reservation_callback() {
-        $options = get_option( 'holdmyproduct_options' );
-        $checked = ! empty( $options['enable_guest_reservation'] ) ? 'checked' : '';
-        echo '<label class="toggle-switch">
-                <input type="checkbox" name="holdmyproduct_options[enable_guest_reservation]" value="1" ' . $checked . '>
-                <span class="slider"></span>
-              </label>
-              <p class="description">Allow users without an account to reserve products using their email address.</p>';
-    }
-    
-    /**
      * Enable email notifications field callback
      */
     public function holdmyproduct_enable_email_notifications_callback() {
@@ -187,18 +172,6 @@ class HMP_Admin {
                 <span class="slider"></span>
               </label>
               <p class="description">Reservations require admin approval before becoming active.</p>';
-    }
-    
-    /**
-     * Show admin toggle field callback
-     */
-    public function holdmyproduct_show_admin_toggle_callback() {
-        $options = get_option( 'holdmyproduct_options' );
-        $checked = ! empty( $options['show_admin_toggle'] ) ? 'checked' : '';
-        echo '<label class="toggle-switch">
-                <input type="checkbox" name="holdmyproduct_options[show_admin_toggle]" value="1" ' . $checked . '>
-                <span class="slider"></span>
-              </label>';
     }
     
     /**
@@ -248,12 +221,8 @@ class HMP_Admin {
                             <span class="hmp-tab-text">General Settings</span>
                         </button>
                         <button type="button" class="hmp-nav-tab" data-target="logged-in">
-                            <span class="hmp-tab-icon">👤</span>
-                            <span class="hmp-tab-text">Logged In Users</span>
-                        </button>
-                        <button type="button" class="hmp-nav-tab" data-target="logged-out">
-                            <span class="hmp-tab-icon">👥</span>
-                            <span class="hmp-tab-text">Guests</span>
+                            <span class="hmp-tab-icon">🎨</span>
+                            <span class="hmp-tab-text">Pop-up Customization</span>
                         </button>
                     </div>
                 </div>
@@ -275,12 +244,12 @@ class HMP_Admin {
                             </div>
                         </div>
 
-                        <!-- Logged In Users Tab -->
+                        <!-- Pop-up Customization Tab -->
                         <div id="hmp-logged-in" class="hmp-tab-content">
                             <div class="hmp-settings-card">
                                 <div class="hmp-card-header">
-                                    <h3>Logged In User Settings</h3>
-                                    <p>Configure pop-up customization for registered users</p>
+                                    <h3>Pop-up Customization</h3>
+                                    <p>Customize the appearance of the reservation pop-up modal</p>
                                 </div>
                                 <div class="hmp-card-body">
                                     <!-- COMING SOON MESSAGE - UNCOMMENT FOR PAID VERSION
@@ -312,7 +281,7 @@ class HMP_Admin {
                                                     <input type="checkbox" name="holdmyproduct_options[enable_popup_customization_logged_in]" value="1" <?php checked($enable_popup_customization_logged_in); ?>>
                                                     <span class="slider"></span>
                                                 </label>
-                                                <p class="description">Customize the appearance of the reservation pop-up for logged-in users.</p>
+                                                <p class="description">Enable custom styling for the reservation pop-up modal.</p>
                                             </td>
                                         </tr>
                                     </table>
@@ -359,96 +328,6 @@ class HMP_Admin {
                                             <tr>
                                                 <th scope="row">Text Color</th>
                                                 <td><input type="color" name="holdmyproduct_options[popup_customization_logged_in][text_color]" value="<?php echo esc_attr($popup_settings_logged_in['text_color'] ?? '#222222'); ?>" class="hmp-input-right-align"></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Guests Tab -->
-                        <div id="hmp-logged-out" class="hmp-tab-content">
-                            <div class="hmp-settings-card">
-                                <div class="hmp-card-header">
-                                    <h3>Guest User Settings</h3>
-                                    <p>Configure pop-up customization for guest users</p>
-                                </div>
-                                <div class="hmp-card-body">
-                                    <!-- COMING SOON MESSAGE - UNCOMMENT FOR PAID VERSION
-                                    <div class="hmp-coming-soon-message">
-                                        <h4>🚀 Coming Soon in Pro Version!</h4>
-                                        <p>Advanced pop-up customization for guest users will be available in our premium version.</p>
-                                        <p><strong>Features include:</strong></p>
-                                        <ul>
-                                            <li>Custom border radius settings</li>
-                                            <li>Background color customization</li>
-                                            <li>Font family selection</li>
-                                            <li>Font size adjustment</li>
-                                            <li>Text color customization</li>
-                                        </ul>
-                                        <p>Stay tuned for updates!</p>
-                                    </div>
-                                    END COMING SOON MESSAGE -->
-                                    
-                                    <?php
-                                    $enable_popup_customization_guests = isset($options['enable_popup_customization_guests']) ? (bool)$options['enable_popup_customization_guests'] : false;
-                                    $popup_settings_guests = isset($options['popup_customization_guests']) ? $options['popup_customization_guests'] : [];
-                                    ?>
-                                    <table class="form-table">
-                                        <tr>
-                                            <th scope="row">Enable Pop-up Customization</th>
-                                            <td>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox" name="holdmyproduct_options[enable_popup_customization_guests]" value="1" <?php checked($enable_popup_customization_guests); ?>>
-                                                    <span class="slider"></span>
-                                                </label>
-                                                <p class="description">Customize the appearance of the reservation pop-up for guest users.</p>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <div class="hmp-popup-customization-fields-guests" style="display:<?php echo $enable_popup_customization_guests ? 'block' : 'none'; ?>;margin-top:1rem;">
-                                        <table class="form-table">
-                                            <tr>
-                                                <th scope="row">Border Radius (px)</th>
-                                                <td><input type="number" name="holdmyproduct_options[popup_customization_guests][border_radius]" value="<?php echo esc_attr($popup_settings_guests['border_radius'] ?? '12'); ?>" min="0" max="50" class="hmp-input-right-align"></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Background Color</th>
-                                                <td><input type="color" name="holdmyproduct_options[popup_customization_guests][background_color]" value="<?php echo esc_attr($popup_settings_guests['background_color'] ?? '#ffffff'); ?>" class="hmp-input-right-align"></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Font Family</th>
-                                                <td>
-                                                    <select name="holdmyproduct_options[popup_customization_guests][font_family]" class="hmp-input-right-align">
-                                                        <?php
-                                                        $fonts = [
-                                                            'Arial, Helvetica, sans-serif' => 'Arial',
-                                                            'Verdana, Geneva, sans-serif' => 'Verdana',
-                                                            'Georgia, serif' => 'Georgia',
-                                                            'Times New Roman, Times, serif' => 'Times New Roman',
-                                                            'Tahoma, Geneva, sans-serif' => 'Tahoma',
-                                                            'Trebuchet MS, Helvetica, sans-serif' => 'Trebuchet MS',
-                                                            'Courier New, Courier, monospace' => 'Courier New',
-                                                            'Roboto, sans-serif' => 'Roboto (Google)',
-                                                            'Open Sans, sans-serif' => 'Open Sans (Google)',
-                                                            'Lato, sans-serif' => 'Lato (Google)',
-                                                            'Montserrat, sans-serif' => 'Montserrat (Google)'
-                                                        ];
-                                                        $selected_font = $popup_settings_guests['font_family'] ?? 'Arial, Helvetica, sans-serif';
-                                                        foreach ($fonts as $value => $label) {
-                                                            echo '<option value="' . esc_attr($value) . '"' . selected($selected_font, $value, false) . '>' . esc_html($label) . '</option>';
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Font Size (px)</th>
-                                                <td><input type="number" name="holdmyproduct_options[popup_customization_guests][font_size]" value="<?php echo esc_attr($popup_settings_guests['font_size'] ?? '16'); ?>" min="10" max="40" class="hmp-input-right-align"></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Text Color</th>
-                                                <td><input type="color" name="holdmyproduct_options[popup_customization_guests][text_color]" value="<?php echo esc_attr($popup_settings_guests['text_color'] ?? '#222222'); ?>" class="hmp-input-right-align"></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -527,17 +406,6 @@ class HMP_Admin {
                     $fieldsLoggedIn.slideDown();
                 }else{
                     $fieldsLoggedIn.slideUp();
-                }
-            });
-            
-            // Toggle fields for guests
-            var $toggleGuests = $('input[name="holdmyproduct_options[enable_popup_customization_guests]"]');
-            var $fieldsGuests = $('.hmp-popup-customization-fields-guests');
-            $toggleGuests.on('change', function(){
-                if($(this).is(':checked')){
-                    $fieldsGuests.slideDown();
-                }else{
-                    $fieldsGuests.slideUp();
                 }
             });
             
@@ -621,7 +489,7 @@ class HMP_Admin {
         $reservations = $this->get_product_reservations( $post->ID );
         
         echo '<div class="options_group">';
-        echo '<h4>' . __( 'Active Reservations', 'hold-my-product' ) . '</h4>';
+        echo '<h4 style="padding-left: 12px;">' . __( 'Active Reservations', 'hold-my-product' ) . '</h4>';
         
         if ( empty( $reservations ) ) {
             echo '<p>' . __( 'No active reservations for this product.', 'hold-my-product' ) . '</p>';
@@ -1337,30 +1205,7 @@ class HMP_Admin {
             }
         }
         
-        // Product list scripts
-        if ( $hook === 'edit.php' && ( $_GET['post_type'] ?? '' ) === 'product' && $this->show_admin_toggle_enabled() ) {
-            wp_enqueue_script(
-                'hmp-res-toggle',
-                HMP_PLUGIN_URL . 'assets/js/hmp-res-toggle.js',
-                array( 'jquery' ),
-                HMP_VERSION,
-                true
-            );
-            
-            wp_localize_script( 'hmp-res-toggle', 'hmpResToggle', array(
-                'ajax'    => admin_url( 'admin-ajax.php' ),
-                'nonce'   => wp_create_nonce( 'hmp_toggle_res' ),
-                'enable'  => __( 'Enable', 'hold-my-product' ),
-                'disable' => __( 'Disable', 'hold-my-product' ),
-            ) );
-            
-            wp_enqueue_style(
-                'holdmyproduct-admin-style',
-                HMP_PLUGIN_URL . 'assets/css/admin-style.css',
-                array(),
-                HMP_VERSION
-            );
-        }
+        // Product list toggle feature removed in free version
     }
     
     /**
@@ -1437,24 +1282,10 @@ class HMP_Admin {
                     );
                 }
                 
-                function toggleGuestReservation() {
-                    var isMainEnabled = $('input[name=\"holdmyproduct_options[enable_reservation]\"]').is(':checked');
-                    var guestField = $('input[name=\"holdmyproduct_options[enable_guest_reservation]\"]').closest('tr');
-                    
-                    if (isMainEnabled) {
-                        guestField.show();
-                    } else {
-                        guestField.hide();
-                        $('input[name=\"holdmyproduct_options[enable_guest_reservation]\"]').prop('checked', false);
-                    }
-                }
-                
                 toggleMaxReservations();
-                toggleGuestReservation();
                 
                 $('input[name=\"holdmyproduct_options[enable_reservation]\"]').on('change', function() {
                     toggleMaxReservations();
-                    toggleGuestReservation();
                 });
             });
         ";
@@ -1502,82 +1333,10 @@ class HMP_Admin {
     
     /**
      * Initialize products list modifications
+     * Admin toggle feature removed in free version
      */
     public function init_products_list() {
-        if ( ! $this->show_admin_toggle_enabled() ) {
-            return;
-        }
-        
-        add_filter( 'manage_edit-product_columns', array( $this, 'add_reservations_column' ) );
-        add_action( 'manage_product_posts_custom_column', array( $this, 'display_reservations_column' ), 10, 2 );
-        add_action( 'wp_ajax_hmp_toggle_res', array( $this, 'ajax_toggle_reservation' ) );
-    }
-    
-    /**
-     * Add reservations column to products list
-     */
-    public function add_reservations_column( $columns ) {
-        $new = array();
-        foreach ( $columns as $key => $label ) {
-            $new[$key] = $label;
-            if ( $key === 'sku' ) {
-                $new['hmp_reservations'] = __( 'Reservations', 'hold-my-product' );
-            }
-        }
-        if ( ! isset( $new['hmp_reservations'] ) ) {
-            $new['hmp_reservations'] = __( 'Reservations', 'hold-my-product' );
-        }
-        return $new;
-    }
-    
-    /**
-     * Display reservations column content
-     */
-    public function display_reservations_column( $column, $post_id ) {
-        if ( $column !== 'hmp_reservations' ) {
-            return;
-        }
-        
-        $value = get_post_meta( $post_id, '_hmp_reservations_enabled', true );
-        $is_enabled = ( $value === 'yes' );
-        $state = $is_enabled ? 'on' : 'off';
-        $label = $is_enabled ? __( 'Disable', 'hold-my-product' ) : __( 'Enable', 'hold-my-product' );
-        
-        printf(
-            '<button type="button" class="button hmp-res-toggle %1$s" aria-pressed="%2$s" data-product-id="%3$d" data-state="%1$s">
-                <span class="hmp-res-toggle-label">%4$s</span>
-            </button>
-            <span class="spinner" style="float:none;"></span>',
-            esc_attr( $state ),
-            $is_enabled ? 'true' : 'false',
-            (int) $post_id,
-            esc_html( $label )
-        );
-    }
-    
-    /**
-     * Handle AJAX toggle reservation
-     */
-    public function ajax_toggle_reservation() {
-        if ( ! current_user_can( 'edit_products' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Forbidden', 'hold-my-product' ) ), 403 );
-        }
-        
-        check_ajax_referer( 'hmp_toggle_res', 'nonce' );
-        
-        $product_id = absint( $_POST['product_id'] ?? 0 );
-        $new_status = ( ( $_POST['new'] ?? '' ) === 'yes' ) ? 'yes' : 'no';
-        
-        if ( ! $product_id ) {
-            wp_send_json_error( array( 'message' => __( 'Invalid product', 'hold-my-product' ) ), 400 );
-        }
-        
-        update_post_meta( $product_id, '_hmp_reservations_enabled', $new_status );
-        
-        wp_send_json_success( array(
-            'new'   => $new_status,
-            'label' => ( $new_status === 'yes' ) ? __( 'Enabled', 'hold-my-product' ) : __( 'Disabled', 'hold-my-product' ),
-        ) );
+        // Feature removed in free version
     }
     
     /**
@@ -1651,13 +1410,5 @@ class HMP_Admin {
         } else {
             wp_send_json_error( 'Failed to deny reservation.' );
         }
-    }
-    
-    /**
-     * Check if admin toggle is enabled
-     */
-    private function show_admin_toggle_enabled() {
-        $options = get_option( 'holdmyproduct_options' );
-        return ! empty( $options['show_admin_toggle'] );
     }
 }
