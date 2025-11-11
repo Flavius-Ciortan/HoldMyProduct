@@ -234,8 +234,8 @@ class HMP_Admin {
                             <span class="hmp-tab-text">General Settings</span>
                         </button>
                         <button type="button" class="hmp-nav-tab" data-target="logged-in">
-                            <span class="hmp-tab-icon">👤</span>
-                            <span class="hmp-tab-text">Logged In Users</span>
+                            <span class="hmp-tab-icon">🎨</span>
+                            <span class="hmp-tab-text">Pop-up Customization</span>
                         </button>
                     </div>
                 </div>
@@ -257,12 +257,12 @@ class HMP_Admin {
                             </div>
                         </div>
 
-                        <!-- Logged In Users Tab -->
+                        <!-- Pop-up Customization Tab -->
                         <div id="hmp-logged-in" class="hmp-tab-content">
                             <div class="hmp-settings-card">
                                 <div class="hmp-card-header">
-                                    <h3>Logged In User Settings</h3>
-                                    <p>Configure pop-up customization for registered users</p>
+                                    <h3>Pop-up Customization</h3>
+                                    <p>Customize the appearance of the reservation pop-up modal</p>
                                 </div>
                                 <div class="hmp-card-body">
                                     <!-- COMING SOON MESSAGE - UNCOMMENT FOR PAID VERSION
@@ -294,7 +294,7 @@ class HMP_Admin {
                                                     <input type="checkbox" name="holdmyproduct_options[enable_popup_customization_logged_in]" value="1" <?php checked($enable_popup_customization_logged_in); ?>>
                                                     <span class="slider"></span>
                                                 </label>
-                                                <p class="description">Customize the appearance of the reservation pop-up for logged-in users.</p>
+                                                <p class="description">Enable custom styling for the reservation pop-up modal.</p>
                                             </td>
                                         </tr>
                                     </table>
