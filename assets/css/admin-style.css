@@ -650,7 +650,7 @@ body.toplevel_page_holdmyproduct-settings input[type="submit"]:focus {
 
 /* Action Button Styles (Enhanced) */
 .hmp-cancel-reservation {
-    background: linear-gradient(135deg, var(--hmp-primary) 0%, var(--hmp-primary-dark) 100%) !important;
+    background: var(--hmp-primary) !important;
     color: var(--hmp-white) !important;
     border: 2px solid var(--hmp-primary) !important;
     padding: 6px 12px !important;
@@ -663,7 +663,7 @@ body.toplevel_page_holdmyproduct-settings input[type="submit"]:focus {
 }
 
 .hmp-cancel-reservation:hover {
-    background: linear-gradient(135deg, var(--hmp-primary-dark) 0%, #004d4d 100%) !important;
+    background: var(--hmp-primary-dark) !important;
     border-color: var(--hmp-primary-dark) !important;
     transform: translateY(-1px) !important;
     box-shadow: var(--hmp-shadow) !important;
@@ -760,6 +760,32 @@ body.toplevel_page_holdmyproduct-settings input[type="submit"]:focus {
     color: #9ca3af !important;
     cursor: not-allowed !important;
     transform: none !important;
+}
+
+/* Filter and Clear Buttons */
+#filter-reservations {
+    background: var(--hmp-primary) !important;
+    color: var(--hmp-white) !important;
+    border-color: var(--hmp-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+#filter-reservations:hover {
+    background: var(--hmp-primary-dark) !important;
+    border-color: var(--hmp-primary-dark) !important;
+}
+
+#clear-filters {
+    background: var(--hmp-secondary) !important;
+    color: var(--hmp-primary) !important;
+    border-color: var(--hmp-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+#clear-filters:hover {
+    background: var(--hmp-white) !important;
+    border-color: var(--hmp-primary-dark) !important;
+    color: var(--hmp-primary-dark) !important;
 }
 
 /* Product Page Reservations Table (Enhanced) */
