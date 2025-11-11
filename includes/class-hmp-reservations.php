@@ -356,12 +356,12 @@ class HMP_Reservations {
         $new = array();
         foreach ( $items as $key => $label ) {
             if ( $key === 'customer-logout' ) {
-                $new['hmp-reservations'] = __( 'Reservations', 'hold-my-product' );
+                $new['hmp-reservations'] = __( 'Reserved products', 'hold-my-product' );
             }
             $new[$key] = $label;
         }
         if ( ! isset( $new['hmp-reservations'] ) ) {
-            $new['hmp-reservations'] = __( 'Reservations', 'hold-my-product' );
+            $new['hmp-reservations'] = __( 'Reserved products', 'hold-my-product' );
         }
         return $new;
     }
@@ -370,7 +370,7 @@ class HMP_Reservations {
      * Change endpoint title for reservations
      */
     public function reservations_endpoint_title( $title ) {
-        return __( 'Reservations', 'hold-my-product' );
+        return __( 'Reserved products', 'hold-my-product' );
     }
     
     /**

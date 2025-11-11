@@ -92,8 +92,7 @@ class HMP_Admin {
             'holdmyproduct_max_reservations' => 'Max Reservations Per User',
             'holdmyproduct_reservation_duration' => 'Reservation Duration (hours)',
             'holdmyproduct_enable_email_notifications' => 'Enable Email Notifications',
-            'holdmyproduct_require_admin_approval' => 'Require Admin Approval for Reservations',
-            'holdmyproduct_show_admin_toggle' => 'Show Admin Toggle (Products list)'
+            'holdmyproduct_require_admin_approval' => 'Require Admin Approval for Reservations'
         );
         
         foreach ( $fields as $id => $title ) {
@@ -173,18 +172,6 @@ class HMP_Admin {
                 <span class="slider"></span>
               </label>
               <p class="description">Reservations require admin approval before becoming active.</p>';
-    }
-    
-    /**
-     * Show admin toggle field callback
-     */
-    public function holdmyproduct_show_admin_toggle_callback() {
-        $options = get_option( 'holdmyproduct_options' );
-        $checked = ! empty( $options['show_admin_toggle'] ) ? 'checked' : '';
-        echo '<label class="toggle-switch">
-                <input type="checkbox" name="holdmyproduct_options[show_admin_toggle]" value="1" ' . $checked . '>
-                <span class="slider"></span>
-              </label>';
     }
     
     /**
@@ -502,7 +489,7 @@ class HMP_Admin {
         $reservations = $this->get_product_reservations( $post->ID );
         
         echo '<div class="options_group">';
-        echo '<h4>' . __( 'Active Reservations', 'hold-my-product' ) . '</h4>';
+        echo '<h4 style="padding-left: 12px;">' . __( 'Active Reservations', 'hold-my-product' ) . '</h4>';
         
         if ( empty( $reservations ) ) {
             echo '<p>' . __( 'No active reservations for this product.', 'hold-my-product' ) . '</p>';
@@ -1218,30 +1205,7 @@ class HMP_Admin {
             }
         }
         
-        // Product list scripts
-        if ( $hook === 'edit.php' && ( $_GET['post_type'] ?? '' ) === 'product' && $this->show_admin_toggle_enabled() ) {
-            wp_enqueue_script(
-                'hmp-res-toggle',
-                HMP_PLUGIN_URL . 'assets/js/hmp-res-toggle.js',
-                array( 'jquery' ),
-                HMP_VERSION,
-                true
-            );
-            
-            wp_localize_script( 'hmp-res-toggle', 'hmpResToggle', array(
-                'ajax'    => admin_url( 'admin-ajax.php' ),
-                'nonce'   => wp_create_nonce( 'hmp_toggle_res' ),
-                'enable'  => __( 'Enable', 'hold-my-product' ),
-                'disable' => __( 'Disable', 'hold-my-product' ),
-            ) );
-            
-            wp_enqueue_style(
-                'holdmyproduct-admin-style',
-                HMP_PLUGIN_URL . 'assets/css/admin-style.css',
-                array(),
-                HMP_VERSION
-            );
-        }
+        // Product list toggle feature removed in free version
     }
     
     /**
@@ -1383,82 +1347,10 @@ class HMP_Admin {
     
     /**
      * Initialize products list modifications
+     * Admin toggle feature removed in free version
      */
     public function init_products_list() {
-        if ( ! $this->show_admin_toggle_enabled() ) {
-            return;
-        }
-        
-        add_filter( 'manage_edit-product_columns', array( $this, 'add_reservations_column' ) );
-        add_action( 'manage_product_posts_custom_column', array( $this, 'display_reservations_column' ), 10, 2 );
-        add_action( 'wp_ajax_hmp_toggle_res', array( $this, 'ajax_toggle_reservation' ) );
-    }
-    
-    /**
-     * Add reservations column to products list
-     */
-    public function add_reservations_column( $columns ) {
-        $new = array();
-        foreach ( $columns as $key => $label ) {
-            $new[$key] = $label;
-            if ( $key === 'sku' ) {
-                $new['hmp_reservations'] = __( 'Reservations', 'hold-my-product' );
-            }
-        }
-        if ( ! isset( $new['hmp_reservations'] ) ) {
-            $new['hmp_reservations'] = __( 'Reservations', 'hold-my-product' );
-        }
-        return $new;
-    }
-    
-    /**
-     * Display reservations column content
-     */
-    public function display_reservations_column( $column, $post_id ) {
-        if ( $column !== 'hmp_reservations' ) {
-            return;
-        }
-        
-        $value = get_post_meta( $post_id, '_hmp_reservations_enabled', true );
-        $is_enabled = ( $value === 'yes' );
-        $state = $is_enabled ? 'on' : 'off';
-        $label = $is_enabled ? __( 'Disable', 'hold-my-product' ) : __( 'Enable', 'hold-my-product' );
-        
-        printf(
-            '<button type="button" class="button hmp-res-toggle %1$s" aria-pressed="%2$s" data-product-id="%3$d" data-state="%1$s">
-                <span class="hmp-res-toggle-label">%4$s</span>
-            </button>
-            <span class="spinner" style="float:none;"></span>',
-            esc_attr( $state ),
-            $is_enabled ? 'true' : 'false',
-            (int) $post_id,
-            esc_html( $label )
-        );
-    }
-    
-    /**
-     * Handle AJAX toggle reservation
-     */
-    public function ajax_toggle_reservation() {
-        if ( ! current_user_can( 'edit_products' ) ) {
-            wp_send_json_error( array( 'message' => __( 'Forbidden', 'hold-my-product' ) ), 403 );
-        }
-        
-        check_ajax_referer( 'hmp_toggle_res', 'nonce' );
-        
-        $product_id = absint( $_POST['product_id'] ?? 0 );
-        $new_status = ( ( $_POST['new'] ?? '' ) === 'yes' ) ? 'yes' : 'no';
-        
-        if ( ! $product_id ) {
-            wp_send_json_error( array( 'message' => __( 'Invalid product', 'hold-my-product' ) ), 400 );
-        }
-        
-        update_post_meta( $product_id, '_hmp_reservations_enabled', $new_status );
-        
-        wp_send_json_success( array(
-            'new'   => $new_status,
-            'label' => ( $new_status === 'yes' ) ? __( 'Enabled', 'hold-my-product' ) : __( 'Disabled', 'hold-my-product' ),
-        ) );
+        // Feature removed in free version
     }
     
     /**
@@ -1532,13 +1424,5 @@ class HMP_Admin {
         } else {
             wp_send_json_error( 'Failed to deny reservation.' );
         }
-    }
-    
-    /**
-     * Check if admin toggle is enabled
-     */
-    private function show_admin_toggle_enabled() {
-        $options = get_option( 'holdmyproduct_options' );
-        return ! empty( $options['show_admin_toggle'] );
     }
 }

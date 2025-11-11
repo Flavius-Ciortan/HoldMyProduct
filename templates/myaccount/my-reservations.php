@@ -15,8 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="hmp-reservations-container">
     <div class="hmp-reservations-wrapper">
         <div class="hmp-reservations-header">
-            <h2><?php esc_html_e( 'My Reservations', 'hold-my-product' ); ?></h2>
-            <p><?php esc_html_e( 'Manage your product reservations below. Don\'t forget to complete your purchase before the expiration time.', 'hold-my-product' ); ?></p>
+            <h2><?php esc_html_e( 'My Reserved Products', 'hold-my-product' ); ?></h2>
+            <p><?php esc_html_e( 'Your reserved items are held for you - complete checkout before time runs out', 'hold-my-product' ); ?></p>
         </div>
         
         <table class="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table hmp-reservations-table">

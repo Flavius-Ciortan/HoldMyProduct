@@ -127,8 +127,19 @@
 .hmp-nav-tabs {
     display: flex;
     gap: 1rem;
-    border-bottom: 2px solid var(--hmp-border);
     padding-bottom: 0;
+    position: relative;
+}
+
+.hmp-nav-tabs::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--hmp-primary) 0%, var(--hmp-primary) 40%, transparent 100%);
+    z-index: 0;
 }
 
 .hmp-nav-tab {
@@ -147,13 +158,13 @@
     transition: all 0.3s ease;
     text-decoration: none;
     position: relative;
-    top: 2px;
+    z-index: 1;
+    margin-bottom: -2px;
 }
 
 .hmp-nav-tab:hover {
     background: var(--hmp-secondary);
     color: var(--hmp-primary);
-    transform: translateY(-2px);
 }
 
 .hmp-nav-tab-active {
@@ -167,7 +178,6 @@
     background: var(--hmp-primary-dark);
     border-color: var(--hmp-primary-dark);
     color: var(--hmp-white);
-    transform: translateY(-2px);
 }
 
 .hmp-tab-icon {
