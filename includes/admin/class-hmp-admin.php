@@ -230,7 +230,7 @@ class HMP_Admin {
                         }
                         
                         if ($logo_src): ?>
-                            <img src="<?php echo esc_url($logo_src); ?>" alt="HoldMyProduct Logo" class="hmp-logo" title="Logo: <?php echo esc_attr($found_file); ?>">
+                            <img src="<?php echo esc_url($logo_src); ?>" alt="HoldMyProduct Logo" class="hmp-logo">
                         <?php else: ?>
                             <div class="hmp-logo hmp-logo-fallback" title="No logo file found. Checked: <?php echo implode(', ', $logo_files); ?>">HMP</div>
                         <?php endif; ?>
