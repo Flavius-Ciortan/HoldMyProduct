@@ -91,7 +91,6 @@ class HMP_Admin {
             'holdmyproduct_enable_reservation' => 'Enable Reservation',
             'holdmyproduct_max_reservations' => 'Max Reservations Per User',
             'holdmyproduct_reservation_duration' => 'Reservation Duration (hours)',
-            'holdmyproduct_enable_guest_reservation' => 'Enable Guest Reservations',
             'holdmyproduct_enable_email_notifications' => 'Enable Email Notifications',
             'holdmyproduct_require_admin_approval' => 'Require Admin Approval for Reservations',
             'holdmyproduct_show_admin_toggle' => 'Show Admin Toggle (Products list)'
@@ -148,19 +147,6 @@ class HMP_Admin {
                 <input type="number" min="1" max="168" name="holdmyproduct_options[reservation_duration]" value="' . esc_attr( $value ) . '" class="holdmyproduct-small-input" />
                 <p class="description">How long reservations last (1-168 hours, default: 24)</p>
               </div>';
-    }
-    
-    /**
-     * Enable guest reservation field callback
-     */
-    public function holdmyproduct_enable_guest_reservation_callback() {
-        $options = get_option( 'holdmyproduct_options' );
-        $checked = ! empty( $options['enable_guest_reservation'] ) ? 'checked' : '';
-        echo '<label class="toggle-switch">
-                <input type="checkbox" name="holdmyproduct_options[enable_guest_reservation]" value="1" ' . $checked . '>
-                <span class="slider"></span>
-              </label>
-              <p class="description">Allow users without an account to reserve products using their email address.</p>';
     }
     
     /**

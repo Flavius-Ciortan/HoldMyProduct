@@ -42,8 +42,8 @@ class HMP_Frontend {
         }
         
         if ( ! $this->reservations->is_product_reservable( $product->get_id() ) ) {
-            // Show different messages based on user status and settings
-            if ( ! is_user_logged_in() && ! $this->reservations->are_guest_reservations_enabled() ) {
+            // Show message for non-logged-in users or when reservations are disabled
+            if ( ! is_user_logged_in() ) {
                 echo '<p class="hmp-reserve-unavailable" style="margin-top:8px;">Please <a href="' . esc_url( wp_login_url( get_permalink() ) ) . '">log in</a> or <a href="' . esc_url( wp_registration_url() ) . '">create an account</a> to reserve this product.</p>';
             } else {
                 echo '<p class="hmp-reserve-unavailable" style="margin-top:8px;">Reservations are not available for this product.</p>';
@@ -77,7 +77,6 @@ class HMP_Frontend {
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( 'holdmyproduct_nonce' ),
             'is_logged_in' => is_user_logged_in() ? 1 : 0,
-            'guest_reservations_enabled' => $this->reservations->are_guest_reservations_enabled() ? 1 : 0,
         ) );
     }
     
