@@ -15,6 +15,21 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+// Check if PRO version is active
+if ( defined( 'HMP_PRO_VERSION' ) ) {
+    add_action( 'admin_init', function() {
+        deactivate_plugins( plugin_basename( __FILE__ ) );
+    } );
+    add_action( 'admin_notices', function() {
+        ?>
+        <div class="notice notice-error">
+            <p><?php esc_html_e( 'Hold My Product (Free) cannot be activated because Hold My Product PRO is already active. Please deactivate the PRO version first if you want to use the free version.', 'hold-my-product' ); ?></p>
+        </div>
+        <?php
+    } );
+    return;
+}
+
 // Define plugin constants
 define( 'HMP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'HMP_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
