@@ -756,12 +756,8 @@ class HMP_Admin {
                 var customer = $btn.data('customer');
                 var product = $btn.data('product') || 'this product';
                 
-                console.log('Approve button clicked, reservation ID:', reservationId);
-                
                 if (confirm('Are you sure you want to approve the reservation for ' + customer + ' on ' + product + '?')) {
                     $btn.prop('disabled', true).text('Approving...');
-                    
-                    console.log('Starting AJAX request for approval');
                     
                     $.post(ajaxurl, {
                         action: 'hmp_approve_reservation',
@@ -769,7 +765,6 @@ class HMP_Admin {
                         nonce: '<?php echo wp_create_nonce( 'hmp_admin_approve' ); ?>'
                     })
                     .done(function(response) {
-                        console.log('AJAX response received:', response);
                         if (response.success) {
                             // Update buttons to show cancel option
                             var $row = $btn.closest('tr');
@@ -789,13 +784,11 @@ class HMP_Admin {
                                     .insertAfter('.wrap h1');
                             }
                         } else {
-                            console.log('AJAX error:', response.data);
                             alert('Error: ' + response.data);
                             $btn.prop('disabled', false).text('Approve');
                         }
                     })
                     .fail(function(xhr, status, error) {
-                        console.log('AJAX request failed:', xhr, status, error);
                         alert('Request failed. Please try again.');
                         $btn.prop('disabled', false).text('Approve');
                     });
