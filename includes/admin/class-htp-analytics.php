@@ -40,10 +40,14 @@ class HTP_Analytics {
      * Enqueue analytics page scripts and styles
      */
     public function enqueue_analytics_scripts( $hook ) {
-        if ( $hook === 'holdthisproduct_page_holdthisproduct-analytics' ) {
+        // Some WP setups generate different hook suffixes for submenu pages.
+        // Prefer checking the page slug as a reliable fallback.
+        $page = isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
+
+        if ( $hook === 'holdthisproduct_page_holdthisproduct-analytics' || $page === 'holdthisproduct-analytics' ) {
             wp_enqueue_style(
                 'holdthisproduct-admin-style',
-                HTP_PLUGIN_URL . 'admin-style.css',
+                HTP_PLUGIN_URL . 'assets/css/admin-style.css',
                 array(),
                 HTP_VERSION
             );
@@ -72,6 +76,11 @@ class HTP_Analytics {
                     <h3>Active Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #46b450;"><?php echo esc_html( $stats['active'] ); ?></p>
                 </div>
+
+                <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                    <h3>Pending Approval</h3>
+                    <p style="font-size: 32px; margin: 0; color: #f59e0b;"><?php echo esc_html( $stats['pending_approval'] ); ?></p>
+                </div>
                 
                 <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Expired Reservations</h3>
@@ -82,10 +91,15 @@ class HTP_Analytics {
                     <h3>Cancelled Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #d63638;"><?php echo esc_html( $stats['cancelled'] ); ?></p>
                 </div>
-                
+
                 <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Fulfilled Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #00a32a;"><?php echo esc_html( $stats['fulfilled'] ); ?></p>
+                </div>
+
+                <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                    <h3>Denied Reservations</h3>
+                    <p style="font-size: 32px; margin: 0; color: #991b1b;"><?php echo esc_html( $stats['denied'] ); ?></p>
                 </div>
                 
                 <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -162,6 +176,15 @@ class HTP_Analytics {
             AND pm.meta_key = '_htp_status' 
             AND pm.meta_value = 'active'
         ");
+
+        $pending_approval = $wpdb->get_var("
+            SELECT COUNT(*) FROM {$wpdb->posts} p
+            JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+            WHERE p.post_type = 'htp_reservation'
+            AND p.post_status = 'publish'
+            AND pm.meta_key = '_htp_status'
+            AND pm.meta_value = 'pending_approval'
+        ");
         
         $expired = $wpdb->get_var("
             SELECT COUNT(*) FROM {$wpdb->posts} p
@@ -189,15 +212,26 @@ class HTP_Analytics {
             AND pm.meta_key = '_htp_status' 
             AND pm.meta_value = 'cancelled'
         ");
+
+        $denied = $wpdb->get_var("
+            SELECT COUNT(*) FROM {$wpdb->posts} p
+            JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+            WHERE p.post_type = 'htp_reservation'
+            AND p.post_status = 'publish'
+            AND pm.meta_key = '_htp_status'
+            AND pm.meta_value = 'denied'
+        ");
         
         $conversion_rate = $total > 0 ? round( ( $fulfilled / $total ) * 100, 1 ) : 0;
         
         return array(
             'total' => (int) $total,
             'active' => (int) $active,
+            'pending_approval' => (int) $pending_approval,
             'expired' => (int) $expired,
             'fulfilled' => (int) $fulfilled,
             'cancelled' => (int) $cancelled,
+            'denied' => (int) $denied,
             'conversion_rate' => $conversion_rate
         );
     }
@@ -246,8 +280,10 @@ class HTP_Analytics {
             $expires = $expires_ts ? date_i18n( 'Y-m-d H:i', $expires_ts ) : '—';
             
             // Add CSS class for status styling with proper fallback
-            $status_class = 'status-' . esc_attr( $status ?: 'unknown' );
-            $status_display = ucfirst( $status ?: 'Unknown' );
+            // Mirror the reservations admin view: use hyphens for CSS class names.
+            $status_slug = $status ? str_replace( '_', '-', $status ) : 'unknown';
+            $status_class = 'status-' . esc_attr( $status_slug );
+            $status_display = $status ? ucwords( str_replace( '_', ' ', $status ) ) : 'Unknown';
             
             echo '<tr>';
             echo '<td>' . esc_html( $product_name ) . '</td>';
