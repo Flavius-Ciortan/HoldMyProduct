@@ -185,7 +185,7 @@ class HTP_Admin {
                     </div>
                     <div class="htp-logo-section">
                         <?php
-                        $logo_files = array('HTP Logo.png', 'HTP-menu-icon.png');
+                        $logo_files = array('logo-transparent.png', 'HTP-menu-icon.png');
                         $logo_src = '';
                         $found_file = '';
                         
@@ -410,8 +410,8 @@ class HTP_Admin {
                 $('.htp-form-actions input[type="submit"], .htp-form-actions .button-primary, #submit').each(function() {
                     $(this).addClass('htp-styled-button');
                     $(this).css({
-                        'background': '#008B8B',
-                        'border': '2px solid #008B8B',
+                        'background': '#2F89F9',
+                        'border': '2px solid #2F89F9',
                         'color': '#ffffff',
                         'padding': '10px 24px',
                         'border-radius': '6px',
@@ -434,15 +434,15 @@ class HTP_Admin {
             // Add hover effects
             $(document).on('mouseenter', '.htp-styled-button', function() {
                 $(this).css({
-                    'background': '#006666',
-                    'border-color': '#006666',
+                    'background': '#266DED',
+                    'border-color': '#266DED',
                     'transform': 'translateY(-2px)',
                     'box-shadow': '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
                 });
             }).on('mouseleave', '.htp-styled-button', function() {
                 $(this).css({
-                    'background': '#008B8B',
-                    'border-color': '#008B8B',
+                    'background': '#2F89F9',
+                    'border-color': '#2F89F9',
                     'transform': 'translateY(0)',
                     'box-shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                 });

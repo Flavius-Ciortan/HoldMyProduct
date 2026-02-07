@@ -1,15 +1,19 @@
 /* HoldThisProduct Modern Admin Styles - Darcyan Theme */
 
 :root {
-    --htp-primary: #008B8B;        /* Dark Cyan */
-    --htp-primary-light: #20B2AA;  /* Light Sea Green */
-    --htp-primary-dark: #006666;   /* Darker Cyan */
-    --htp-secondary: #F0F8FF;      /* Alice Blue */
-    --htp-accent: #40E0D0;         /* Turquoise */
-    --htp-text-dark: #1f2937;      /* Dark Gray */
-    --htp-text-light: #6b7280;     /* Light Gray */
+    /*
+     * Theme: match plugin branding image (blue gradient).
+     * Stops: #44A0FF -> #2F89F9 -> #2776EE -> #266DED
+     */
+    --htp-primary: #2F89F9;        /* Brand blue */
+    --htp-primary-light: #44A0FF;  /* Light brand blue */
+    --htp-primary-dark: #266DED;   /* Deep brand blue */
+    --htp-secondary: #EAF4FF;      /* Pale blue tint */
+    --htp-accent: #44A0FF;         /* Accent blue */
+    --htp-text-dark: #0b1b3a;      /* Deep navy */
+    --htp-text-light: #2b4a7a;     /* Muted navy */
     --htp-white: #ffffff;
-    --htp-border: #e5e7eb;
+    --htp-border: rgba(255, 255, 255, 0.22);
     --htp-success: #10b981;
     --htp-warning: #f59e0b;
     --htp-error: #ef4444;
@@ -24,18 +28,21 @@
 /* Reset and Base Styles */
 .htp-admin-wrapper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Keep the form area neutral for readability; use the brand gradient in the header only. */
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     padding: 0;
 }
 
 /* Header Styles */
 .htp-admin-header {
-    background: linear-gradient(135deg, var(--htp-primary) 0%, var(--htp-primary-dark) 100%);
+    /* Brand gradient header (matches plugin artwork). */
+    background: linear-gradient(135deg, #44A0FF 0%, #2F89F9 35%, #2776EE 65%, #266DED 100%);
     color: var(--htp-white);
     padding: 1.25rem 1.5rem 1rem;
     box-shadow: var(--htp-shadow-lg);
     position: relative;
     overflow: hidden;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .htp-admin-header::before {
@@ -45,7 +52,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill=\"rgba(255,255,255,0.12)\"/></svg>') repeat;
     opacity: 0.3;
     pointer-events: none;
 }
@@ -91,10 +98,10 @@
 .htp-logo {
     width: 80px;
     height: 80px;
-    border-radius: 8px;
-    background: var(--htp-white);
-    box-shadow: var(--htp-shadow);
-    object-fit: contain;
+    /* border-radius: 8px; */
+    /* background: var(--htp-white); */
+    /* box-shadow: var(--htp-shadow); */
+    /* object-fit: contain; */
     max-width: 100%;
     max-height: 100%;
     display: block;
@@ -232,11 +239,12 @@
 
 /* Settings Cards */
 .htp-settings-card {
-    background: var(--htp-white);
+    background: rgba(255, 255, 255, 0.86);
     border-radius: 12px;
     box-shadow: var(--htp-shadow);
     overflow: hidden;
     transition: box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .htp-settings-card:hover {
@@ -244,7 +252,7 @@
 }
 
 .htp-card-header {
-    background: linear-gradient(135deg, var(--htp-secondary) 0%, #e0f2fe 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(234, 244, 255, 0.8) 100%);
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--htp-border);
 }
@@ -456,7 +464,7 @@
 .htp-settings-form select:focus {
     outline: none;
     border-color: var(--htp-primary);
-    box-shadow: 0 0 0 3px rgba(0, 139, 139, 0.1);
+    box-shadow: 0 0 0 3px rgba(39, 118, 238, 0.18);
 }
 
 .holdthisproduct-small-input {
@@ -488,13 +496,13 @@
 }
 
 .htp-btn-primary {
-    background: linear-gradient(135deg, var(--htp-primary) 0%, var(--htp-primary-dark) 100%);
+    background: linear-gradient(135deg, #44A0FF 0%, #2F89F9 35%, #2776EE 65%, #266DED 100%);
     color: var(--htp-white);
     box-shadow: var(--htp-shadow);
 }
 
 .htp-btn-primary:hover {
-    background: linear-gradient(135deg, var(--htp-primary-dark) 0%, #004d4d 100%);
+    background: linear-gradient(135deg, #2F89F9 0%, #2776EE 55%, #266DED 100%);
     transform: translateY(-2px);
     box-shadow: var(--htp-shadow-lg);
     color: var(--htp-white);
@@ -628,7 +636,9 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 /* Menu Icon Styling */
 .toplevel_page_holdthisproduct-settings .wp-menu-image img {
     padding: 0;
-    margin: 0;
+    /* margin: 0; */
+    width: 30px;
+    margin-top: -7px;
 }
 
 /* Reservation Management Styles (Enhanced) */
@@ -652,7 +662,7 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 .htp-cancel-reservation {
     background: var(--htp-primary) !important;
     color: var(--htp-white) !important;
-    border: 2px solid var(--htp-primary) !important;
+    border: none !important;
     padding: 6px 12px !important;
     font-size: 12px !important;
     font-weight: 600 !important;
@@ -664,14 +674,11 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 
 .htp-cancel-reservation:hover {
     background: var(--htp-primary-dark) !important;
-    border-color: var(--htp-primary-dark) !important;
-    transform: translateY(-1px) !important;
     box-shadow: var(--htp-shadow) !important;
 }
 
 .htp-cancel-reservation:disabled {
     background: #e5e7eb !important;
-    border-color: #e5e7eb !important;
     color: #9ca3af !important;
     cursor: not-allowed !important;
     transform: none !important;
@@ -680,7 +687,7 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 .htp-delete-reservation {
     background: linear-gradient(135deg, var(--htp-error) 0%, #dc2626 100%) !important;
     color: var(--htp-white) !important;
-    border: 2px solid var(--htp-error) !important;
+    border: none !important;
     padding: 6px 12px !important;
     font-size: 12px !important;
     font-weight: 600 !important;
@@ -692,14 +699,11 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 
 .htp-delete-reservation:hover {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
-    border-color: #dc2626 !important;
-    transform: translateY(-1px) !important;
     box-shadow: var(--htp-shadow) !important;
 }
 
 .htp-delete-reservation:disabled {
     background: #e5e7eb !important;
-    border-color: #e5e7eb !important;
     color: #9ca3af !important;
     cursor: not-allowed !important;
     transform: none !important;
@@ -709,7 +713,7 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 .htp-approve-reservation {
     background: linear-gradient(135deg, var(--htp-success) 0%, #059669 100%) !important;
     color: var(--htp-white) !important;
-    border: 2px solid var(--htp-success) !important;
+    border: none !important;
     padding: 6px 12px !important;
     font-size: 12px !important;
     font-weight: 600 !important;
@@ -721,14 +725,11 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 
 .htp-approve-reservation:hover {
     background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-    border-color: #059669 !important;
-    transform: translateY(-1px) !important;
     box-shadow: var(--htp-shadow) !important;
 }
 
 .htp-approve-reservation:disabled {
     background: #e5e7eb !important;
-    border-color: #e5e7eb !important;
     color: #9ca3af !important;
     cursor: not-allowed !important;
     transform: none !important;
@@ -737,7 +738,7 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 .htp-deny-reservation {
     background: linear-gradient(135deg, var(--htp-error) 0%, #dc2626 100%) !important;
     color: var(--htp-white) !important;
-    border: 2px solid var(--htp-error) !important;
+    border: none !important;
     padding: 6px 12px !important;
     font-size: 12px !important;
     font-weight: 600 !important;
@@ -749,14 +750,11 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 
 .htp-deny-reservation:hover {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
-    border-color: #dc2626 !important;
-    transform: translateY(-1px) !important;
     box-shadow: var(--htp-shadow) !important;
 }
 
 .htp-deny-reservation:disabled {
     background: #e5e7eb !important;
-    border-color: #e5e7eb !important;
     color: #9ca3af !important;
     cursor: not-allowed !important;
     transform: none !important;
