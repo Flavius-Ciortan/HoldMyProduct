@@ -1,10 +1,11 @@
 # WordPress.org Publishing Checklist
 
-Use this checklist before submitting HoldMyProduct to WordPress.org.
+Use this checklist before submitting HoldThisProduct to WordPress.org.
+
 
 ## 📋 Required Files
 
-- [x] `HoldMyProduct.php` - Main plugin file with complete header
+- [x] `HoldThisProduct.php` - Main plugin file with complete header
 - [x] `readme.txt` - WordPress.org standard format
 - [x] `LICENSE` or `license.txt` - GPLv3 license text
 - [x] `CHANGELOG.md` - Detailed version history
@@ -53,10 +54,10 @@ Use this checklist before submitting HoldMyProduct to WordPress.org.
 
 ### Translation Ready
 - [x] All strings wrapped in `__()`, `_e()`, etc.
-- [x] Text domain: `hold-my-product` (matches slug)
+- [x] Text domain: `hold-this-product` (matches slug)
 - [x] Text domain specified in plugin header
 - [x] No concatenated translatable strings
-- [ ] `.pot` file generated (run: `wp i18n make-pot . languages/hold-my-product.pot`)
+- [ ] `.pot` file generated (run: `wp i18n make-pot . languages/hold-this-product.pot`)
 - [ ] Languages folder exists
 
 ## ✅ Functionality Testing
@@ -226,7 +227,7 @@ All screenshots should be:
 wp package install wp-cli/i18n-command
 
 # Generate POT file
-wp i18n make-pot . languages/hold-my-product.pot
+wp i18n make-pot . languages/hold-this-product.pot
 ```
 
 ### Performance
@@ -241,10 +242,10 @@ wp i18n make-pot . languages/hold-my-product.pot
 ### SVN Repository Setup
 ```bash
 # Checkout SVN repository
-svn co https://plugins.svn.wordpress.org/hold-my-product
+svn co https://plugins.svn.wordpress.org/hold-this-product
 
 # Add files to trunk
-cd hold-my-product/trunk
+cd hold-this-product/trunk
 # Copy all plugin files here
 
 # Add assets

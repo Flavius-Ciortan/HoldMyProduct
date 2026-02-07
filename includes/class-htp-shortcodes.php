@@ -3,9 +3,9 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Shortcodes for HoldMyProduct
+ * Shortcodes for HoldThisProduct
  */
-class HMP_Shortcodes {
+class HTP_Shortcodes {
     
     /**
      * Constructor

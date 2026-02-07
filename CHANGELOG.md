@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to HoldMyProduct will be documented in this file.
+All notable changes to HoldThisProduct will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-11-12
 
 ### Added
-- Initial release of HoldMyProduct
+- Initial release of HoldThisProduct
 - Product reservation system for logged-in users
 - Automatic stock management for reserved products
 - Customizable reservation duration (1-168 hours)
@@ -131,7 +131,7 @@ If you were testing pre-release versions:
 3. **Delete** the old plugin files
 4. **Install** version 1.0.0
 5. **Activate** the new version
-6. **Verify settings** in HoldMyProduct > Settings
+6. **Verify settings** in HoldThisProduct > Settings
 7. **Test reservations** on a product
 
 No data migration needed - reservation data structure is compatible.
@@ -171,7 +171,7 @@ None reported at time of release.
 **To report issues:**
 - WordPress.org support forum
 - GitHub issues page
-- Email: support@holdmyproduct.com (if available)
+- Email: support@holdthisproduct.com (if available)
 
 ---
 
@@ -181,16 +181,16 @@ None reported at time of release.
 - **Flavius Ciortan** - Initial development and release
 - **Community** - Beta testing and feedback
 
-Thank you to everyone who contributed to making HoldMyProduct possible!
+Thank you to everyone who contributed to making HoldThisProduct possible!
 
 ---
 
 ## Links
 
-- [WordPress.org Plugin Page](https://wordpress.org/plugins/hold-my-product/)
-- [GitHub Repository](https://github.com/Flavius-Ciortan/HoldMyProduct)
+- [WordPress.org Plugin Page](https://wordpress.org/plugins/hold-this-product/)
+- [GitHub Repository](https://github.com/Flavius-Ciortan/HoldThisProduct)
 - [Documentation](USER_GUIDE.md)
-- [Support Forum](https://wordpress.org/support/plugin/hold-my-product/)
+- [Support Forum](https://wordpress.org/support/plugin/hold-this-product/)
 
 ---
 

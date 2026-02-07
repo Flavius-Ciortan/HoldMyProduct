@@ -1,6 +1,6 @@
-# HoldMyProduct
+# HoldThisProduct
 
-**HoldMyProduct** is a WordPress plugin designed as an add-on for WooCommerce. It allows customers to **reserve a product for a limited period of time**, holding it for them before purchase. This feature is perfect for stores that want to let shoppers temporarily secure items without immediately completing the checkout process.
+**HoldThisProduct** is a WordPress plugin designed as an add-on for WooCommerce. It allows customers to **reserve a product for a limited period of time**, holding it for them before purchase. This feature is perfect for stores that want to let shoppers temporarily secure items without immediately completing the checkout process.
 
 ## Features
 
@@ -19,7 +19,7 @@
 ## Installation
 
 1. Ensure WooCommerce is installed and activated.
-2. Upload the `holdmyproduct` folder to the `/wp-content/plugins/` directory.
+2. Upload the `holdthisproduct` folder to the `/wp-content/plugins/` directory.
 3. Activate the plugin via the WordPress "Plugins" menu.
 4. Configure reservation time and other settings in the plugin options panel (found under WooCommerce settings).
 
@@ -32,7 +32,7 @@
 
 ## Contributing
 
-We welcome contributions to HoldMyProduct!
+We welcome contributions to HoldThisProduct!
 
 1. Fork this repository.
 2. Create a new feature branch: `git checkout -b feature/YourFeature`

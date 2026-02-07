@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Plugin Name:       Hold My Product
- * Plugin URI:        https://github.com/Flavius-Ciortan/HoldMyProduct
+ * Plugin Name:       Hold This Product
+ * Plugin URI:        https://github.com/Flavius-Ciortan/HoldThisProduct
  * Description:       Allows WooCommerce customers to reserve products for a limited time before purchase.
  * Version:           1.0.0
  * Author:            Flavius Ciortan, Anghel Emanuel.
  * Author URI:        https://github.com/Flavius-Ciortan
- * Text Domain:       hold-my-product
+ * Text Domain:       hold-this-product
  * Domain Path:       /languages
  * License:           GPLv3
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
@@ -16,14 +16,14 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Check if PRO version is active
-if ( defined( 'HMP_PRO_VERSION' ) ) {
+if ( defined( 'HTP_PRO_VERSION' ) ) {
     add_action( 'admin_init', function() {
         deactivate_plugins( plugin_basename( __FILE__ ) );
     } );
     add_action( 'admin_notices', function() {
         ?>
         <div class="notice notice-error">
-            <p><?php esc_html_e( 'Hold My Product (Free) cannot be activated because Hold My Product PRO is already active. Please deactivate the PRO version first if you want to use the free version.', 'hold-my-product' ); ?></p>
+            <p><?php esc_html_e( 'Hold This Product (Free) cannot be activated because Hold This Product PRO is already active. Please deactivate the PRO version first if you want to use the free version.', 'hold-this-product' ); ?></p>
         </div>
         <?php
     } );
@@ -31,14 +31,14 @@ if ( defined( 'HMP_PRO_VERSION' ) ) {
 }
 
 // Define plugin constants
-define( 'HMP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'HMP_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'HMP_VERSION', '1.0.0' );
+define( 'HTP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'HTP_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'HTP_VERSION', '1.0.0' );
 
 /**
  * Main plugin class
  */
-class HoldMyProduct {
+class HoldThisProduct {
     
     /**
      * Single instance of the plugin
@@ -104,7 +104,7 @@ class HoldMyProduct {
     public function woocommerce_missing_notice() {
         ?>
         <div class="notice notice-error">
-            <p><?php esc_html_e( 'Hold My Product requires WooCommerce to be installed and active.', 'hold-my-product' ); ?></p>
+            <p><?php esc_html_e( 'Hold This Product requires WooCommerce to be installed and active.', 'hold-this-product' ); ?></p>
         </div>
         <?php
     }
@@ -118,19 +118,19 @@ class HoldMyProduct {
         }
         
         // Core classes
-        require_once HMP_PLUGIN_PATH . 'includes/class-hmp-reservations.php';
-        require_once HMP_PLUGIN_PATH . 'includes/class-hmp-email-manager.php';
-        require_once HMP_PLUGIN_PATH . 'includes/class-hmp-shortcodes.php';
+        require_once HTP_PLUGIN_PATH . 'includes/class-htp-reservations.php';
+        require_once HTP_PLUGIN_PATH . 'includes/class-htp-email-manager.php';
+        require_once HTP_PLUGIN_PATH . 'includes/class-htp-shortcodes.php';
         
         // Admin classes
         if ( is_admin() ) {
-            require_once HMP_PLUGIN_PATH . 'includes/admin/class-hmp-admin.php';
-            require_once HMP_PLUGIN_PATH . 'includes/admin/class-hmp-analytics.php';
+            require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-admin.php';
+            require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-analytics.php';
         }
         
         // Frontend classes
         if ( ! is_admin() ) {
-            require_once HMP_PLUGIN_PATH . 'includes/frontend/class-hmp-frontend.php';
+            require_once HTP_PLUGIN_PATH . 'includes/frontend/class-htp-frontend.php';
         }
     }
     
@@ -143,19 +143,19 @@ class HoldMyProduct {
         }
         
         // Initialize core
-        $this->reservations = new HMP_Reservations();
-        new HMP_Email_Manager();
-        new HMP_Shortcodes();
+        $this->reservations = new HTP_Reservations();
+        new HTP_Email_Manager();
+        new HTP_Shortcodes();
         
         // Initialize admin
         if ( is_admin() ) {
-            $this->admin = new HMP_Admin();
-            new HMP_Analytics();
+            $this->admin = new HTP_Admin();
+            new HTP_Analytics();
         }
         
         // Initialize frontend
         if ( ! is_admin() ) {
-            $this->frontend = new HMP_Frontend();
+            $this->frontend = new HTP_Frontend();
         }
     }
     
@@ -168,8 +168,8 @@ class HoldMyProduct {
         }
         
         // Load reservations class to register endpoints
-        require_once HMP_PLUGIN_PATH . 'includes/class-hmp-reservations.php';
-        $reservations = new HMP_Reservations();
+        require_once HTP_PLUGIN_PATH . 'includes/class-htp-reservations.php';
+        $reservations = new HTP_Reservations();
         
         // Flush rewrite rules to register the new endpoint
         $reservations->flush_rewrite_rules();
@@ -185,4 +185,4 @@ class HoldMyProduct {
 }
 
 // Initialize the plugin
-HoldMyProduct::get_instance();
+HoldThisProduct::get_instance();

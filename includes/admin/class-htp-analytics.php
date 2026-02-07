@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Reservation analytics and reporting
  */
-class HMP_Analytics {
+class HTP_Analytics {
     
     /**
      * Constructor
@@ -27,11 +27,11 @@ class HMP_Analytics {
      */
     public function add_analytics_submenu() {
         add_submenu_page(
-            'holdmyproduct-settings',
+            'holdthisproduct-settings',
             'Reservation Analytics',
             'Analytics',
             'manage_options',
-            'holdmyproduct-analytics',
+            'holdthisproduct-analytics',
             array( $this, 'analytics_page' )
         );
     }
@@ -40,12 +40,12 @@ class HMP_Analytics {
      * Enqueue analytics page scripts and styles
      */
     public function enqueue_analytics_scripts( $hook ) {
-        if ( $hook === 'holdmyproduct_page_holdmyproduct-analytics' ) {
+        if ( $hook === 'holdthisproduct_page_holdthisproduct-analytics' ) {
             wp_enqueue_style(
-                'holdmyproduct-admin-style',
-                HMP_PLUGIN_URL . 'admin-style.css',
+                'holdthisproduct-admin-style',
+                HTP_PLUGIN_URL . 'admin-style.css',
                 array(),
-                HMP_VERSION
+                HTP_VERSION
             );
         }
     }
@@ -62,33 +62,33 @@ class HMP_Analytics {
         <div class="wrap">
             <h1>Reservation Analytics</h1>
             
-            <div class="hmp-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
-                <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+            <div class="htp-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+                <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Total Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #0073aa;"><?php echo esc_html( $stats['total'] ); ?></p>
                 </div>
                 
-                <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Active Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #46b450;"><?php echo esc_html( $stats['active'] ); ?></p>
                 </div>
                 
-                <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Expired Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #ff8c00;"><?php echo esc_html( $stats['expired'] ); ?></p>
                 </div>
                 
-                <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Cancelled Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #d63638;"><?php echo esc_html( $stats['cancelled'] ); ?></p>
                 </div>
                 
-                <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Fulfilled Reservations</h3>
                     <p style="font-size: 32px; margin: 0; color: #00a32a;"><?php echo esc_html( $stats['fulfilled'] ); ?></p>
                 </div>
                 
-                <div class="hmp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Conversion Rate</h3>
                     <p style="font-size: 32px; margin: 0; color: #0073aa;"><?php echo esc_html( $stats['conversion_rate'] ); ?>%</p>
                 </div>
@@ -109,9 +109,9 @@ class HMP_Analytics {
         // Find reservations that are marked as 'active' but have passed their expiration time
         $expired_reservations = $wpdb->get_col("
             SELECT p.ID FROM {$wpdb->posts} p
-            JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_hmp_status' AND pm1.meta_value = 'active'
-            JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_hmp_expires_at'
-            WHERE p.post_type = 'hmp_reservation' 
+            JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_htp_status' AND pm1.meta_value = 'active'
+            JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_htp_expires_at'
+            WHERE p.post_type = 'htp_reservation' 
             AND p.post_status = 'publish'
             AND CAST(pm2.meta_value AS UNSIGNED) < UNIX_TIMESTAMP()
         ");
@@ -119,18 +119,18 @@ class HMP_Analytics {
         // Update expired reservations
         if ( ! empty( $expired_reservations ) ) {
             // Load the reservations class to use its expire method
-            if ( class_exists( 'HMP_Reservations' ) ) {
-                $reservations_handler = new HMP_Reservations();
+            if ( class_exists( 'HTP_Reservations' ) ) {
+                $reservations_handler = new HTP_Reservations();
                 foreach ( $expired_reservations as $reservation_id ) {
                     $reservations_handler->expire_reservation( $reservation_id );
                 }
             } else {
                 // Fallback: update status directly
                 foreach ( $expired_reservations as $reservation_id ) {
-                    update_post_meta( $reservation_id, '_hmp_status', 'expired' );
+                    update_post_meta( $reservation_id, '_htp_status', 'expired' );
                     
                     // Restore stock
-                    $product_id = (int) get_post_meta( $reservation_id, '_hmp_product_id', true );
+                    $product_id = (int) get_post_meta( $reservation_id, '_htp_product_id', true );
                     if ( $product_id ) {
                         $product = wc_get_product( $product_id );
                         if ( $product && $product->managing_stock() ) {
@@ -151,42 +151,42 @@ class HMP_Analytics {
         
         $total = $wpdb->get_var("
             SELECT COUNT(*) FROM {$wpdb->posts} 
-            WHERE post_type = 'hmp_reservation' AND post_status = 'publish'
+            WHERE post_type = 'htp_reservation' AND post_status = 'publish'
         ");
         
         $active = $wpdb->get_var("
             SELECT COUNT(*) FROM {$wpdb->posts} p
             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'hmp_reservation' 
+            WHERE p.post_type = 'htp_reservation' 
             AND p.post_status = 'publish'
-            AND pm.meta_key = '_hmp_status' 
+            AND pm.meta_key = '_htp_status' 
             AND pm.meta_value = 'active'
         ");
         
         $expired = $wpdb->get_var("
             SELECT COUNT(*) FROM {$wpdb->posts} p
             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'hmp_reservation' 
+            WHERE p.post_type = 'htp_reservation' 
             AND p.post_status = 'publish'
-            AND pm.meta_key = '_hmp_status' 
+            AND pm.meta_key = '_htp_status' 
             AND pm.meta_value = 'expired'
         ");
         
         $fulfilled = $wpdb->get_var("
             SELECT COUNT(*) FROM {$wpdb->posts} p
             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'hmp_reservation' 
+            WHERE p.post_type = 'htp_reservation' 
             AND p.post_status = 'publish'
-            AND pm.meta_key = '_hmp_status' 
+            AND pm.meta_key = '_htp_status' 
             AND pm.meta_value = 'fulfilled'
         ");
         
         $cancelled = $wpdb->get_var("
             SELECT COUNT(*) FROM {$wpdb->posts} p
             JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE p.post_type = 'hmp_reservation' 
+            WHERE p.post_type = 'htp_reservation' 
             AND p.post_status = 'publish'
-            AND pm.meta_key = '_hmp_status' 
+            AND pm.meta_key = '_htp_status' 
             AND pm.meta_value = 'cancelled'
         ");
         
@@ -207,9 +207,9 @@ class HMP_Analytics {
      */
     private function display_recent_reservations() {
         $reservations = get_posts( array(
-            'post_type' => 'hmp_reservation',
+            'post_type' => 'htp_reservation',
             'posts_per_page' => 20,
-            'meta_key' => '_hmp_status',
+            'meta_key' => '_htp_status',
             'orderby' => 'date',
             'order' => 'DESC'
         ) );
@@ -224,10 +224,10 @@ class HMP_Analytics {
         echo '<tbody>';
         
         foreach ( $reservations as $reservation ) {
-            $product_id = get_post_meta( $reservation->ID, '_hmp_product_id', true );
-            $status = get_post_meta( $reservation->ID, '_hmp_status', true );
-            $email = get_post_meta( $reservation->ID, '_hmp_email', true );
-            $expires_ts = get_post_meta( $reservation->ID, '_hmp_expires_at', true );
+            $product_id = get_post_meta( $reservation->ID, '_htp_product_id', true );
+            $status = get_post_meta( $reservation->ID, '_htp_status', true );
+            $email = get_post_meta( $reservation->ID, '_htp_email', true );
+            $expires_ts = get_post_meta( $reservation->ID, '_htp_expires_at', true );
             
             $product = wc_get_product( $product_id );
             $product_name = $product ? $product->get_name() : 'Unknown Product';
@@ -237,8 +237,8 @@ class HMP_Analytics {
                 $user = get_userdata( $reservation->post_author );
                 $customer = $user ? $user->display_name : $email;
             } else {
-                $name = get_post_meta( $reservation->ID, '_hmp_name', true );
-                $surname = get_post_meta( $reservation->ID, '_hmp_surname', true );
+                $name = get_post_meta( $reservation->ID, '_htp_name', true );
+                $surname = get_post_meta( $reservation->ID, '_htp_surname', true );
                 $full_name = trim( $name . ' ' . $surname );
                 $customer = ! empty( $full_name ) ? $full_name : $email;
             }

@@ -1,5 +1,5 @@
 jQuery(function ($) {
-  $(document).on('click', '.hmp-res-toggle', function (e) {
+  $(document).on('click', '.htp-res-toggle', function (e) {
     e.preventDefault();
     var $btn = $(this);
     var $cell = $btn.closest('td');
@@ -11,9 +11,9 @@ jQuery(function ($) {
     $spinner.addClass('is-active');
     $btn.prop('disabled', true);
 
-    $.post(hmpResToggle.ajax, {
-      action: 'hmp_toggle_res',
-      nonce: hmpResToggle.nonce,
+    $.post(htpResToggle.ajax, {
+      action: 'htp_toggle_res',
+      nonce: htpResToggle.nonce,
       product_id: id,
       new: next
     }).done(function (resp) {
@@ -23,15 +23,15 @@ jQuery(function ($) {
 
         //  Show the NEXT action instead of current state
         var newActionLabel = (newVal === 'yes')
-        ? (hmpResToggle.disable || 'Disable')   // product is now enabled → show "Disable"
-        : (hmpResToggle.enable || 'Enable');    // product is now disabled → show "Enable"
+        ? (htpResToggle.disable || 'Disable')   // product is now enabled → show "Disable"
+        : (htpResToggle.enable || 'Enable');    // product is now disabled → show "Enable"
 
         $btn
         .removeClass('on off')
         .addClass(newState)
         .attr('aria-pressed', newState === 'on' ? 'true' : 'false')
         .data('state', newState)
-        .find('.hmp-res-toggle-label').text(newActionLabel);
+        .find('.htp-res-toggle-label').text(newActionLabel);
 
       } else {
         alert((resp && resp.data && resp.data.message) ? resp.data.message : 'Error');

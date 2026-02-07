@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Email notifications for reservations
  */
-class HMP_Email_Manager {
+class HTP_Email_Manager {
     
     /**
      * Constructor
@@ -18,18 +18,18 @@ class HMP_Email_Manager {
      * Initialize hooks
      */
     private function init() {
-        add_action( 'hmp_reservation_created', array( $this, 'send_confirmation_email' ), 10, 2 );
-        add_action( 'hmp_reservation_expired', array( $this, 'send_expiration_email' ), 10, 2 );
-        add_action( 'hmp_reservation_pending_approval', array( $this, 'send_pending_approval_email' ), 10, 2 );
-        add_action( 'hmp_reservation_approved', array( $this, 'send_approval_confirmation_email' ), 10, 2 );
-        add_action( 'hmp_reservation_denied', array( $this, 'send_denial_email' ), 10, 3 );
+        add_action( 'htp_reservation_created', array( $this, 'send_confirmation_email' ), 10, 2 );
+        add_action( 'htp_reservation_expired', array( $this, 'send_expiration_email' ), 10, 2 );
+        add_action( 'htp_reservation_pending_approval', array( $this, 'send_pending_approval_email' ), 10, 2 );
+        add_action( 'htp_reservation_approved', array( $this, 'send_approval_confirmation_email' ), 10, 2 );
+        add_action( 'htp_reservation_denied', array( $this, 'send_denial_email' ), 10, 3 );
     }
     
     /**
      * Check if email notifications are enabled
      */
     private function are_email_notifications_enabled() {
-        $options = get_option( 'holdmyproduct_options' );
+        $options = get_option( 'holdthisproduct_options' );
         return ! empty( $options['enable_email_notifications'] );
     }
     
@@ -41,8 +41,8 @@ class HMP_Email_Manager {
             return;
         }
         
-        $product_id = get_post_meta( $reservation_id, '_hmp_product_id', true );
-        $expires_at = get_post_meta( $reservation_id, '_hmp_expires_at', true );
+        $product_id = get_post_meta( $reservation_id, '_htp_product_id', true );
+        $expires_at = get_post_meta( $reservation_id, '_htp_expires_at', true );
         $product = wc_get_product( $product_id );
         
         if ( ! $product ) return;
@@ -70,7 +70,7 @@ class HMP_Email_Manager {
             return;
         }
         
-        $product_id = get_post_meta( $reservation_id, '_hmp_product_id', true );
+        $product_id = get_post_meta( $reservation_id, '_htp_product_id', true );
         $product = wc_get_product( $product_id );
         
         if ( ! $product ) return;
@@ -95,7 +95,7 @@ class HMP_Email_Manager {
             return;
         }
         
-        $product_id = get_post_meta( $reservation_id, '_hmp_product_id', true );
+        $product_id = get_post_meta( $reservation_id, '_htp_product_id', true );
         $product = wc_get_product( $product_id );
         
         if ( ! $product ) return;
@@ -120,8 +120,8 @@ class HMP_Email_Manager {
             return;
         }
         
-        $product_id = get_post_meta( $reservation_id, '_hmp_product_id', true );
-        $expires_at = get_post_meta( $reservation_id, '_hmp_expires_at', true );
+        $product_id = get_post_meta( $reservation_id, '_htp_product_id', true );
+        $expires_at = get_post_meta( $reservation_id, '_htp_expires_at', true );
         $product = wc_get_product( $product_id );
         
         if ( ! $product ) return;
@@ -149,7 +149,7 @@ class HMP_Email_Manager {
             return;
         }
         
-        $product_id = get_post_meta( $reservation_id, '_hmp_product_id', true );
+        $product_id = get_post_meta( $reservation_id, '_htp_product_id', true );
         $product = wc_get_product( $product_id );
         
         if ( ! $product ) return;
