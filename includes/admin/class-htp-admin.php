@@ -1182,8 +1182,12 @@ class HTP_Admin {
      * Enqueue admin scripts
      */
     public function enqueue_admin_scripts( $hook ) {
+        // `admin_enqueue_scripts` provides a hook suffix, but it can vary depending on menu nesting.
+        // The `page` query arg is stable for our plugin pages, so use it as a fallback.
+        $page = isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
+
         // Settings page scripts
-        if ( $hook === 'toplevel_page_holdthisproduct-settings' ) {
+        if ( $hook === 'toplevel_page_holdthisproduct-settings' || $page === 'holdthisproduct-settings' ) {
             wp_enqueue_script( 'jquery' );
             wp_enqueue_style( 'wp-components' );
             wp_enqueue_script( 'wp-components' );
@@ -1198,6 +1202,7 @@ class HTP_Admin {
         if (
             $hook === 'holdthisproduct_page_holdthisproduct-manage-reservations'
             || $hook === 'holdthisproduct-settings_page_holdthisproduct-manage-reservations'
+            || $page === 'holdthisproduct-manage-reservations'
         ) {
             wp_enqueue_script( 'jquery' );
             wp_enqueue_style( 'holdthisproduct-admin-style', HTP_PLUGIN_URL . 'assets/css/admin-style.css', array(), HTP_VERSION );
