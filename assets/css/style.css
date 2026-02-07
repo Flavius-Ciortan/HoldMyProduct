@@ -50,11 +50,11 @@ label[for="rez_check"] {
 }
 
 /* My Account Reservations Modern Styling */
-.hmp-reservations-container {
+.htp-reservations-container {
     margin: 2rem 0;
 }
 
-.hmp-reservations-wrapper {
+.htp-reservations-wrapper {
     background: #ffffff;
     border: 1px solid #008B8B; /* Dark Cyan */
     border-radius: 12px;
@@ -65,7 +65,7 @@ label[for="rez_check"] {
 
 
 
-.hmp-reservations-header {
+.htp-reservations-header {
     background: linear-gradient(135deg, #008B8B 0%, #20B2AA 100%);
     color: #ffffff;
     padding: 1.2rem;
@@ -73,51 +73,51 @@ label[for="rez_check"] {
     position: relative;
 }
 
-.hmp-reservations-header h2 {
+.htp-reservations-header h2 {
     margin: 0 0 0.3rem 0;
     font-size: 1.3rem;
     font-weight: 600;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.hmp-reservations-header p {
+.htp-reservations-header p {
     margin: 0;
     font-size: 0.85rem;
     opacity: 0.95;
     line-height: 1.5;
 }
 
-.hmp-reservations-table {
+.htp-reservations-table {
     margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
 }
 
-.hmp-reservations-table thead {
+.htp-reservations-table thead {
     background: #f8fafa;
 }
 
 
 
-.hmp-reservations-table tbody tr {
+.htp-reservations-table tbody tr {
     border-bottom: 1px solid #e0f0f0 !important;
 }
 
-.hmp-reservations-table tbody tr:last-child {
+.htp-reservations-table tbody tr:last-child {
     border-bottom: none !important;
 }
 
-.hmp-reservations-table tbody td {
+.htp-reservations-table tbody td {
     padding: 1.5rem 1.2rem !important;
     vertical-align: middle !important;
     border-right: 1px solid #008B8B;
 }
 
-.hmp-reservations-table tbody td:last-child {
+.htp-reservations-table tbody td:last-child {
     border-right: none;
 }
 
-.hmp-reservations-table thead th {
+.htp-reservations-table thead th {
     background: #f0f8f8 !important;
     color: #006666 !important;
     font-weight: 600 !important;
@@ -130,55 +130,55 @@ label[for="rez_check"] {
     letter-spacing: 0.5px;
 }
 
-.hmp-reservations-table thead th:last-child {
+.htp-reservations-table thead th:last-child {
     border-right: none !important;
 }
 
 /* Remove any top borders or lines from table headers */
-.hmp-reservations-table thead,
-.hmp-reservations-table thead tr,
-.hmp-reservations-table thead th {
+.htp-reservations-table thead,
+.htp-reservations-table thead tr,
+.htp-reservations-table thead th {
     border-top: none !important;
 }
 
 /* Ensure table itself has no top border */
-.hmp-reservations-table {
+.htp-reservations-table {
     border-top: none !important;
     border-collapse: collapse !important;
 }
 
 /* Additional WooCommerce table border overrides */
-.hmp-reservations-table.shop_table,
-.hmp-reservations-table.woocommerce-orders-table,
-.hmp-reservations-table.shop_table_responsive {
+.htp-reservations-table.shop_table,
+.htp-reservations-table.woocommerce-orders-table,
+.htp-reservations-table.shop_table_responsive {
     border: none !important;
     border-top: none !important;
 }
 
 /* Target specific WooCommerce table header classes */
-.hmp-reservations-table .woocommerce-orders-table__header {
+.htp-reservations-table .woocommerce-orders-table__header {
     border-top: none !important;
 }
 
 /* Remove any outline or box-shadow that might appear as a line */
-.hmp-reservations-table thead th,
-.hmp-reservations-table .woocommerce-orders-table__header {
+.htp-reservations-table thead th,
+.htp-reservations-table .woocommerce-orders-table__header {
     outline: none !important;
     box-shadow: none !important;
     border-top: none !important;
 }
 
 /* Force remove any pseudo-elements that might create lines */
-.hmp-reservations-table thead th::before,
-.hmp-reservations-table thead th::after,
-.hmp-reservations-table thead::before,
-.hmp-reservations-table thead::after {
+.htp-reservations-table thead th::before,
+.htp-reservations-table thead th::after,
+.htp-reservations-table thead::before,
+.htp-reservations-table thead::after {
     display: none !important;
     content: none !important;
 }
 
 /* Override any WooCommerce responsive table borders */
-.hmp-reservations-wrapper .shop_table thead th {
+.htp-reservations-wrapper .shop_table thead th {
     border-top: none !important;
     border-top-width: 0 !important;
 }
@@ -207,7 +207,7 @@ label[for="rez_check"] {
 }
 
 /* Modern Button Styling */
-.hmp-reservations-table .woocommerce-button {
+.htp-reservations-table .woocommerce-button {
     background: #008B8B !important;
     color: #ffffff !important;
     border: 2px solid #008B8B !important;
@@ -223,9 +223,9 @@ label[for="rez_check"] {
 }
 
 /* Specific styling for Add to Cart button - Override WooCommerce default */
-.hmp-reservations-table .add-to-cart,
-.hmp-reservations-table .button.add-to-cart,
-.hmp-reservations-table a.button.add-to-cart {
+.htp-reservations-table .add-to-cart,
+.htp-reservations-table .button.add-to-cart,
+.htp-reservations-table a.button.add-to-cart {
     background: #008B8B !important;
     background-color: #008B8B !important;
     color: #ffffff !important;
@@ -233,7 +233,7 @@ label[for="rez_check"] {
     border-color: #008B8B !important;
 }
 
-.hmp-reservations-table .cancel-reservation {
+.htp-reservations-table .cancel-reservation {
     background: transparent !important;
     color: #dc3545 !important;
     border-color: #dc3545 !important;
@@ -242,33 +242,33 @@ label[for="rez_check"] {
 
 
 /* Product Link Styling */
-.hmp-reservations-table .woocommerce-LoopProduct-link {
+.htp-reservations-table .woocommerce-LoopProduct-link {
     color: #008B8B !important;
     text-decoration: none !important;
     font-weight: 600;
     transition: color 0.2s ease;
 }
 
-.hmp-reservations-table .woocommerce-LoopProduct-link:hover {
+.htp-reservations-table .woocommerce-LoopProduct-link:hover {
     color: #006666 !important;
     text-decoration: underline !important;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .hmp-reservations-header {
+    .htp-reservations-header {
         padding: 1.5rem 1rem;
     }
     
-    .hmp-reservations-header h2 {
+    .htp-reservations-header h2 {
         font-size: 1.5rem;
     }
     
-    .hmp-reservations-table tbody td {
+    .htp-reservations-table tbody td {
         padding: 1rem 0.8rem !important;
     }
     
-    .hmp-reservations-table .woocommerce-button {
+    .htp-reservations-table .woocommerce-button {
         padding: 0.5rem 0.8rem !important;
         font-size: 0.8rem !important;
         margin: 0.2rem !important;
@@ -291,7 +291,7 @@ label[for="rez_check"] {
     margin-top: 20px;
 } */
 
-/* #hmp_reserve_product {
+/* #htp_reserve_product {
     background-color: #0073aa;
     color: #fff;
     border: none;
@@ -303,13 +303,19 @@ label[for="rez_check"] {
     font-weight: 500;
 }
 
-#hmp_reserve_product:hover {
+#htp_reserve_product:hover {
     background-color: #005f8d;
 } */
 
 
-#hmp_reserve_product:hover {
+/* #htp_reserve_product:hover {
     margin: 0 !important;
+} */
+
+
+.woocommerce div.product form.cart button.single_add_to_cart_button {
+    margin-bottom: 10px;
+    margin-right: 10px;
 }
 
 
@@ -320,10 +326,10 @@ label[for="rez_check"] {
     justify-content: center;
 }
 
-.wc-block-add-to-cart-form #hmp_reserve_product,
+/* .wc-block-add-to-cart-form #htp_reserve_product,
 .wc-block-add-to-cart-form form {
     margin: 0 !important;
-}
+} */
 
 /* Overlay */
 .modal-overlay {

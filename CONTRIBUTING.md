@@ -1,6 +1,6 @@
-# Contributing to HoldMyProduct
+# Contributing to HoldThisProduct
 
-Thank you for considering contributing to HoldMyProduct! This document provides guidelines and instructions for contributing.
+Thank you for considering contributing to HoldThisProduct! This document provides guidelines and instructions for contributing.
 
 ## Table of Contents
 
@@ -34,12 +34,12 @@ This project adheres to a code of conduct. By participating, you are expected to
 
 2. **Setup:**
    ```bash
-   git clone https://github.com/Flavius-Ciortan/HoldMyProduct.git
-   cd HoldMyProduct
+   git clone https://github.com/Flavius-Ciortan/HoldThisProduct.git
+   cd HoldThisProduct
    ```
 
 3. **Install in WordPress:**
-   - Copy plugin to `wp-content/plugins/HoldMyProduct`
+   - Copy plugin to `wp-content/plugins/HoldThisProduct`
    - Activate in WordPress admin
    - Enable WooCommerce
 
@@ -138,7 +138,7 @@ function doSomething(){
 
 4. **Translation Ready**
    - Use `__()`, `_e()`, `esc_html__()`, `esc_html_e()`
-   - Maintain consistent text domain: `hold-my-product`
+   - Maintain consistent text domain: `hold-this-product`
    - Provide context where needed
 
 ## Pull Request Process
@@ -256,7 +256,7 @@ Mockups, examples, similar plugins, etc.
 ### File Structure
 
 ```
-HoldMyProduct/
+HoldThisProduct/
 ├── assets/
 │   ├── css/
 │   ├── js/
@@ -268,18 +268,18 @@ HoldMyProduct/
 ├── templates/
 │   └── myaccount/
 ├── languages/
-├── HoldMyProduct.php
+├── HoldThisProduct.php
 ├── readme.txt
 └── USER_GUIDE.md
 ```
 
 ### Naming Conventions
 
-- **Files:** `class-hmp-name.php`
-- **Classes:** `HMP_Class_Name`
-- **Functions:** `hmp_function_name()`
-- **Hooks:** `hmp_hook_name`
-- **Database:** `_hmp_meta_key`
+- **Files:** `class-htp-name.php`
+- **Classes:** `HTP_Class_Name`
+- **Functions:** `htp_function_name()`
+- **Hooks:** `htp_hook_name`
+- **Database:** `_htp_meta_key`
 
 ### Adding Hooks
 
@@ -292,7 +292,7 @@ HoldMyProduct/
  * @param int $product_id The product ID
  * @param int $user_id The user ID
  */
-do_action( 'hmp_reservation_created', $reservation_id, $product_id, $user_id );
+do_action( 'htp_reservation_created', $reservation_id, $product_id, $user_id );
 ```
 
 ### Database Queries
@@ -389,4 +389,4 @@ By contributing, you agree that your contributions will be licensed under GPLv3.
 
 ---
 
-Thank you for helping make HoldMyProduct better! 🎉
+Thank you for helping make HoldThisProduct better! 🎉

@@ -33,7 +33,7 @@ Place screenshots here named as:
 ### Banner
 - Feature product reservation concept
 - Use brand colors (#008B8B primary, #20B2AA secondary)
-- Include plugin name "HoldMyProduct"
+- Include plugin name "HoldThisProduct"
 - Show key benefit: "Reserve Products, Guarantee Stock"
 
 ### Screenshots

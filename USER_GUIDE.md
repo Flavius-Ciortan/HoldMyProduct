@@ -1,6 +1,6 @@
-# HoldMyProduct - User Guide
+# HoldThisProduct - User Guide
 
-Welcome to HoldMyProduct! This comprehensive guide will help you set up and use the plugin to enable product reservations in your WooCommerce store.
+Welcome to HoldThisProduct! This comprehensive guide will help you set up and use the plugin to enable product reservations in your WooCommerce store.
 
 ## Table of Contents
 
@@ -21,7 +21,7 @@ Welcome to HoldMyProduct! This comprehensive guide will help you set up and use 
 
 ### Prerequisites
 
-Before installing HoldMyProduct, ensure you have:
+Before installing HoldThisProduct, ensure you have:
 
 - WordPress 5.8 or higher
 - WooCommerce 5.0 or higher
@@ -32,7 +32,7 @@ Before installing HoldMyProduct, ensure you have:
 
 1. **Via WordPress Admin:**
    - Navigate to **Plugins > Add New**
-   - Search for "HoldMyProduct"
+   - Search for "HoldThisProduct"
    - Click **Install Now**, then **Activate**
 
 2. **Manual Installation:**
@@ -49,7 +49,8 @@ After activation, follow these steps:
 
 ### 1. Access Plugin Settings
 
-Navigate to **HoldMyProduct > Settings** in your WordPress admin dashboard.
+Navigate to **HoldThisProduct > Settings** in your WordPress admin dashboard.
+
 
 ### 2. Enable Reservations Globally
 
@@ -189,7 +190,7 @@ Reservations are controlled per product:
 
 ### Admin Dashboard
 
-Navigate to **HoldMyProduct > Reservations** for comprehensive management.
+Navigate to **HoldThisProduct > Reservations** for comprehensive management.
 
 #### View Reservations
 
@@ -285,13 +286,13 @@ View reservations for specific products:
 
 Email templates are located in:
 ```
-wp-content/plugins/HoldMyProduct/templates/emails/
+wp-content/plugins/HoldThisProduct/templates/emails/
 ```
 
 To customize:
 1. Copy template to your theme:
    ```
-   your-theme/holdmyproduct/emails/[template-name].php
+   your-theme/holdthisproduct/emails/[template-name].php
    ```
 2. Edit as needed
 3. Changes will be preserved during plugin updates
@@ -312,7 +313,7 @@ When "Require Admin Approval" is enabled:
 
 ### Admin Process
 
-1. Go to **HoldMyProduct > Reservations**
+1. Go to **HoldThisProduct > Reservations**
 2. Filter by **Pending Approval**
 3. Review each request:
    - Check customer history
@@ -438,8 +439,8 @@ Need help? Here's how to get support:
 
 1. **Documentation:** Re-read this guide
 2. **FAQ:** Check readme.txt file
-3. **WordPress Forum:** [Plugin Support Forum](https://wordpress.org/support/plugin/hold-my-product/)
-4. **GitHub Issues:** [Report bugs](https://github.com/Flavius-Ciortan/HoldMyProduct/issues)
+3. **WordPress Forum:** [Plugin Support Forum](https://wordpress.org/support/plugin/hold-this-product/)
+4. **GitHub Issues:** [Report bugs](https://github.com/Flavius-Ciortan/HoldThisProduct/issues)
 
 ---
 
@@ -447,7 +448,7 @@ Need help? Here's how to get support:
 
 Have an idea? We'd love to hear it!
 
-- Submit on [GitHub](https://github.com/Flavius-Ciortan/HoldMyProduct/issues)
+- Submit on [GitHub](https://github.com/Flavius-Ciortan/HoldThisProduct/issues)
 - Include detailed use case
 - Explain expected behavior
 - Note any similar plugins/features
@@ -464,4 +465,4 @@ PHP Compatibility: 7.4+
 
 ---
 
-Thank you for using HoldMyProduct! We're committed to helping you provide the best reservation experience for your customers.
+Thank you for using HoldThisProduct! We're committed to helping you provide the best reservation experience for your customers.

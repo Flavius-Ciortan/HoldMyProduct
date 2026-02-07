@@ -1,4 +1,4 @@
-=== HoldMyProduct - Product Reservation for WooCommerce ===
+=== HoldThisProduct - Product Reservation for WooCommerce ===
 Contributors: flaviusciortan
 Tags: woocommerce, reservation, product hold, cart reserve, stock management
 Requires at least: 5.8
@@ -12,7 +12,7 @@ Allow customers to reserve WooCommerce products for a limited time, ensuring sto
 
 == Description ==
 
-**HoldMyProduct** is a powerful WooCommerce extension that allows customers to temporarily reserve products, guaranteeing stock availability while they complete their purchase. Perfect for high-demand items or stores where customers need time to finalize their decisions.
+**HoldThisProduct** is a powerful WooCommerce extension that allows customers to temporarily reserve products, guaranteeing stock availability while they complete their purchase. Perfect for high-demand items or stores where customers need time to finalize their decisions.
 
 = Key Features =
 
@@ -66,7 +66,7 @@ Allow customers to reserve WooCommerce products for a limited time, ensuring sto
 
 1. Log in to your WordPress dashboard
 2. Navigate to **Plugins > Add New**
-3. Search for "HoldMyProduct"
+3. Search for "HoldThisProduct"
 4. Click **Install Now** and then **Activate**
 
 = Manual Installation =
@@ -78,7 +78,7 @@ Allow customers to reserve WooCommerce products for a limited time, ensuring sto
 
 = Configuration =
 
-1. Go to **HoldMyProduct > Settings** in your WordPress admin
+1. Go to **HoldThisProduct > Settings** in your WordPress admin
 2. Enable reservations globally
 3. Set your preferred reservation duration (default: 24 hours)
 4. Configure email notifications (optional)
@@ -105,7 +105,7 @@ The current version supports simple products. Variable product support is planne
 
 = Can I manage all reservations from one place? =
 
-Absolutely! Navigate to **HoldMyProduct > Reservations** to view, cancel, or delete all reservations from a centralized dashboard.
+Absolutely! Navigate to **HoldThisProduct > Reservations** to view, cancel, or delete all reservations from a centralized dashboard.
 
 = What happens if a customer adds a reserved product to their cart? =
 
@@ -117,15 +117,15 @@ Yes! Enable "Require Admin Approval for Reservations" in the settings. Reservati
 
 = Does this work with my theme? =
 
-HoldMyProduct is designed to work with any properly coded WordPress theme. The reservation button integrates seamlessly with WooCommerce product pages.
+HoldThisProduct is designed to work with any properly coded WordPress theme. The reservation button integrates seamlessly with WooCommerce product pages.
 
 = Is this compatible with other WooCommerce extensions? =
 
-HoldMyProduct is compatible with most WooCommerce extensions. If you experience any conflicts, please report them in the support forum.
+HoldThisProduct is compatible with most WooCommerce extensions. If you experience any conflicts, please report them in the support forum.
 
 = Can I translate the plugin? =
 
-Yes! HoldMyProduct is fully translation-ready. You can use tools like Loco Translate or WPML to translate all text.
+Yes! HoldThisProduct is fully translation-ready. You can use tools like Loco Translate or WPML to translate all text.
 
 == Screenshots ==
 
@@ -154,21 +154,21 @@ Yes! HoldMyProduct is fully translation-ready. You can use tools like Loco Trans
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of HoldMyProduct. Start accepting product reservations today!
+Initial release of HoldThisProduct. Start accepting product reservations today!
 
 == Additional Information ==
 
 = Support =
 
-For support inquiries, please visit the [plugin support forum](https://wordpress.org/support/plugin/hold-my-product/) or contact us through [GitHub](https://github.com/Flavius-Ciortan/HoldMyProduct).
+For support inquiries, please visit the [plugin support forum](https://wordpress.org/support/plugin/hold-this-product/) or contact us through [GitHub](https://github.com/Flavius-Ciortan/HoldThisProduct).
 
 = Documentation =
 
-Full documentation is available in the plugin's USER_GUIDE.md file or on our [GitHub repository](https://github.com/Flavius-Ciortan/HoldMyProduct).
+Full documentation is available in the plugin's USER_GUIDE.md file or on our [GitHub repository](https://github.com/Flavius-Ciortan/HoldThisProduct).
 
 = Privacy Policy =
 
-HoldMyProduct stores reservation data including:
+HoldThisProduct stores reservation data including:
 * User ID (for logged-in users)
 * Product ID
 * Reservation timestamps
@@ -178,4 +178,4 @@ This data is used solely for managing product reservations and is deleted when r
 
 = Contributing =
 
-We welcome contributions! Visit our [GitHub repository](https://github.com/Flavius-Ciortan/HoldMyProduct) to report issues or submit pull requests.
+We welcome contributions! Visit our [GitHub repository](https://github.com/Flavius-Ciortan/HoldThisProduct) to report issues or submit pull requests.

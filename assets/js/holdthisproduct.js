@@ -1,12 +1,12 @@
 jQuery(document).ready(function($) {
 
     // Handle reserve button click
-    $('#hmp_reserve_product').on('click', function(e) {
+    $('#htp_reserve_product').on('click', function(e) {
         e.preventDefault();
         var productId = $(this).data('productid');
 
         // Check if user can make reservations
-        if (holdmyproduct_ajax.is_logged_in == 0 && holdmyproduct_ajax.guest_reservations_enabled == 0) {
+        if (holdthisproduct_ajax.is_logged_in == 0 && holdthisproduct_ajax.guest_reservations_enabled == 0) {
             alert('Please log in to reserve products.');
             return;
         }
@@ -41,13 +41,13 @@ jQuery(document).ready(function($) {
         
         // Prepare AJAX data
         var ajaxData = {
-            action: 'holdmyproduct_reserve',
+            action: 'holdthisproduct_reserve',
             product_id: formData.get('product_id'),
-            security: holdmyproduct_ajax.nonce
+            security: holdthisproduct_ajax.nonce
         };
 
         // Add guest data if not logged in
-        if (holdmyproduct_ajax.is_logged_in == 0) {
+        if (holdthisproduct_ajax.is_logged_in == 0) {
             ajaxData.email = formData.get('email');
             ajaxData.name = formData.get('name');
             ajaxData.surname = formData.get('surname');
@@ -59,7 +59,7 @@ jQuery(document).ready(function($) {
         $submitBtn.prop('disabled', true).text('Processing...');
 
         // Send AJAX request
-        $.post(holdmyproduct_ajax.ajax_url, ajaxData)
+        $.post(holdthisproduct_ajax.ajax_url, ajaxData)
         .done(function(response) {
             if (response.success) {
                 alert('Reservation successful!');
@@ -78,7 +78,3 @@ jQuery(document).ready(function($) {
         });
     });
 });
-
-
-
-
