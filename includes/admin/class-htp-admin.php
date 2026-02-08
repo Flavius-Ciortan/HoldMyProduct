@@ -248,22 +248,6 @@ class HTP_Admin {
                                     <p>Customize the appearance of the reservation pop-up modal</p>
                                 </div>
                                 <div class="htp-card-body">
-                                    <!-- COMING SOON MESSAGE - UNCOMMENT FOR PAID VERSION
-                                    <div class="htp-coming-soon-message">
-                                        <h4>🚀 Coming Soon in Pro Version!</h4>
-                                        <p>Advanced pop-up customization for logged-in users will be available in our premium version.</p>
-                                        <p><strong>Features include:</strong></p>
-                                        <ul>
-                                            <li>Custom border radius settings</li>
-                                            <li>Background color customization</li>
-                                            <li>Font family selection</li>
-                                            <li>Font size adjustment</li>
-                                            <li>Text color customization</li>
-                                        </ul>
-                                        <p>Stay tuned for updates!</p>
-                                    </div>
-                                    END COMING SOON MESSAGE -->
-                                    
                                     <?php
                                     $options = get_option('holdthisproduct_options');
                                     $enable_popup_customization_logged_in = isset($options['enable_popup_customization_logged_in']) ? (bool)$options['enable_popup_customization_logged_in'] : false;
@@ -405,48 +389,7 @@ class HTP_Admin {
                 }
             });
             
-            // Force Save Settings button styling
-            function styleHTPButtons() {
-                $('.htp-form-actions input[type="submit"], .htp-form-actions .button-primary, #submit').each(function() {
-                    $(this).addClass('htp-styled-button');
-                    $(this).css({
-                        'background': '#2F89F9',
-                        'border': '2px solid #2F89F9',
-                        'color': '#ffffff',
-                        'padding': '10px 24px',
-                        'border-radius': '6px',
-                        'font-weight': '700',
-                        'font-size': '13px',
-                        'text-transform': 'uppercase',
-                        'letter-spacing': '0.5px',
-                        'cursor': 'pointer',
-                        'transition': 'all 0.3s ease',
-                        'box-shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                    });
-                });
-            }
-            
-            // Apply styling immediately and after any DOM changes
-            styleHTPButtons();
-            setTimeout(styleHTPButtons, 100);
-            setTimeout(styleHTPButtons, 500);
-            
-            // Add hover effects
-            $(document).on('mouseenter', '.htp-styled-button', function() {
-                $(this).css({
-                    'background': '#266DED',
-                    'border-color': '#266DED',
-                    'transform': 'translateY(-2px)',
-                    'box-shadow': '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                });
-            }).on('mouseleave', '.htp-styled-button', function() {
-                $(this).css({
-                    'background': '#2F89F9',
-                    'border-color': '#2F89F9',
-                    'transform': 'translateY(0)',
-                    'box-shadow': '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                });
-            });
+            // Save button styling is handled via CSS (admin-style.css).
         });
         </script>
         <?php
@@ -628,11 +571,6 @@ class HTP_Admin {
                     </tbody>
                 </table>
                 
-                <div style="margin-top: 20px;">
-                    <p class="description">
-                        <?php esc_html_e( 'Use the filters above to find specific reservations. Only active reservations can be cancelled.', 'hold-this-product' ); ?>
-                    </p>
-                </div>
             <?php endif; ?>
         </div>
         
