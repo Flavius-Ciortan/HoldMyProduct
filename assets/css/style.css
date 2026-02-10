@@ -57,6 +57,7 @@ label[for="rez_check"] {
     --htp-text-dark: #0b1b3a;
     --htp-text-light: #2b4a7a;
     --htp-border-ui: rgba(11, 27, 58, 0.16);
+    --htp-success: #10b981;
     --htp-warning: #f59e0b;
     --htp-error: #ef4444;
     --htp-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -119,6 +120,16 @@ label[for="rez_check"] {
     border-bottom: 1px solid rgba(11, 27, 58, 0.08) !important;
 }
 
+.htp-reservations-table .woocommerce-orders-table__cell-order-expires,
+.htp-reservations-table .woocommerce-orders-table__cell-order-time-left {
+    font-size: 13px;
+}
+
+.htp-reservations-table .woocommerce-orders-table__cell-order-expires time,
+.htp-reservations-table .woocommerce-orders-table__cell-order-time-left .time-left {
+    font-size: 13px;
+}
+
 .htp-reservations-table tbody tr:last-child td {
     border-bottom: none !important;
 }
@@ -147,9 +158,87 @@ label[for="rez_check"] {
     font-weight: 600;
 }
 
+.htp-reservations-container .time-left.pending {
+    color: #f59e0b !important;
+    font-weight: 600;
+}
+
+.htp-reservations-container .time-left.fulfilled {
+    color: #00a32a !important;
+    font-weight: 600;
+}
+
+.htp-reservations-container .time-left.denied {
+    color: #991b1b !important;
+    font-weight: 600;
+}
+
+.htp-reservations-container .time-left.cancelled {
+    color: #d63638 !important;
+    font-weight: 600;
+}
+
 .htp-reservations-container .time-left.expired {
-    color: #64748b !important;
+    color: #ff8c00 !important;
     text-decoration: line-through;
+}
+
+/* Status Badge */
+.htp-reservations-table .htp-status-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    border: 1px solid rgba(11, 27, 58, 0.14);
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--htp-text-dark);
+}
+
+.htp-reservations-table .htp-status-badge--active {
+    border-color: rgba(47, 137, 249, 0.32);
+    background: rgba(47, 137, 249, 0.12);
+    color: #2F89F9;
+}
+
+.htp-reservations-table .htp-status-badge--pending {
+    border-color: rgba(245, 158, 11, 0.34);
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
+
+.htp-reservations-table .htp-status-badge--fulfilled {
+    border-color: rgba(0, 163, 42, 0.32);
+    background: rgba(0, 163, 42, 0.12);
+    color: #00a32a;
+}
+
+.htp-reservations-table .htp-status-badge--denied {
+    border-color: rgba(153, 27, 27, 0.34);
+    background: rgba(153, 27, 27, 0.10);
+    color: #991b1b;
+}
+
+.htp-reservations-table .htp-status-badge--cancelled {
+    border-color: rgba(214, 54, 56, 0.34);
+    background: rgba(214, 54, 56, 0.10);
+    color: #d63638;
+}
+
+.htp-reservations-table .htp-status-badge--expired {
+    border-color: rgba(255, 140, 0, 0.34);
+    background: rgba(255, 140, 0, 0.10);
+    color: #ff8c00;
+}
+
+.htp-reservations-table .htp-status-badge--unknown {
+    border-color: rgba(148, 163, 184, 0.35);
+    background: rgba(148, 163, 184, 0.12);
+    color: #475569;
 }
 
 /* Action Buttons */

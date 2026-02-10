@@ -432,17 +432,19 @@ class HTP_Reservations {
             'post_type'      => 'htp_reservation',
             'post_status'    => 'publish',
             'author'         => get_current_user_id(),
-            'posts_per_page' => 20,
+            'posts_per_page' => 50,
             'meta_query'     => array(
-                array( 'key' => '_htp_status', 'value' => 'active' ),
-                array( 'key' => '_htp_expires_at', 'value' => current_time( 'timestamp' ), 'type' => 'NUMERIC', 'compare' => '>' )
+                array(
+                    'key'     => '_htp_status',
+                    'compare' => 'EXISTS',
+                ),
             ),
             'orderby' => 'date',
             'order' => 'DESC'
         ) );
         
         if ( empty( $reservations ) ) {
-            wc_print_notice( __( 'You have no active reservations.', 'hold-this-product' ), 'notice' );
+            wc_print_notice( __( 'You have no reservations.', 'hold-this-product' ), 'notice' );
             return;
         }
         

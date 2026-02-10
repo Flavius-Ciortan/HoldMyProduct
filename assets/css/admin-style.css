@@ -1062,7 +1062,7 @@ td:nth-child(5) {
 
 /* Status styling for analytics */
 .status-active {
-    color: #46b450;
+    color: var(--htp-primary);
 }
 
 .status-expired {
