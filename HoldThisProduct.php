@@ -120,7 +120,6 @@ class HoldThisProduct {
         // Core classes
         require_once HTP_PLUGIN_PATH . 'includes/class-htp-reservations.php';
         require_once HTP_PLUGIN_PATH . 'includes/class-htp-email-manager.php';
-        require_once HTP_PLUGIN_PATH . 'includes/class-htp-shortcodes.php';
         
         // Admin classes
         if ( is_admin() ) {
@@ -145,7 +144,6 @@ class HoldThisProduct {
         // Initialize core
         $this->reservations = new HTP_Reservations();
         new HTP_Email_Manager();
-        new HTP_Shortcodes();
         
         // Initialize admin
         if ( is_admin() ) {

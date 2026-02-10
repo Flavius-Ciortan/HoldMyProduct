@@ -224,7 +224,6 @@ class HTP_Reservations {
         }
 
         // Free version: reservations are globally enabled/disabled only.
-        // (Per-product enabling is intentionally not used in the free version.)
         return true;
     }
     

@@ -21,14 +21,9 @@ class HTP_Admin {
         add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
         add_action( 'admin_init', array( $this, 'init_settings' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-        
-        // Product reservation management
+
         add_action( 'woocommerce_product_options_inventory_product_data', array( $this, 'add_product_reservations_list' ) );
-        
-        // Products list customization
-        add_action( 'admin_init', array( $this, 'init_products_list' ) );
-        
-        // AJAX handlers for reservation management
+
         add_action( 'wp_ajax_htp_cancel_admin_reservation', array( $this, 'handle_admin_cancel_reservation' ) );
         add_action( 'wp_ajax_htp_delete_admin_reservation', array( $this, 'handle_admin_delete_reservation' ) );
         add_action( 'wp_ajax_htp_approve_reservation', array( $this, 'handle_approve_reservation' ) );
@@ -103,13 +98,6 @@ class HTP_Admin {
     }
     
     /**
-     * Settings section callback
-     */
-    public function settings_section_callback() {
-        echo '<p>Configure the Hold This Product plugin settings below.</p>';
-    }
-    
-    /**
      * Enable reservation field callback
      */
     public function holdthisproduct_enable_reservation_callback() {
@@ -169,7 +157,7 @@ class HTP_Admin {
                         <span class="slider"></span>
                     </label>
                 </div>
-                <p class="description">Send email confirmations and reminders to customers.</p>
+                <p class="description">Send email confirmations and status updates to customers.</p>
               </div>';
     }
     
@@ -1144,12 +1132,10 @@ class HTP_Admin {
      * Enqueue admin scripts
      */
     public function enqueue_admin_scripts( $hook ) {
-        // `admin_enqueue_scripts` provides a hook suffix, but it can vary depending on menu nesting.
-        // The `page` query arg is stable for our plugin pages, so use it as a fallback.
+        // Hook suffix can vary depending on menu nesting; `page` is stable.
         $page = isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
 
-        // Apply menu icon sizing across all wp-admin screens without loading the full plugin admin CSS.
-        // Scope strictly to our top-level menu item.
+        // Apply menu icon sizing everywhere in wp-admin; scoped to our menu item only.
         wp_register_style( 'htp-admin-menu-inline', false, array(), HTP_VERSION );
         wp_enqueue_style( 'htp-admin-menu-inline' );
         wp_add_inline_style(
@@ -1157,7 +1143,6 @@ class HTP_Admin {
             '#toplevel_page_holdthisproduct-settings .wp-menu-image img{padding:0;width:30px;}'
         );
 
-        // Settings page scripts
         if ( $hook === 'toplevel_page_holdthisproduct-settings' || $page === 'holdthisproduct-settings' ) {
             wp_enqueue_script( 'jquery' );
             wp_enqueue_style( 'wp-components' );
@@ -1167,9 +1152,6 @@ class HTP_Admin {
             wp_add_inline_script( 'wp-components', $this->get_admin_inline_script() );
         }
         
-        // Manage reservations page scripts
-        // The hook suffix for submenu pages is based on the parent slug.
-        // Be tolerant here so scripts/styles load regardless of WP's generated suffix.
         if (
             $hook === 'holdthisproduct_page_holdthisproduct-manage-reservations'
             || $hook === 'holdthisproduct-settings_page_holdthisproduct-manage-reservations'
@@ -1179,7 +1161,6 @@ class HTP_Admin {
             wp_enqueue_style( 'holdthisproduct-admin-style', HTP_PLUGIN_URL . 'assets/css/admin-style.css', array(), HTP_VERSION );
         }
         
-        // Product edit page scripts
         if ( $hook === 'post.php' || $hook === 'post-new.php' ) {
             global $post;
             if ( $post && $post->post_type === 'product' ) {
@@ -1187,8 +1168,6 @@ class HTP_Admin {
                 wp_add_inline_script( 'jquery', $this->get_product_page_script() );
             }
         }
-        
-        // Product list toggle feature removed in free version
     }
     
     /**
@@ -1312,14 +1291,6 @@ class HTP_Admin {
                 });
             });
         ";
-    }
-    
-    /**
-     * Initialize products list modifications
-     * Admin toggle feature removed in free version
-     */
-    public function init_products_list() {
-        // Feature removed in free version
     }
     
     /**

@@ -38,8 +38,8 @@ Allow customers to reserve WooCommerce products for a limited time, ensuring sto
 = How It Works =
 
 1. Enable reservations globally in plugin settings
-2. Enable reservations for specific products
-3. Customers see "Reserve Product" button on product pages
+2. Ensure products have stock management enabled and a stock quantity set
+3. Customers see "Reserve Product" button on eligible product pages
 4. Product is reserved and stock is reduced
 5. Customer completes purchase within the reservation time
 6. Reservation is fulfilled, or stock is restored on expiration
@@ -83,7 +83,7 @@ Allow customers to reserve WooCommerce products for a limited time, ensuring sto
 3. Set your preferred reservation duration (default: 24 hours)
 4. Configure email notifications (optional)
 5. Set maximum reservations per user
-6. Go to individual products and enable reservations in the **Inventory** tab
+6. Ensure products have **Stock management** enabled and a stock quantity set (WooCommerce Inventory tab)
 
 == Frequently Asked Questions ==
 
