@@ -78,8 +78,8 @@ class HTP_Admin {
         
         add_settings_section(
             'holdthisproduct_settings_section',
-            'General Settings',
-            array( $this, 'settings_section_callback' ),
+            '',
+            '__return_false',
             'holdthisproduct-settings'
         );
         
@@ -115,10 +115,15 @@ class HTP_Admin {
     public function holdthisproduct_enable_reservation_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $checked = ! empty( $options['enable_reservation'] ) ? 'checked' : '';
-        echo '<label class="toggle-switch">
-                <input type="checkbox" name="holdthisproduct_options[enable_reservation]" value="1" ' . $checked . '>
-                <span class="slider"></span>
-              </label>';
+        echo '<div class="htp-setting-field">
+                <div class="htp-setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="holdthisproduct_options[enable_reservation]" value="1" ' . $checked . '>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <p class="description">Enable product reservations across your store.</p>
+              </div>';
     }
     
     /**
@@ -127,8 +132,11 @@ class HTP_Admin {
     public function holdthisproduct_max_reservations_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $value = isset( $options['max_reservations'] ) ? absint( $options['max_reservations'] ) : 1;
-        echo '<div class="htp-input-right-align">
-                <input type="number" min="1" name="holdthisproduct_options[max_reservations]" value="' . esc_attr( $value ) . '" class="holdthisproduct-small-input" />
+        echo '<div class="htp-setting-field">
+                <div class="htp-setting-control">
+                    <input type="number" min="1" name="holdthisproduct_options[max_reservations]" value="' . esc_attr( $value ) . '" class="holdthisproduct-small-input" />
+                </div>
+                <p class="description">Limit how many active reservations a user can have at once.</p>
               </div>';
     }
     
@@ -138,8 +146,12 @@ class HTP_Admin {
     public function holdthisproduct_reservation_duration_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $value = isset( $options['reservation_duration'] ) ? absint( $options['reservation_duration'] ) : 24;
-        echo '<div class="htp-input-right-align">
-                <input type="number" min="1" max="168" name="holdthisproduct_options[reservation_duration]" value="' . esc_attr( $value ) . '" class="holdthisproduct-small-input" />
+        echo '<div class="htp-setting-field">
+                <div class="htp-setting-control">
+                    <div class="htp-input-right-align">
+                        <input type="number" min="1" max="168" name="holdthisproduct_options[reservation_duration]" value="' . esc_attr( $value ) . '" class="holdthisproduct-small-input" />
+                    </div>
+                </div>
                 <p class="description">How long reservations last (1-168 hours, default: 24)</p>
               </div>';
     }
@@ -150,11 +162,15 @@ class HTP_Admin {
     public function holdthisproduct_enable_email_notifications_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $checked = ! empty( $options['enable_email_notifications'] ) ? 'checked' : '';
-        echo '<label class="toggle-switch">
-                <input type="checkbox" name="holdthisproduct_options[enable_email_notifications]" value="1" ' . $checked . '>
-                <span class="slider"></span>
-              </label>
-              <p class="description">Send email confirmations and reminders to customers.</p>';
+        echo '<div class="htp-setting-field">
+                <div class="htp-setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="holdthisproduct_options[enable_email_notifications]" value="1" ' . $checked . '>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <p class="description">Send email confirmations and reminders to customers.</p>
+              </div>';
     }
     
     /**
@@ -163,11 +179,15 @@ class HTP_Admin {
     public function holdthisproduct_require_admin_approval_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $checked = ! empty( $options['require_admin_approval'] ) ? 'checked' : '';
-        echo '<label class="toggle-switch">
-                <input type="checkbox" name="holdthisproduct_options[require_admin_approval]" value="1" ' . $checked . '>
-                <span class="slider"></span>
-              </label>
-              <p class="description">Reservations require admin approval before becoming active.</p>';
+        echo '<div class="htp-setting-field">
+                <div class="htp-setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="holdthisproduct_options[require_admin_approval]" value="1" ' . $checked . '>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <p class="description">Reservations require admin approval before becoming active.</p>
+              </div>';
     }
     
     /**
@@ -253,18 +273,22 @@ class HTP_Admin {
                                     $enable_popup_customization_logged_in = isset($options['enable_popup_customization_logged_in']) ? (bool)$options['enable_popup_customization_logged_in'] : false;
                                     $popup_settings_logged_in = isset($options['popup_customization_logged_in']) ? $options['popup_customization_logged_in'] : [];
                                     ?>
-                                    <table class="form-table">
-                                        <tr>
-                                            <th scope="row">Enable Pop-up Customization</th>
-                                            <td>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox" name="holdthisproduct_options[enable_popup_customization_logged_in]" value="1" <?php checked($enable_popup_customization_logged_in); ?>>
-                                                    <span class="slider"></span>
-                                                </label>
-                                                <p class="description">Enable custom styling for the reservation pop-up modal.</p>
-                                            </td>
-                                        </tr>
-                                    </table>
+	                                    <table class="form-table">
+	                                        <tr>
+	                                            <th scope="row">Enable Pop-up Customization</th>
+	                                            <td>
+	                                                <div class="htp-setting-field">
+	                                                    <div class="htp-setting-control">
+	                                                        <label class="toggle-switch">
+	                                                            <input type="checkbox" name="holdthisproduct_options[enable_popup_customization_logged_in]" value="1" <?php checked($enable_popup_customization_logged_in); ?>>
+	                                                            <span class="slider"></span>
+	                                                        </label>
+	                                                    </div>
+	                                                    <p class="description">Enable custom styling for the reservation pop-up modal.</p>
+	                                                </div>
+	                                            </td>
+	                                        </tr>
+	                                    </table>
                                     <div class="htp-popup-customization-fields-logged-in" style="display:<?php echo $enable_popup_customization_logged_in ? 'block' : 'none'; ?>;margin-top:1rem;">
                                         <table class="form-table">
                                             <tr>
@@ -1123,6 +1147,15 @@ class HTP_Admin {
         // `admin_enqueue_scripts` provides a hook suffix, but it can vary depending on menu nesting.
         // The `page` query arg is stable for our plugin pages, so use it as a fallback.
         $page = isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
+
+        // Apply menu icon sizing across all wp-admin screens without loading the full plugin admin CSS.
+        // Scope strictly to our top-level menu item.
+        wp_register_style( 'htp-admin-menu-inline', false, array(), HTP_VERSION );
+        wp_enqueue_style( 'htp-admin-menu-inline' );
+        wp_add_inline_style(
+            'htp-admin-menu-inline',
+            '#toplevel_page_holdthisproduct-settings .wp-menu-image img{padding:0;width:30px;}'
+        );
 
         // Settings page scripts
         if ( $hook === 'toplevel_page_holdthisproduct-settings' || $page === 'holdthisproduct-settings' ) {
