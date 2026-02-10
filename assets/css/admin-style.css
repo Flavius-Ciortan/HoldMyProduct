@@ -294,15 +294,11 @@ body #wpcontent {
     max-width: none;
 }
 
-/* General Settings Tab - Constrained width for better readability */
-#htp-general .htp-card-body {
-    max-width: 500px;
-}
-
-/* Logged In Users and Guests tabs - Match General Settings width */
+/* Settings tab content: allow full card width (no artificial max-width). */
+#htp-general .htp-card-body,
 #htp-logged-in .htp-card-body,
 #htp-logged-out .htp-card-body {
-    max-width: 500px;
+    max-width: none;
 }
 
 /* Smaller input fields for specific settings */
@@ -343,7 +339,7 @@ body #wpcontent {
     border-left: none;
     border-radius: 0 4px 4px 0;
     vertical-align: middle;
-    text-align: right;
+    text-align: left;
 }
 
 .htp-settings-form .form-table tr {
@@ -435,16 +431,49 @@ body #wpcontent {
     border-color: rgba(47, 137, 249, 0.35);
 }
 
-/* Override right alignment for text inputs */
-.htp-settings-form .form-table td:has(input[type="text"]),
-.htp-settings-form .form-table td:has(input[type="number"]),
-.htp-settings-form .form-table td:has(select) {
+/*
+ * Settings layout: render the control and its description on one line.
+ * This keeps alignment consistent with the label column in the table.
+ */
+.htp-settings-form .htp-setting-field {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-items: center;
+    column-gap: 12px;
     text-align: left;
 }
 
-/* Keep toggle switches right-aligned */
-.htp-settings-form .form-table td:has(.toggle-switch) {
-    text-align: right;
+.htp-settings-form .htp-setting-control {
+    display: flex;
+    align-items: center;
+    min-width: 96px; /* keeps description column start aligned across rows */
+}
+
+/* Cancel the "push to the right" defaults when inside a settings row wrapper. */
+.htp-settings-form .htp-setting-field .toggle-switch {
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.htp-settings-form .htp-setting-field .htp-input-right-align {
+    text-align: left;
+}
+
+.htp-settings-form .htp-setting-field .htp-input-right-align input {
+    margin-right: 0;
+}
+
+.htp-settings-form .htp-setting-field > .description {
+    margin: 0;
+}
+
+@media (max-width: 782px) {
+    .htp-settings-form .htp-setting-field {
+        grid-template-columns: 1fr;
+        row-gap: 6px;
+        align-items: start;
+    }
 }
 
 /* Description text under form elements */
@@ -1195,6 +1224,9 @@ td:nth-child(5) {
     border-radius: 8px;
     padding: 1rem;
     margin-top: 1rem;
+    /* These controls have short labels and no descriptions, so a narrower block reads better. */
+    max-width: 520px;
+    width: 100%;
 }
 
 /* Right-align input fields to match toggle position */
