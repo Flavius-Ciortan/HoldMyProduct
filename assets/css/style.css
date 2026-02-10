@@ -265,30 +265,43 @@ label[for="rez_check"] {
     margin: 0 !important;
 } */
 
-/* Overlay */
-.modal-overlay {
+/* Reservation Modal */
+.htp-modal-overlay.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(11, 27, 58, 0.55);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 18px;
+    box-sizing: border-box;
 }
 
 /* Center all content inside the modal */
-.modal-box {
+.htp-modal-box.modal-box {
     background-color: #ffffff;
-    padding: 30px;
-    border-radius: 8px;
-    max-width: 400px;
+    padding: 22px;
+    border-radius: 12px;
+    max-width: 420px;
     width: 90%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     position: relative;
     text-align: center;
+}
+
+/* When customization is not enabled, match the admin pages' base background gradient. */
+.htp-modal-box.modal-box:not(.htp-modal-box--custom) {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Keep customization settings in control of the modal visuals */
+.htp-modal-box--custom.modal-box {
+    border: 1px solid rgba(11, 27, 58, 0.12);
 }
 
 /* Ensure form elements are stacked and centered */
@@ -338,24 +351,35 @@ label[for="rez_check"] {
 }
 
 /* Submit button */
-.submit-btn {
-    background-color: #0073aa;
-    color: white;
-    padding: 12px 24px;
+.htp-button-primary.submit-btn {
+    background-color: #2F89F9;
+    color: #ffffff;
+    height: 40px;
+    min-height: 40px;
+    padding: 0 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
+    font-weight: 600;
+    line-height: normal;
+    transition: background-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
 }
 
-.submit-btn:hover {
-    background-color: #005f8d;
+.htp-button-primary.submit-btn:hover {
+    background-color: #266DED;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-.submit-btn:disabled {
-    background-color: #ccc;
+.htp-button-primary.submit-btn:focus,
+.htp-button-primary.submit-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(47, 137, 249, 0.28);
+}
+
+.htp-button-primary.submit-btn:disabled {
+    background-color: #e5e7eb;
+    color: #9ca3af;
     cursor: not-allowed;
 }
 
@@ -365,4 +389,3 @@ label[for="rez_check"] {
     color: #666;
     margin: 10px 0;
 }
-
