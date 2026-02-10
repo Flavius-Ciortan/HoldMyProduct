@@ -49,229 +49,163 @@ label[for="rez_check"] {
     color: #333;
 }
 
-/* My Account Reservations Modern Styling */
+/* My Account Reservations */
 .htp-reservations-container {
+    --htp-primary: #2F89F9;
+    --htp-primary-dark: #266DED;
+    --htp-secondary: #EAF4FF;
+    --htp-text-dark: #0b1b3a;
+    --htp-text-light: #2b4a7a;
+    --htp-border-ui: rgba(11, 27, 58, 0.16);
+    --htp-warning: #f59e0b;
+    --htp-error: #ef4444;
+    --htp-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     margin: 2rem 0;
 }
 
 .htp-reservations-wrapper {
     background: #ffffff;
-    border: 1px solid #008B8B; /* Dark Cyan */
+    border: 1px solid var(--htp-border-ui);
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 139, 139, 0.1);
+    box-shadow: var(--htp-shadow);
     overflow: hidden;
-    transition: all 0.3s ease;
 }
 
-
-
 .htp-reservations-header {
-    background: linear-gradient(135deg, #008B8B 0%, #20B2AA 100%);
+    background: linear-gradient(135deg, var(--htp-primary) 0%, var(--htp-primary-dark) 100%);
     color: #ffffff;
-    padding: 1.2rem;
+    padding: 1.2rem 1.4rem;
     text-align: center;
-    position: relative;
 }
 
 .htp-reservations-header h2 {
-    margin: 0 0 0.3rem 0;
-    font-size: 1.3rem;
-    font-weight: 600;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 0 0.25rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
 }
 
 .htp-reservations-header p {
     margin: 0;
-    font-size: 0.85rem;
-    opacity: 0.95;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    opacity: 0.92;
+    line-height: 1.45;
 }
 
 .htp-reservations-table {
+    width: 100%;
     margin: 0 !important;
     border: none !important;
+    border-top: none !important;
     border-radius: 0 !important;
-}
-
-.htp-reservations-table thead {
-    background: #f8fafa;
-}
-
-
-
-.htp-reservations-table tbody tr {
-    border-bottom: 1px solid #e0f0f0 !important;
-}
-
-.htp-reservations-table tbody tr:last-child {
-    border-bottom: none !important;
-}
-
-.htp-reservations-table tbody td {
-    padding: 1.5rem 1.2rem !important;
-    vertical-align: middle !important;
-    border-right: 1px solid #008B8B;
-}
-
-.htp-reservations-table tbody td:last-child {
-    border-right: none;
-}
-
-.htp-reservations-table thead th {
-    background: #f0f8f8 !important;
-    color: #006666 !important;
-    font-weight: 600 !important;
-    padding: 1.2rem !important;
-    border-bottom: 1px solid #008B8B !important;
-    border-right: 1px solid #008B8B !important;
-    border-top: none !important;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-}
-
-.htp-reservations-table thead th:last-child {
-    border-right: none !important;
-}
-
-/* Remove any top borders or lines from table headers */
-.htp-reservations-table thead,
-.htp-reservations-table thead tr,
-.htp-reservations-table thead th {
-    border-top: none !important;
-}
-
-/* Ensure table itself has no top border */
-.htp-reservations-table {
-    border-top: none !important;
     border-collapse: collapse !important;
 }
 
-/* Additional WooCommerce table border overrides */
-.htp-reservations-table.shop_table,
-.htp-reservations-table.woocommerce-orders-table,
-.htp-reservations-table.shop_table_responsive {
+.htp-reservations-table thead th {
+    background: var(--htp-secondary) !important;
+    color: var(--htp-text-dark) !important;
+    font-weight: 700 !important;
+    padding: 12px 16px !important;
     border: none !important;
-    border-top: none !important;
-}
-
-/* Target specific WooCommerce table header classes */
-.htp-reservations-table .woocommerce-orders-table__header {
-    border-top: none !important;
-}
-
-/* Remove any outline or box-shadow that might appear as a line */
-.htp-reservations-table thead th,
-.htp-reservations-table .woocommerce-orders-table__header {
-    outline: none !important;
-    box-shadow: none !important;
-    border-top: none !important;
-}
-
-/* Force remove any pseudo-elements that might create lines */
-.htp-reservations-table thead th::before,
-.htp-reservations-table thead th::after,
-.htp-reservations-table thead::before,
-.htp-reservations-table thead::after {
-    display: none !important;
-    content: none !important;
-}
-
-/* Override any WooCommerce responsive table borders */
-.htp-reservations-wrapper .shop_table thead th {
-    border-top: none !important;
-    border-top-width: 0 !important;
-}
-
-/* Time Left Urgency Colors */
-.time-left.urgent {
-    color: #dc3545 !important;
-    font-weight: bold;
-    animation: pulse 2s infinite;
-}
-
-.time-left.warning {
-    color: #fd7e14 !important;
-    font-weight: 600;
-}
-
-.time-left.expired {
-    color: #6c757d !important;
-    text-decoration: line-through;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-}
-
-/* Modern Button Styling */
-.htp-reservations-table .woocommerce-button {
-    background: #008B8B !important;
-    color: #ffffff !important;
-    border: 2px solid #008B8B !important;
-    border-radius: 6px !important;
-    padding: 0.6rem 1.2rem !important;
-    font-weight: 600 !important;
-    font-size: 0.9rem !important;
+    border-bottom: 1px solid var(--htp-border-ui) !important;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin: 0.25rem !important;
-    text-decoration: none !important;
-    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.4px;
 }
 
-/* Specific styling for Add to Cart button - Override WooCommerce default */
-.htp-reservations-table .add-to-cart,
-.htp-reservations-table .button.add-to-cart,
-.htp-reservations-table a.button.add-to-cart {
-    background: #008B8B !important;
-    background-color: #008B8B !important;
-    color: #ffffff !important;
-    border: 2px solid #008B8B !important;
-    border-color: #008B8B !important;
+.htp-reservations-table tbody td {
+    padding: 14px 16px !important;
+    vertical-align: middle !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(11, 27, 58, 0.08) !important;
 }
 
-.htp-reservations-table .cancel-reservation {
-    background: transparent !important;
-    color: #dc3545 !important;
-    border-color: #dc3545 !important;
+.htp-reservations-table tbody tr:last-child td {
+    border-bottom: none !important;
 }
 
-
-
-/* Product Link Styling */
+/* Product Link */
 .htp-reservations-table .woocommerce-LoopProduct-link {
-    color: #008B8B !important;
+    color: var(--htp-primary) !important;
     text-decoration: none !important;
     font-weight: 600;
-    transition: color 0.2s ease;
+    transition: color 0.18s ease;
 }
 
 .htp-reservations-table .woocommerce-LoopProduct-link:hover {
-    color: #006666 !important;
+    color: var(--htp-primary-dark) !important;
     text-decoration: underline !important;
 }
 
-/* Responsive Design */
+/* Time Left */
+.htp-reservations-container .time-left.urgent {
+    color: var(--htp-error) !important;
+    font-weight: 600;
+}
+
+.htp-reservations-container .time-left.warning {
+    color: var(--htp-warning) !important;
+    font-weight: 600;
+}
+
+.htp-reservations-container .time-left.expired {
+    color: #64748b !important;
+    text-decoration: line-through;
+}
+
+/* Action Buttons */
+.htp-reservations-table .woocommerce-button {
+    height: 30px;
+    min-height: 30px;
+    padding: 0 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    background-color: var(--htp-primary) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    line-height: normal !important;
+    text-decoration: none !important;
+    transition: background-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease !important;
+    margin: 0 8px 0 0 !important;
+}
+
+.htp-reservations-table .woocommerce-button:hover {
+    background-color: var(--htp-primary-dark) !important;
+    box-shadow: var(--htp-shadow) !important;
+}
+
+.htp-reservations-table .woocommerce-button:focus,
+.htp-reservations-table .woocommerce-button:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(47, 137, 249, 0.28) !important;
+}
+
+.htp-reservations-table .woocommerce-button.cancel-reservation {
+    background-color: var(--htp-error) !important;
+    margin-right: 0 !important;
+}
+
+.htp-reservations-table .woocommerce-button.cancel-reservation:hover {
+    background-color: #dc2626 !important;
+}
+
+.htp-reservations-table .woocommerce-button.cancel-reservation:focus,
+.htp-reservations-table .woocommerce-button.cancel-reservation:focus-visible {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.22) !important;
+}
+
 @media (max-width: 768px) {
-    .htp-reservations-header {
-        padding: 1.5rem 1rem;
+    .htp-reservations-table .woocommerce-orders-table__cell-order-actions {
+        text-align: center;
     }
-    
-    .htp-reservations-header h2 {
-        font-size: 1.5rem;
-    }
-    
-    .htp-reservations-table tbody td {
-        padding: 1rem 0.8rem !important;
-    }
-    
+
     .htp-reservations-table .woocommerce-button {
-        padding: 0.5rem 0.8rem !important;
-        font-size: 0.8rem !important;
-        margin: 0.2rem !important;
+        width: 100% !important;
+        margin: 4px 0 !important;
     }
 }
 
@@ -432,115 +366,3 @@ label[for="rez_check"] {
     margin: 10px 0;
 }
 
-/* My Account Reservations Styling */
-.my_account_reservations .time-left.urgent {
-    color: #d63638;
-    font-weight: bold;
-}
-
-.my_account_reservations .time-left.warning {
-    color: #ff8c00;
-    font-weight: 600;
-}
-
-.my_account_reservations .time-left.expired {
-    color: #d63638;
-    font-weight: bold;
-    text-decoration: line-through;
-}
-
-/* Add to Cart button styling */
-.my_account_reservations .add-to-cart,
-.woocommerce-orders-table .add-to-cart,
-.account-orders-table .add-to-cart {
-    background-color: #0073aa !important;
-    border-color: #0073aa !important;
-    color: #fff !important;
-    padding: 8px 16px !important;
-    font-size: 13px !important;
-    border-radius: 4px !important;
-    text-decoration: none !important;
-    display: inline-block !important;
-    margin-right: 8px !important;
-    transition: all 0.3s ease !important;
-}
-
-.my_account_reservations .add-to-cart:hover,
-.woocommerce-orders-table .add-to-cart:hover,
-.account-orders-table .add-to-cart:hover {
-    background-color: #005a87 !important;
-    border-color: #005a87 !important;
-    color: #fff !important;
-    text-decoration: none !important;
-}
-
-/* Cancel Reservation button styling */
-.my_account_reservations .cancel-reservation,
-.woocommerce-orders-table .cancel-reservation,
-.account-orders-table .cancel-reservation {
-    background-color: #d63638 !important;
-    border-color: #d63638 !important;
-    color: #fff !important;
-    padding: 8px 16px !important;
-    font-size: 13px !important;
-    border-radius: 4px !important;
-    text-decoration: none !important;
-    display: inline-block !important;
-    transition: all 0.3s ease !important;
-}
-
-.my_account_reservations .cancel-reservation:hover,
-.woocommerce-orders-table .cancel-reservation:hover,
-.account-orders-table .cancel-reservation:hover {
-    background-color: #b32d2e !important;
-    border-color: #b32d2e !important;
-    color: #fff !important;
-    text-decoration: none !important;
-}
-
-/* Button focus states */
-.my_account_reservations .button:focus,
-.woocommerce-orders-table .button:focus,
-.account-orders-table .button:focus {
-    outline: 2px solid #0073aa;
-    outline-offset: 2px;
-}
-
-/* Ensure buttons don't break on small screens */
-@media (max-width: 768px) {
-    .my_account_reservations .woocommerce-orders-table__cell-order-actions,
-    .woocommerce-orders-table .woocommerce-orders-table__cell-order-actions,
-    .account-orders-table .woocommerce-orders-table__cell-order-actions {
-        text-align: center;
-    }
-    
-    .my_account_reservations .woocommerce-orders-table__cell-order-actions .button,
-    .woocommerce-orders-table .woocommerce-orders-table__cell-order-actions .button,
-    .account-orders-table .woocommerce-orders-table__cell-order-actions .button {
-        display: block !important;
-        width: 100% !important;
-        margin: 4px 0 !important;
-        text-align: center !important;
-    }
-}
-
-/* Button loading states */
-.my_account_reservations .button:disabled,
-.woocommerce-orders-table .button:disabled,
-.account-orders-table .button:disabled {
-    opacity: 0.6 !important;
-    cursor: not-allowed !important;
-    pointer-events: none !important;
-}
-
-/* Override WooCommerce default button styling for our reservation buttons */
-.woocommerce-MyAccount-content .woocommerce-orders-table .button.add-to-cart,
-.woocommerce-MyAccount-content .woocommerce-orders-table .button.cancel-reservation {
-    font-family: inherit !important;
-    font-weight: 500 !important;
-    line-height: 1.4 !important;
-    text-transform: none !important;
-    letter-spacing: normal !important;
-}
-
-/* ...existing code... */
