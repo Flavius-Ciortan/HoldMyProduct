@@ -1124,6 +1124,15 @@ class HTP_Admin {
         // The `page` query arg is stable for our plugin pages, so use it as a fallback.
         $page = isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
 
+        // Apply menu icon sizing across all wp-admin screens without loading the full plugin admin CSS.
+        // Scope strictly to our top-level menu item.
+        wp_register_style( 'htp-admin-menu-inline', false, array(), HTP_VERSION );
+        wp_enqueue_style( 'htp-admin-menu-inline' );
+        wp_add_inline_style(
+            'htp-admin-menu-inline',
+            '#toplevel_page_holdthisproduct-settings .wp-menu-image img{padding:0;width:30px;}'
+        );
+
         // Settings page scripts
         if ( $hook === 'toplevel_page_holdthisproduct-settings' || $page === 'holdthisproduct-settings' ) {
             wp_enqueue_script( 'jquery' );

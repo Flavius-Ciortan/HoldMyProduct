@@ -14,6 +14,7 @@
     --htp-text-light: #2b4a7a;     /* Muted navy */
     --htp-white: #ffffff;
     --htp-border: rgba(255, 255, 255, 0.22);
+    --htp-border-ui: rgba(11, 27, 58, 0.16); /* Subtle border on light surfaces */
     --htp-success: #10b981;
     --htp-warning: #f59e0b;
     --htp-error: #ef4444;
@@ -419,12 +420,19 @@ body #wpcontent {
     width: 100%;
     max-width: 250px;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--htp-border);
+    border: 1px solid var(--htp-border-ui);
     border-radius: 4px;
     font-size: 0.875rem;
-    transition: border-color 0.3s ease;
+    background-color: var(--htp-white);
+    transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     text-align: left;
     margin-left: 0;
+}
+
+.htp-settings-form input[type="text"]:hover,
+.htp-settings-form input[type="number"]:hover,
+.htp-settings-form select:hover {
+    border-color: rgba(47, 137, 249, 0.35);
 }
 
 /* Override right alignment for text inputs */
@@ -620,14 +628,6 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     background: linear-gradient(135deg, #059669 0%, #047857 100%);
     border-color: #059669;
     transform: translateY(-1px);
-}
-
-/* Menu Icon Styling */
-.toplevel_page_holdthisproduct-settings .wp-menu-image img {
-    padding: 0;
-    /* margin: 0; */
-    width: 30px;
-    margin-top: -7px;
 }
 
 /* Reservation Management Styles (Enhanced) */
@@ -846,10 +846,30 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     height: 30px;
     min-height: 30px;
     padding: 0 10px;
+    border: 1px solid var(--htp-border-ui);
     border-radius: 4px;
     font-size: 13px;
     line-height: normal;
     box-sizing: border-box;
+    background-color: var(--htp-white);
+    transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+#status-filter:hover,
+#search-type:hover,
+#reservation-search:hover {
+    border-color: rgba(47, 137, 249, 0.35);
+}
+
+#status-filter:focus,
+#status-filter:focus-visible,
+#search-type:focus,
+#search-type:focus-visible,
+#reservation-search:focus,
+#reservation-search:focus-visible {
+    outline: none;
+    border-color: var(--htp-primary);
+    box-shadow: 0 0 0 3px rgba(39, 118, 238, 0.18);
 }
 
 #reservation-search {
