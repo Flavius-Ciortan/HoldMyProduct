@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="htp-reservations-wrapper">
         <div class="htp-reservations-header">
             <h2><?php esc_html_e( 'My Reserved Products', 'hold-this-product' ); ?></h2>
-            <p><?php esc_html_e( 'Your reserved items are held for you - complete checkout before time runs out', 'hold-this-product' ); ?></p>
+            <p><?php esc_html_e( 'View your reservation history and manage active reservations.', 'hold-this-product' ); ?></p>
         </div>
         
         <table class="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table htp-reservations-table">
@@ -24,6 +24,9 @@ if ( ! defined( 'ABSPATH' ) ) {
         <tr>
             <th class="woocommerce-orders-table__header woocommerce-orders-table__header-order-product">
                 <span class="nobr"><?php esc_html_e( 'Product', 'hold-this-product' ); ?></span>
+            </th>
+            <th class="woocommerce-orders-table__header woocommerce-orders-table__header-order-status">
+                <span class="nobr"><?php esc_html_e( 'Status', 'hold-this-product' ); ?></span>
             </th>
             <th class="woocommerce-orders-table__header woocommerce-orders-table__header-order-expires">
                 <span class="nobr"><?php esc_html_e( 'Expires', 'hold-this-product' ); ?></span>
@@ -40,19 +43,26 @@ if ( ! defined( 'ABSPATH' ) ) {
         <?php foreach ( $reservations as $reservation ) : ?>
             <?php
             $product_id = (int) get_post_meta( $reservation->ID, '_htp_product_id', true );
+            $status = (string) get_post_meta( $reservation->ID, '_htp_status', true );
             $expires_ts = (int) get_post_meta( $reservation->ID, '_htp_expires_at', true );
             $product = wc_get_product( $product_id );
             
             if ( ! $product ) {
                 continue;
             }
-            
-            $expires_disp = $expires_ts ? date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $expires_ts ) : '—';
+
+            $is_pending = ( $status === 'pending_approval' );
+            $is_active  = ( $status === 'active' );
+            $is_expired = ( $status === 'expired' );
+
+            $expires_disp = ( ( $is_active || $is_expired ) && $expires_ts )
+                ? date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $expires_ts )
+                : '—';
             
             // Calculate time left
             $time_left = '';
             $urgency_class = '';
-            if ( $expires_ts ) {
+            if ( $is_active && $expires_ts ) {
                 $diff = $expires_ts - current_time( 'timestamp' );
                 if ( $diff > 0 ) {
                     $days = floor( $diff / DAY_IN_SECONDS );
@@ -85,23 +95,87 @@ if ( ! defined( 'ABSPATH' ) ) {
                 }
             }
             
+            if ( $is_pending ) {
+                $time_left = esc_html__( 'Awaiting approval', 'hold-this-product' );
+                $urgency_class = 'pending';
+            } elseif ( $status === 'fulfilled' ) {
+                $time_left = esc_html__( 'Purchased', 'hold-this-product' );
+                $urgency_class = 'fulfilled';
+            } elseif ( $status === 'denied' ) {
+                $time_left = esc_html__( 'Denied', 'hold-this-product' );
+                $urgency_class = 'denied';
+            } elseif ( $status === 'cancelled' ) {
+                $time_left = esc_html__( 'Cancelled', 'hold-this-product' );
+                $urgency_class = 'cancelled';
+            } elseif ( $is_expired ) {
+                $time_left = esc_html__( 'Expired', 'hold-this-product' );
+                $urgency_class = 'expired';
+            }
+
             $add_to_cart_url = esc_url( wc_get_cart_url() . '?add-to-cart=' . $product_id );
             $cancel_url = wp_nonce_url(
                 add_query_arg( array( 'htp_cancel_res' => $reservation->ID ) ),
                 'htp_cancel_res_' . $reservation->ID
             );
+
+            $status_map = array(
+                'active'           => esc_html__( 'Active', 'hold-this-product' ),
+                'pending_approval' => esc_html__( 'Pending approval', 'hold-this-product' ),
+                'fulfilled'        => esc_html__( 'Purchased', 'hold-this-product' ),
+                'expired'          => esc_html__( 'Expired', 'hold-this-product' ),
+                'cancelled'        => esc_html__( 'Cancelled', 'hold-this-product' ),
+                'denied'           => esc_html__( 'Denied', 'hold-this-product' ),
+            );
+            $status_label = $status_map[ $status ] ?? esc_html__( 'Unknown', 'hold-this-product' );
+
+            switch ( $status ) {
+                case 'active':
+                    $badge_variant = 'active';
+                    break;
+                case 'pending_approval':
+                    $badge_variant = 'pending';
+                    break;
+                case 'fulfilled':
+                    $badge_variant = 'fulfilled';
+                    break;
+                case 'denied':
+                    $badge_variant = 'denied';
+                    break;
+                case 'cancelled':
+                    $badge_variant = 'cancelled';
+                    break;
+                case 'expired':
+                    $badge_variant = 'expired';
+                    break;
+                default:
+                    $badge_variant = 'unknown';
+                    break;
+            }
+
+            if ( $time_left === '' ) {
+                $time_left = '—';
+            }
             ?>
             
-            <tr class="woocommerce-orders-table__row woocommerce-orders-table__row--status-active order">
+            <tr class="woocommerce-orders-table__row woocommerce-orders-table__row--status-<?php echo esc_attr( $status ?: 'unknown' ); ?> order">
                 <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-product" data-title="<?php esc_attr_e( 'Product', 'hold-this-product' ); ?>">
                     <a href="<?php echo esc_url( get_permalink( $product_id ) ); ?>" class="woocommerce-LoopProduct-link">
                         <?php echo esc_html( $product->get_name() ); ?>
                     </a>
                 </td>
+                <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-status" data-title="<?php esc_attr_e( 'Status', 'hold-this-product' ); ?>">
+                    <span class="htp-status-badge htp-status-badge--<?php echo esc_attr( $badge_variant ); ?>">
+                        <?php echo esc_html( $status_label ); ?>
+                    </span>
+                </td>
                 <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-expires" data-title="<?php esc_attr_e( 'Expires', 'hold-this-product' ); ?>">
-                    <time datetime="<?php echo esc_attr( date( 'c', $expires_ts ) ); ?>">
+                    <?php if ( ( $is_active || $is_expired ) && $expires_ts ) : ?>
+                        <time datetime="<?php echo esc_attr( date( 'c', $expires_ts ) ); ?>">
+                            <?php echo esc_html( $expires_disp ); ?>
+                        </time>
+                    <?php else : ?>
                         <?php echo esc_html( $expires_disp ); ?>
-                    </time>
+                    <?php endif; ?>
                 </td>
                 <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-time-left <?php echo esc_attr( $urgency_class ); ?>" data-title="<?php esc_attr_e( 'Time Left', 'hold-this-product' ); ?>">
                     <span class="time-left <?php echo esc_attr( $urgency_class ); ?>">
@@ -109,12 +183,18 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </span>
                 </td>
                 <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-actions" data-title="<?php esc_attr_e( 'Actions', 'hold-this-product' ); ?>">
-                    <a href="<?php echo esc_url( $add_to_cart_url ); ?>" class="woocommerce-button button add-to-cart">
-                        <?php esc_html_e( 'Add to Cart', 'hold-this-product' ); ?>
-                    </a>
-                    <a href="<?php echo esc_url( $cancel_url ); ?>" class="woocommerce-button button cancel-reservation" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to cancel this reservation?', 'hold-this-product' ); ?>')">
-                        <?php esc_html_e( 'Cancel', 'hold-this-product' ); ?>
-                    </a>
+                    <?php if ( $is_active ) : ?>
+                        <a href="<?php echo esc_url( $add_to_cart_url ); ?>" class="woocommerce-button button add-to-cart">
+                            <?php esc_html_e( 'Add to Cart', 'hold-this-product' ); ?>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ( $is_active || $is_pending ) : ?>
+                        <a href="<?php echo esc_url( $cancel_url ); ?>" class="woocommerce-button button cancel-reservation" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to cancel this reservation?', 'hold-this-product' ); ?>')">
+                            <?php esc_html_e( 'Cancel', 'hold-this-product' ); ?>
+                        </a>
+                    <?php else : ?>
+                        —
+                    <?php endif; ?>
                 </td>
             </tr>
             

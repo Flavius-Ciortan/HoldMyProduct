@@ -72,8 +72,8 @@ Set the following initial parameters:
 
 #### Enable Reservation
 - **Purpose:** Master switch for the entire reservation system
-- **When OFF:** No products can be reserved, even if individually enabled
-- **When ON:** Products with reservations enabled will show the Reserve button
+- **When OFF:** No products can be reserved
+- **When ON:** Eligible products will show the Reserve button
 
 #### Max Reservations Per User
 - **Range:** 1 or more
@@ -93,7 +93,6 @@ Set the following initial parameters:
 - **Purpose:** Send automated emails for reservation events
 - **Events Covered:**
   - Reservation created
-  - Reservation expiring soon
   - Reservation expired
   - Reservation approved/denied (if approval required)
 
@@ -118,24 +117,15 @@ Customize the reservation modal appearance:
 
 ---
 
-## Enabling Product Reservations
+## Product Requirements
 
-Reservations are controlled per product:
+In the free version, reservations are enabled globally (there is no per-product enable/disable flag).
 
-### For Individual Products
+For reservations to work correctly, products should have:
 
-1. Go to **Products** and edit any product
-2. Scroll to **Product Data > Inventory** tab
-3. Enable **Stock Management** (required)
-4. Set stock quantity
-5. Check **Enable reservations** checkbox
-6. Click **Update**
-
-### Requirements
-
-- ✅ Product must have **stock management enabled**
-- ✅ Product must have **stock quantity** set
-- ✅ Global reservations must be **enabled in plugin settings**
+- ✅ **Stock management enabled** (WooCommerce Inventory tab)
+- ✅ A **stock quantity** set
+- ✅ Global reservations **enabled in plugin settings**
 
 ### Product Types Supported
 
@@ -151,7 +141,7 @@ Reservations are controlled per product:
 ### Reservation Flow
 
 1. **Product Page:**
-   - Customer views enabled product
+   - Customer views a product
    - Sees "Reserve Product" button next to Add to Cart
    - Button only visible to logged-in users
 
@@ -266,19 +256,15 @@ View reservations for specific products:
    - Sent when: User successfully creates reservation
    - Includes: Product details, expiration time, next steps
 
-2. **Reservation Expiring Soon**
-   - Sent when: 2 hours before expiration
-   - Includes: Urgent reminder, quick purchase link
-
-3. **Reservation Expired**
+2. **Reservation Expired**
    - Sent when: Reservation time runs out
    - Includes: Apology, invitation to reserve again
 
-4. **Reservation Approved**
+3. **Reservation Approved**
    - Sent when: Admin approves pending reservation
    - Includes: Confirmation, expiration time, purchase link
 
-5. **Reservation Denied**
+4. **Reservation Denied**
    - Sent when: Admin denies reservation
    - Includes: Denial reason (if provided), alternative suggestions
 
@@ -410,12 +396,12 @@ When "Require Admin Approval" is enabled:
 - Set clear expiration times in product descriptions
 - Explain reservation benefits
 - Add urgency messaging: "Reserved items expire in [X] hours"
-- Send reminder emails before expiration
+- Use the expiration notification email to encourage timely purchases
 
 ### Stock Planning
 
 - Keep extra stock buffer for walk-in customers
-- Don't enable reservations for last few units
+- Avoid using reservations for the last few units
 - Monitor reservation patterns to adjust stock
 
 ### Admin Approval

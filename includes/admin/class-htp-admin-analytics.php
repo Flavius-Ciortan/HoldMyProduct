@@ -74,7 +74,7 @@ class HTP_Analytics {
                 
                 <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <h3>Active Reservations</h3>
-                    <p style="font-size: 32px; margin: 0; color: #46b450;"><?php echo esc_html( $stats['active'] ); ?></p>
+                    <p style="font-size: 32px; margin: 0; color: #2F89F9;"><?php echo esc_html( $stats['active'] ); ?></p>
                 </div>
 
                 <div class="htp-stat-card" style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">

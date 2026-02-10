@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Manual cancellation by customer or admin
 
 #### Customer Features
-- "Reserve Product" button on enabled product pages
+- "Reserve Product" button on product pages (when reservations are enabled)
 - Reservation modal with clear terms and confirmation
 - My Account page showing all active reservations
 - Time-left countdown with urgency indicators
@@ -61,7 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Email System
 - Reservation created confirmation
-- Reservation expiring soon reminder
 - Reservation expired notification
 - Reservation approved notification
 - Reservation denied notification
@@ -95,7 +94,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom reservation forms
 - Conditional reservation rules
 - Integration with popular payment gateways
-- Reservation reminders (multiple)
 
 #### Version 2.0.0 (Pro Features - Planned)
 - Advanced reporting and analytics

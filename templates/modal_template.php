@@ -71,8 +71,8 @@ if ( $enable_popup_customization ) {
     <link href="<?php echo esc_url( $google_font_link ); ?>" rel="stylesheet" />
 <?php endif; ?>
 
-<div id="reservation-modal" class="modal-overlay" title="Reserve Product" style="display: none;">
-    <div class="modal-box" style="<?php echo $modal_box_style; ?>">
+<div id="reservation-modal" class="modal-overlay htp-modal-overlay" title="Reserve Product" style="display: none;">
+    <div class="modal-box htp-modal-box<?php echo $enable_popup_customization ? ' htp-modal-box--custom' : ''; ?>" style="<?php echo $modal_box_style; ?>">
         <form id="reservation-form">
             <input type="hidden" name="action" value="holdthisproduct_reserve">
             <input type="hidden" name="security" value="<?php echo esc_attr( wp_create_nonce( 'holdthisproduct_nonce' ) ); ?>">
@@ -89,7 +89,7 @@ if ( $enable_popup_customization ) {
                 ?>
             </p>
 
-            <button type="submit" class="submit-btn">Yes, Reserve</button>
+            <button type="submit" class="submit-btn htp-button-primary">Yes, Reserve</button>
         </form>
     </div>
 </div>
