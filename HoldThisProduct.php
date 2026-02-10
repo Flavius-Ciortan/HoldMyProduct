@@ -124,7 +124,8 @@ class HoldThisProduct {
         // Admin classes
         if ( is_admin() ) {
             require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-admin.php';
-            require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-analytics.php';
+            require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-admin-reservations.php';
+            require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-admin-analytics.php';
         }
         
         // Frontend classes
