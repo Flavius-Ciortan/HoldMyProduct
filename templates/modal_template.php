@@ -21,6 +21,14 @@ if ( ! $product instanceof WC_Product ) {
 $pid = $product->get_id();
 $options = get_option( 'holdthisproduct_options' );
 
+// Reservation duration (hours)
+$duration_hours = isset( $options['reservation_duration'] ) ? absint( $options['reservation_duration'] ) : 24;
+if ( $duration_hours < 1 ) {
+    $duration_hours = 1;
+} elseif ( $duration_hours > 168 ) {
+    $duration_hours = 168;
+}
+
 // Popup customization settings (logged-in only).
 $enable_popup_customization = ! empty( $options['enable_popup_customization_logged_in'] );
 $popup_settings = $options['popup_customization_logged_in'] ?? array();
@@ -71,10 +79,17 @@ if ( $enable_popup_customization ) {
             <input type="hidden" name="product_id" value="<?php echo esc_attr( $pid ); ?>">
 
             <p><strong>Reserve this product</strong></p>
-            <p>Are you sure you want to reserve this product for 24 hours?</p>
+            <p>
+                <?php
+                printf(
+                    'Are you sure you want to reserve this product for %d hour%s?',
+                    esc_html( $duration_hours ),
+                    $duration_hours === 1 ? '' : 's'
+                );
+                ?>
+            </p>
 
             <button type="submit" class="submit-btn">Yes, Reserve</button>
         </form>
     </div>
 </div>
-
