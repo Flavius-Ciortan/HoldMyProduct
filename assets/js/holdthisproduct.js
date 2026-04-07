@@ -45,7 +45,8 @@ jQuery(document).ready(function($) {
         $.post(holdthisproduct_ajax.ajax_url, ajaxData)
         .done(function(response) {
             if (response.success) {
-                alert('Reservation successful!');
+                var successMessage = response.data || 'Reservation successful!';
+                alert(successMessage);
                 $('#reservation-modal').hide();
                 location.reload();
             } else {

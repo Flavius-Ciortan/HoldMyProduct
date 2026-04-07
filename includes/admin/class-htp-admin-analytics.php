@@ -59,7 +59,7 @@ class HTP_Analytics {
      */
     public function analytics_page() {
         // First, expire old reservations to get accurate stats
-        $this->expire_old_reservations_for_analytics();
+        HTP_Reservations::get_instance()->process_expired_reservations();
         
         $stats = $this->get_reservation_stats();
         ?>
@@ -112,49 +112,6 @@ class HTP_Analytics {
             <?php $this->display_recent_reservations(); ?>
         </div>
         <?php
-    }
-    
-    /**
-     * Expire old reservations for analytics accuracy
-     */
-    private function expire_old_reservations_for_analytics() {
-        global $wpdb;
-        
-        // Find reservations that are marked as 'active' but have passed their expiration time
-        $expired_reservations = $wpdb->get_col("
-            SELECT p.ID FROM {$wpdb->posts} p
-            JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_htp_status' AND pm1.meta_value = 'active'
-            JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_htp_expires_at'
-            WHERE p.post_type = 'htp_reservation' 
-            AND p.post_status = 'publish'
-            AND CAST(pm2.meta_value AS UNSIGNED) < UNIX_TIMESTAMP()
-        ");
-        
-        // Update expired reservations
-        if ( ! empty( $expired_reservations ) ) {
-            // Load the reservations class to use its expire method
-            if ( class_exists( 'HTP_Reservations' ) ) {
-                $reservations_handler = new HTP_Reservations();
-                foreach ( $expired_reservations as $reservation_id ) {
-                    $reservations_handler->expire_reservation( $reservation_id );
-                }
-            } else {
-                // Fallback: update status directly
-                foreach ( $expired_reservations as $reservation_id ) {
-                    update_post_meta( $reservation_id, '_htp_status', 'expired' );
-                    
-                    // Restore stock
-                    $product_id = (int) get_post_meta( $reservation_id, '_htp_product_id', true );
-                    if ( $product_id ) {
-                        $product = wc_get_product( $product_id );
-                        if ( $product && $product->managing_stock() ) {
-                            $product->set_stock_quantity( $product->get_stock_quantity() + 1 );
-                            $product->save();
-                        }
-                    }
-                }
-            }
-        }
     }
     
     /**

@@ -26,7 +26,7 @@ class HTP_Frontend {
      * Constructor
      */
     public function __construct() {
-        $this->reservations = new HTP_Reservations();
+        $this->reservations = HTP_Reservations::get_instance();
         $this->init();
     }
     

@@ -143,7 +143,7 @@ class HoldThisProduct {
         }
         
         // Initialize core
-        $this->reservations = new HTP_Reservations();
+        $this->reservations = HTP_Reservations::get_instance();
         new HTP_Email_Manager();
         
         // Initialize admin
@@ -168,7 +168,7 @@ class HoldThisProduct {
         
         // Load reservations class to register endpoints
         require_once HTP_PLUGIN_PATH . 'includes/class-htp-reservations.php';
-        $reservations = new HTP_Reservations();
+        $reservations = HTP_Reservations::get_instance();
         
         // Flush rewrite rules to register the new endpoint
         $reservations->flush_rewrite_rules();
@@ -178,6 +178,14 @@ class HoldThisProduct {
      * Plugin deactivation
      */
     public function deactivate_plugin() {
+        if ( ! class_exists( 'HTP_Reservations' ) && file_exists( HTP_PLUGIN_PATH . 'includes/class-htp-reservations.php' ) ) {
+            require_once HTP_PLUGIN_PATH . 'includes/class-htp-reservations.php';
+        }
+
+        if ( class_exists( 'HTP_Reservations' ) ) {
+            HTP_Reservations::clear_scheduled_events();
+        }
+
         // Flush rewrite rules on deactivation to clean up
         flush_rewrite_rules();
     }

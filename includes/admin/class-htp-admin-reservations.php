@@ -317,7 +317,7 @@ class HTP_Admin_Reservations {
             wp_send_json_error( 'Reservation is not active.' );
         }
 
-        $reservations = new HTP_Reservations();
+        $reservations = HTP_Reservations::get_instance();
         $reservations->cancel_reservation( $reservation_id );
 
         update_post_meta( $reservation_id, '_htp_cancelled_by_admin', current_time( 'timestamp' ) );
@@ -368,7 +368,7 @@ class HTP_Admin_Reservations {
             wp_send_json_error( 'Invalid reservation.' );
         }
 
-        $reservations = new HTP_Reservations();
+        $reservations = HTP_Reservations::get_instance();
         $result = $reservations->approve_reservation( $reservation_id );
 
         if ( is_wp_error( $result ) ) {
@@ -399,7 +399,7 @@ class HTP_Admin_Reservations {
             wp_send_json_error( 'Invalid reservation.' );
         }
 
-        $reservations = new HTP_Reservations();
+        $reservations = HTP_Reservations::get_instance();
         $result = $reservations->deny_reservation( $reservation_id, $reason );
 
         if ( $result ) {
@@ -634,4 +634,3 @@ class HTP_Admin_Reservations {
         echo '</tr>';
     }
 }
-
