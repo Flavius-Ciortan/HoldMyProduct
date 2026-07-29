@@ -5,7 +5,7 @@ Use this checklist before submitting HoldThisProduct to WordPress.org.
 
 ## 📋 Required Files
 
-- [x] `HoldThisProduct.php` - Main plugin file with complete header
+- [x] `hold-this-product.php` - Main plugin file in the generated WordPress.org archive
 - [x] `readme.txt` - WordPress.org standard format
 - [x] `LICENSE` or `license.txt` - GPLv3 license text
 - [x] `CHANGELOG.md` - Detailed version history
@@ -92,29 +92,20 @@ Use this checklist before submitting HoldThisProduct to WordPress.org.
 ## 🌐 Compatibility Testing
 
 ### WordPress Versions
-- [ ] WordPress 5.8 (minimum)
-- [ ] WordPress 6.0
-- [ ] WordPress 6.1
-- [ ] WordPress 6.2
-- [ ] WordPress 6.3
-- [ ] WordPress 6.4
 - [ ] WordPress 6.5
-- [ ] WordPress 6.6
-- [ ] WordPress 6.7 (latest)
+- [x] WordPress 7.0.2 (automated integration suite)
 
 ### WooCommerce Versions
-- [ ] WooCommerce 5.0 (minimum)
-- [ ] WooCommerce 6.x
-- [ ] WooCommerce 7.x
-- [ ] WooCommerce 8.x
-- [ ] WooCommerce 9.x (latest)
+- [ ] WooCommerce 8.3 (declared minimum)
+- [x] WooCommerce 10.9.4 (automated integration suite)
 
 ### PHP Versions
-- [ ] PHP 7.4
+- [x] PHP 7.4 (automated integration suite)
 - [ ] PHP 8.0
 - [ ] PHP 8.1
 - [ ] PHP 8.2
 - [ ] PHP 8.3
+- [x] PHP 8.4 (syntax and static checks)
 
 ### Popular Themes
 - [ ] Storefront (WooCommerce default)
@@ -241,12 +232,16 @@ wp i18n make-pot . languages/hold-this-product.pot
 
 ### SVN Repository Setup
 ```bash
+# Build and inspect the release archive from the repository root.
+./bin/build-release.sh
+unzip -l release/hold-this-product-1.0.0.zip
+
 # Checkout SVN repository
 svn co https://plugins.svn.wordpress.org/hold-this-product
 
-# Add files to trunk
-cd hold-this-product/trunk
-# Copy all plugin files here
+# Extract only the generated archive into trunk; do not copy the source tree.
+unzip -q release/hold-this-product-1.0.0.zip -d /tmp/hold-this-product-release
+rsync -a --delete /tmp/hold-this-product-release/hold-this-product/ hold-this-product/trunk/
 
 # Add assets
 cd ../assets
@@ -254,9 +249,9 @@ cd ../assets
 
 # Commit to SVN
 cd ..
-svn add trunk/*
-svn add assets/*
-svn ci -m "Initial commit - version 1.0.0"
+svn add --force trunk/*
+svn add --force assets/*
+svn ci -m "Initial release version 1.0.0"
 ```
 
 ### Submission Form
@@ -298,13 +293,13 @@ Avoid these WordPress.org rejection issues:
 
 ## 📝 Notes
 
-### Version 1.0.0 Specific Items
+### Version 1.0.0 Submission Items
 
 **Must Complete Before Submission:**
 1. Create all visual assets (icons, banners, screenshots)
 2. Generate .pot translation file
-3. Test on WordPress 6.7 and WooCommerce 9.x
-4. Test on PHP 8.3
+3. Test the final ZIP on WordPress 6.5/WooCommerce 8.3 and the latest supported versions
+4. Test all supported PHP versions
 5. Verify no conflicts with popular plugins
 
 **Nice to Have (Can be post-launch):**

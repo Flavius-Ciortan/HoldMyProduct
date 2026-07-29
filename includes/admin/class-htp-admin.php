@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Admin functionality
  */
-class HTP_Admin {
+class Hold_This_Product_Admin {
 
     private $reservations_admin;
 	private $reservations;
@@ -14,8 +14,8 @@ class HTP_Admin {
      * Constructor
      */
 	public function __construct( $reservations = null ) {
-		$this->reservations = $reservations instanceof HTP_Reservations ? $reservations : null;
-		$this->reservations_admin = class_exists( 'HTP_Admin_Reservations' ) ? new HTP_Admin_Reservations( $this->reservations ) : null;
+		$this->reservations = $reservations instanceof Hold_This_Product_Reservations ? $reservations : null;
+		$this->reservations_admin = class_exists( 'Hold_This_Product_Admin_Reservations' ) ? new Hold_This_Product_Admin_Reservations( $this->reservations ) : null;
         $this->init();
     }
     
@@ -40,7 +40,7 @@ class HTP_Admin {
             'manage_options',
             'holdthisproduct-settings',
             array( $this, 'settings_page' ),
-            HTP_PLUGIN_URL . 'assets/images/HTP-menu-icon.png',
+            HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/images/HTP-menu-icon.png',
             80
         );
 
@@ -139,14 +139,14 @@ class HTP_Admin {
     public function holdthisproduct_enable_reservation_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $checked = ! empty( $options['enable_reservation'] ) ? 'checked' : '';
-        echo '<div class="htp-setting-field">
-                <div class="htp-setting-control">
+        echo '<div class="hold-this-product-setting-field">
+                <div class="hold-this-product-setting-control">
                     <label class="toggle-switch">
                         <input type="checkbox" name="holdthisproduct_options[enable_reservation]" value="1" ' . esc_attr( $checked ) . '>
                         <span class="slider"></span>
                     </label>
                 </div>
-                <p class="description">Enable product reservations across your store.</p>
+				<p class="description">' . esc_html__( 'Enable product reservations across your store.', 'hold-this-product' ) . '</p>
               </div>';
     }
     
@@ -156,11 +156,11 @@ class HTP_Admin {
     public function holdthisproduct_max_reservations_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $value = isset( $options['max_reservations'] ) ? absint( $options['max_reservations'] ) : 1;
-        echo '<div class="htp-setting-field">
-                <div class="htp-setting-control">
+        echo '<div class="hold-this-product-setting-field">
+                <div class="hold-this-product-setting-control">
                     <input type="number" min="1" name="holdthisproduct_options[max_reservations]" value="' . esc_attr( $value ) . '" class="holdthisproduct-small-input" />
                 </div>
-                <p class="description">Limit how many active reservations a user can have at once.</p>
+				<p class="description">' . esc_html__( 'Limit how many active reservations a user can have at once.', 'hold-this-product' ) . '</p>
               </div>';
     }
     
@@ -170,13 +170,13 @@ class HTP_Admin {
     public function holdthisproduct_reservation_duration_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $value = isset( $options['reservation_duration'] ) ? absint( $options['reservation_duration'] ) : 24;
-        echo '<div class="htp-setting-field">
-                <div class="htp-setting-control">
-                    <div class="htp-input-right-align">
+        echo '<div class="hold-this-product-setting-field">
+                <div class="hold-this-product-setting-control">
+                    <div class="hold-this-product-input-right-align">
                         <input type="number" min="1" max="168" name="holdthisproduct_options[reservation_duration]" value="' . esc_attr( $value ) . '" class="holdthisproduct-small-input" />
                     </div>
                 </div>
-                <p class="description">How long reservations last (1-168 hours, default: 24)</p>
+				<p class="description">' . esc_html__( 'How long reservations last (1–168 hours, default: 24).', 'hold-this-product' ) . '</p>
               </div>';
     }
     
@@ -186,14 +186,14 @@ class HTP_Admin {
     public function holdthisproduct_enable_email_notifications_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $checked = ! empty( $options['enable_email_notifications'] ) ? 'checked' : '';
-        echo '<div class="htp-setting-field">
-                <div class="htp-setting-control">
+        echo '<div class="hold-this-product-setting-field">
+                <div class="hold-this-product-setting-control">
                     <label class="toggle-switch">
                         <input type="checkbox" name="holdthisproduct_options[enable_email_notifications]" value="1" ' . esc_attr( $checked ) . '>
                         <span class="slider"></span>
                     </label>
                 </div>
-                <p class="description">Send email confirmations and status updates to customers.</p>
+				<p class="description">' . esc_html__( 'Send email confirmations and status updates to customers.', 'hold-this-product' ) . '</p>
               </div>';
     }
     
@@ -203,14 +203,14 @@ class HTP_Admin {
     public function holdthisproduct_require_admin_approval_callback() {
         $options = get_option( 'holdthisproduct_options' );
         $checked = ! empty( $options['require_admin_approval'] ) ? 'checked' : '';
-        echo '<div class="htp-setting-field">
-                <div class="htp-setting-control">
+        echo '<div class="hold-this-product-setting-field">
+                <div class="hold-this-product-setting-control">
                     <label class="toggle-switch">
                         <input type="checkbox" name="holdthisproduct_options[require_admin_approval]" value="1" ' . esc_attr( $checked ) . '>
                         <span class="slider"></span>
                     </label>
                 </div>
-                <p class="description">Reservations require admin approval before becoming active.</p>
+				<p class="description">' . esc_html__( 'Reservations require admin approval before becoming active.', 'hold-this-product' ) . '</p>
               </div>';
     }
     
@@ -219,79 +219,79 @@ class HTP_Admin {
      */
     public function settings_page() {
         ?>
-        <div class="htp-admin-wrapper">
+        <div class="hold-this-product-admin-wrapper">
             <!-- Header with Logo -->
-            <div class="htp-admin-header">
-                <div class="htp-header-content">
-                    <div class="htp-title-section">
-						<h1 class="htp-main-title"><?php esc_html_e( 'Hold This Product Settings', 'hold-this-product' ); ?></h1>
-						<p class="htp-subtitle"><?php esc_html_e( 'Manage your product reservation system', 'hold-this-product' ); ?></p>
+            <div class="hold-this-product-admin-header">
+                <div class="hold-this-product-header-content">
+                    <div class="hold-this-product-title-section">
+						<h1 class="hold-this-product-main-title"><?php esc_html_e( 'Hold This Product Settings', 'hold-this-product' ); ?></h1>
+						<p class="hold-this-product-subtitle"><?php esc_html_e( 'Manage your product reservation system', 'hold-this-product' ); ?></p>
                     </div>
-                    <div class="htp-logo-section">
+                    <div class="hold-this-product-logo-section">
                         <?php
                         $logo_files = array('logo-transparent.png', 'HTP-menu-icon.png');
                         $logo_src = '';
                         $found_file = '';
                         
                         foreach ($logo_files as $logo_file) {
-                            $logo_path = HTP_PLUGIN_PATH . 'assets/images/' . $logo_file;
+                            $logo_path = HOLD_THIS_PRODUCT_PLUGIN_PATH . 'assets/images/' . $logo_file;
                             if (file_exists($logo_path)) {
-                                $logo_src = HTP_PLUGIN_URL . 'assets/images/' . rawurlencode($logo_file);
+                                $logo_src = HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/images/' . rawurlencode($logo_file);
                                 $found_file = $logo_file;
                                 break;
                             }
                         }
                         
                         if ($logo_src): ?>
-							<img src="<?php echo esc_url($logo_src); ?>" alt="<?php esc_attr_e( 'Hold This Product Logo', 'hold-this-product' ); ?>" class="htp-logo">
+							<img src="<?php echo esc_url($logo_src); ?>" alt="<?php esc_attr_e( 'Hold This Product Logo', 'hold-this-product' ); ?>" class="hold-this-product-logo">
                         <?php else: ?>
-                            <div class="htp-logo htp-logo-fallback" title="No logo file found. Checked: <?php echo esc_attr( implode( ', ', $logo_files ) ); ?>">HTP</div>
+							<div class="hold-this-product-logo hold-this-product-logo-fallback" title="<?php echo esc_attr( sprintf( /* translators: %s: comma-separated file names. */ __( 'No logo file found. Checked: %s', 'hold-this-product' ), implode( ', ', $logo_files ) ) ); ?>">HTP</div>
                         <?php endif; ?>
                     </div>
                 </div>
             </div>
 
             <!-- Main Content -->
-            <div class="htp-admin-content">
+            <div class="hold-this-product-admin-content">
                 <!-- Navigation Tabs -->
-                <div class="htp-nav-wrapper">
-                    <div class="htp-nav-tabs">
-                        <button type="button" class="htp-nav-tab" data-target="general">
-                            <span class="htp-tab-icon">⚙️</span>
-							<span class="htp-tab-text"><?php esc_html_e( 'General Settings', 'hold-this-product' ); ?></span>
+                <div class="hold-this-product-nav-wrapper">
+                    <div class="hold-this-product-nav-tabs">
+                        <button type="button" class="hold-this-product-nav-tab" data-target="general">
+                            <span class="hold-this-product-tab-icon">⚙️</span>
+							<span class="hold-this-product-tab-text"><?php esc_html_e( 'General Settings', 'hold-this-product' ); ?></span>
                         </button>
-                        <button type="button" class="htp-nav-tab" data-target="logged-in">
-                            <span class="htp-tab-icon">🎨</span>
-							<span class="htp-tab-text"><?php esc_html_e( 'Pop-up Customization', 'hold-this-product' ); ?></span>
+                        <button type="button" class="hold-this-product-nav-tab" data-target="logged-in">
+                            <span class="hold-this-product-tab-icon">🎨</span>
+							<span class="hold-this-product-tab-text"><?php esc_html_e( 'Pop-up Customization', 'hold-this-product' ); ?></span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Tab Content -->
-                <form method="post" action="options.php" class="htp-settings-form">
+                <form method="post" action="options.php" class="hold-this-product-settings-form">
                     <?php settings_fields( 'holdthisproduct_options_group' ); ?>
-                    <div class="htp-tab-container">
+                    <div class="hold-this-product-tab-container">
                         <!-- General Settings Tab -->
-                        <div id="htp-general" class="htp-tab-content">
-                            <div class="htp-settings-card">
-                                <div class="htp-card-header">
+                        <div id="hold-this-product-general" class="hold-this-product-tab-content">
+                            <div class="hold-this-product-settings-card">
+                                <div class="hold-this-product-card-header">
 									<h3><?php esc_html_e( 'Configuration', 'hold-this-product' ); ?></h3>
 									<p><?php esc_html_e( 'Configure the basic settings for your reservation system', 'hold-this-product' ); ?></p>
                                 </div>
-                                <div class="htp-card-body">
+                                <div class="hold-this-product-card-body">
                                     <?php do_settings_sections( 'holdthisproduct-settings' ); ?>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Pop-up Customization Tab -->
-                        <div id="htp-logged-in" class="htp-tab-content">
-                            <div class="htp-settings-card">
-                                <div class="htp-card-header">
+                        <div id="hold-this-product-logged-in" class="hold-this-product-tab-content">
+                            <div class="hold-this-product-settings-card">
+                                <div class="hold-this-product-card-header">
 									<h3><?php esc_html_e( 'Pop-up Customization', 'hold-this-product' ); ?></h3>
 									<p><?php esc_html_e( 'Customize the appearance of the reservation pop-up modal', 'hold-this-product' ); ?></p>
                                 </div>
-                                <div class="htp-card-body">
+                                <div class="hold-this-product-card-body">
                                     <?php
 									$options = get_option('holdthisproduct_options');
 									$options = is_array( $options ) ? $options : array();
@@ -302,8 +302,8 @@ class HTP_Admin {
 	                                        <tr>
 	                                            <th scope="row"><?php esc_html_e( 'Enable Pop-up Customization', 'hold-this-product' ); ?></th>
 	                                            <td>
-	                                                <div class="htp-setting-field">
-	                                                    <div class="htp-setting-control">
+	                                                <div class="hold-this-product-setting-field">
+	                                                    <div class="hold-this-product-setting-control">
 	                                                        <label class="toggle-switch">
 	                                                            <input type="checkbox" name="holdthisproduct_options[enable_popup_customization_logged_in]" value="1" <?php checked($enable_popup_customization_logged_in); ?>>
 	                                                            <span class="slider"></span>
@@ -314,20 +314,20 @@ class HTP_Admin {
 	                                            </td>
 	                                        </tr>
 	                                    </table>
-                                    <div class="htp-popup-customization-fields-logged-in" style="display:<?php echo $enable_popup_customization_logged_in ? 'block' : 'none'; ?>;margin-top:1rem;">
+                                    <div class="hold-this-product-popup-customization-fields-logged-in" style="display:<?php echo $enable_popup_customization_logged_in ? 'block' : 'none'; ?>;margin-top:1rem;">
                                         <table class="form-table">
                                             <tr>
 												<th scope="row"><?php esc_html_e( 'Border Radius (px)', 'hold-this-product' ); ?></th>
-                                                <td><input type="number" name="holdthisproduct_options[popup_customization_logged_in][border_radius]" value="<?php echo esc_attr($popup_settings_logged_in['border_radius'] ?? '12'); ?>" min="0" max="50" class="htp-input-right-align"></td>
+                                                <td><input type="number" name="holdthisproduct_options[popup_customization_logged_in][border_radius]" value="<?php echo esc_attr($popup_settings_logged_in['border_radius'] ?? '12'); ?>" min="0" max="50" class="hold-this-product-input-right-align"></td>
                                             </tr>
                                             <tr>
 												<th scope="row"><?php esc_html_e( 'Background Color', 'hold-this-product' ); ?></th>
-                                                <td><input type="color" name="holdthisproduct_options[popup_customization_logged_in][background_color]" value="<?php echo esc_attr($popup_settings_logged_in['background_color'] ?? '#ffffff'); ?>" class="htp-input-right-align"></td>
+                                                <td><input type="color" name="holdthisproduct_options[popup_customization_logged_in][background_color]" value="<?php echo esc_attr($popup_settings_logged_in['background_color'] ?? '#ffffff'); ?>" class="hold-this-product-input-right-align"></td>
                                             </tr>
                                             <tr>
 												<th scope="row"><?php esc_html_e( 'Font Family', 'hold-this-product' ); ?></th>
                                                 <td>
-                                                    <select name="holdthisproduct_options[popup_customization_logged_in][font_family]" class="htp-input-right-align">
+                                                    <select name="holdthisproduct_options[popup_customization_logged_in][font_family]" class="hold-this-product-input-right-align">
                                                         <?php
                                                         $fonts = [
                                                             'Arial, Helvetica, sans-serif' => 'Arial',
@@ -352,11 +352,11 @@ class HTP_Admin {
                                             </tr>
                                             <tr>
 												<th scope="row"><?php esc_html_e( 'Font Size (px)', 'hold-this-product' ); ?></th>
-                                                <td><input type="number" name="holdthisproduct_options[popup_customization_logged_in][font_size]" value="<?php echo esc_attr($popup_settings_logged_in['font_size'] ?? '16'); ?>" min="10" max="40" class="htp-input-right-align"></td>
+                                                <td><input type="number" name="holdthisproduct_options[popup_customization_logged_in][font_size]" value="<?php echo esc_attr($popup_settings_logged_in['font_size'] ?? '16'); ?>" min="10" max="40" class="hold-this-product-input-right-align"></td>
                                             </tr>
                                             <tr>
 												<th scope="row"><?php esc_html_e( 'Text Color', 'hold-this-product' ); ?></th>
-                                                <td><input type="color" name="holdthisproduct_options[popup_customization_logged_in][text_color]" value="<?php echo esc_attr($popup_settings_logged_in['text_color'] ?? '#222222'); ?>" class="htp-input-right-align"></td>
+                                                <td><input type="color" name="holdthisproduct_options[popup_customization_logged_in][text_color]" value="<?php echo esc_attr($popup_settings_logged_in['text_color'] ?? '#222222'); ?>" class="hold-this-product-input-right-align"></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -364,83 +364,13 @@ class HTP_Admin {
                             </div>
                         </div>
                     </div>
-                    <div class="htp-form-actions">
-						<?php submit_button( __( 'Save Settings', 'hold-this-product' ), 'primary htp-save-btn', 'submit', false ); ?>
+                    <div class="hold-this-product-form-actions">
+						<?php submit_button( __( 'Save Settings', 'hold-this-product' ), 'primary hold-this-product-save-btn', 'submit', false ); ?>
                     </div>
                 </form>
             </div>
         </div>
 
-        <script>
-        jQuery(document).ready(function($) {
-            // Check if there's a saved active tab after form submission
-            const urlParams = new URLSearchParams(window.location.search);
-            const activeTab = urlParams.get('active_tab') || localStorage.getItem('htp_active_tab') || 'general';
-            
-            // Immediately set the correct tab without animation to prevent flash
-            $('.htp-nav-tab').removeClass('htp-nav-tab-active');
-            $('.htp-tab-content').removeClass('htp-tab-active').hide();
-            
-            // Set the active tab
-            if (activeTab && $('#htp-' + activeTab).length) {
-                $('.htp-nav-tab[data-target="' + activeTab + '"]').addClass('htp-nav-tab-active');
-                $('#htp-' + activeTab).addClass('htp-tab-active').show();
-            } else {
-                // Fallback to general tab
-                $('.htp-nav-tab[data-target="general"]').addClass('htp-nav-tab-active');
-                $('#htp-general').addClass('htp-tab-active').show();
-            }
-            
-            // Show form actions after tab is properly set
-            $('.htp-form-actions').addClass('htp-ready');
-            
-            // Tab switching functionality
-            $('.htp-nav-tab').on('click', function() {
-                const target = $(this).data('target');
-                
-                // Save the active tab to localStorage
-                localStorage.setItem('htp_active_tab', target);
-                
-                // Update active tab button
-                $('.htp-nav-tab').removeClass('htp-nav-tab-active');
-                $(this).addClass('htp-nav-tab-active');
-                
-                // Update active tab content with proper show/hide
-                $('.htp-tab-content').removeClass('htp-tab-active').hide();
-                $('#htp-' + target).addClass('htp-tab-active').show();
-            });
-            
-            // Add hidden field to form to preserve active tab on submission
-            $('.htp-settings-form').append('<input type="hidden" name="active_tab" id="htp-active-tab-field" value="' + activeTab + '">');
-            
-            // Update the hidden field when tabs are switched
-            $('.htp-nav-tab').on('click', function() {
-                $('#htp-active-tab-field').val($(this).data('target'));
-            });
-            
-            // Popup customization sub-tabs functionality
-            $('.htp-popup-tab').on('click', function(){
-                var tab = $(this).data('popup-tab');
-                $('.htp-popup-tab').removeClass('htp-popup-tab-active');
-                $(this).addClass('htp-popup-tab-active');
-                $('.htp-popup-tab-content').hide();
-                $('.htp-popup-tab-content-' + tab).show();
-            });
-            
-            // Toggle fields for logged in users
-            var $toggleLoggedIn = $('input[name="holdthisproduct_options[enable_popup_customization_logged_in]"]');
-            var $fieldsLoggedIn = $('.htp-popup-customization-fields-logged-in');
-            $toggleLoggedIn.on('change', function(){
-                if($(this).is(':checked')){
-                    $fieldsLoggedIn.slideDown();
-                }else{
-                    $fieldsLoggedIn.slideUp();
-                }
-            });
-            
-            // Save button styling is handled via CSS (admin-style.css).
-        });
-        </script>
         <?php
     }
     
@@ -482,13 +412,13 @@ class HTP_Admin {
      */
     private function get_product_reservations( $product_id ) {
         return get_posts( array(
-            'post_type'      => 'htp_reservation',
+            'post_type'      => 'holdthisproduct_res',
             'post_status'    => 'publish',
             'posts_per_page' => 50,
             'meta_query'     => array(
-                array( 'key' => '_htp_status', 'value' => 'active' ),
-                array( 'key' => '_htp_product_id', 'value' => $product_id ),
-				array( 'key' => '_htp_expires_at', 'value' => time(), 'type' => 'NUMERIC', 'compare' => '>' )
+                array( 'key' => '_hold_this_product_status', 'value' => 'active' ),
+                array( 'key' => '_hold_this_product_product_id', 'value' => $product_id ),
+				array( 'key' => '_hold_this_product_expires_at', 'value' => time(), 'type' => 'NUMERIC', 'compare' => '>' )
             ),
             'orderby' => 'date',
             'order' => 'DESC'
@@ -499,15 +429,15 @@ class HTP_Admin {
      * Display single product reservation row
      */
     private function display_product_reservation_row( $reservation ) {
-        $email = get_post_meta( $reservation->ID, '_htp_email', true );
-        $name = get_post_meta( $reservation->ID, '_htp_name', true );
-        $surname = get_post_meta( $reservation->ID, '_htp_surname', true );
-        $expires_ts = (int) get_post_meta( $reservation->ID, '_htp_expires_at', true );
+        $email = get_post_meta( $reservation->ID, '_hold_this_product_email', true );
+        $name = get_post_meta( $reservation->ID, '_hold_this_product_name', true );
+        $surname = get_post_meta( $reservation->ID, '_hold_this_product_surname', true );
+        $expires_ts = (int) get_post_meta( $reservation->ID, '_hold_this_product_expires_at', true );
         
         // Determine customer display name
         if ( $reservation->post_author ) {
             $user = get_userdata( $reservation->post_author );
-            $customer = $user ? $user->display_name : 'Unknown User';
+			$customer = $user ? $user->display_name : __( 'Unknown User', 'hold-this-product' );
         } else {
             $customer = trim( $name . ' ' . $surname );
             if ( empty( $customer ) ) {
@@ -523,7 +453,7 @@ class HTP_Admin {
         echo '<td>' . esc_html( $customer ) . '</td>';
         echo '<td>' . esc_html( $expires_disp ) . '</td>';
         echo '<td>';
-        echo '<button type="button" class="button htp-cancel-reservation" ';
+        echo '<button type="button" class="button hold-this-product-cancel-reservation" ';
         echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
         echo 'data-customer="' . esc_attr( $customer ) . '">';
         echo esc_html__( 'Cancel', 'hold-this-product' );
@@ -541,21 +471,19 @@ class HTP_Admin {
         $page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 
         // Apply menu icon sizing everywhere in wp-admin; scoped to our menu item only.
-        wp_register_style( 'htp-admin-menu-inline', false, array(), HTP_VERSION );
-        wp_enqueue_style( 'htp-admin-menu-inline' );
+        wp_register_style( 'hold-this-product-admin-menu-inline', false, array(), HOLD_THIS_PRODUCT_VERSION );
+        wp_enqueue_style( 'hold-this-product-admin-menu-inline' );
         wp_add_inline_style(
-            'htp-admin-menu-inline',
+            'hold-this-product-admin-menu-inline',
             '#toplevel_page_holdthisproduct-settings .wp-menu-image img{box-sizing:content-box;width:30px;height:30px;padding:2px 0;object-fit:contain;vertical-align:top;}' .
             '#toplevel_page_holdthisproduct-settings .wp-menu-name{font-size:13px;white-space:nowrap;}'
         );
 
         if ( $hook === 'toplevel_page_holdthisproduct-settings' || $page === 'holdthisproduct-settings' ) {
-            wp_enqueue_script( 'jquery' );
+			wp_enqueue_script( 'hold-this-product-admin-settings', HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/js/admin-settings.js', array( 'jquery' ), HOLD_THIS_PRODUCT_VERSION, true );
             wp_enqueue_style( 'wp-components' );
             wp_enqueue_script( 'wp-components' );
-            wp_enqueue_style( 'holdthisproduct-admin-style', HTP_PLUGIN_URL . 'assets/css/admin-style.css', array(), HTP_VERSION );
-            
-            wp_add_inline_script( 'wp-components', $this->get_admin_inline_script() );
+            wp_enqueue_style( 'holdthisproduct-admin-style', HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/css/admin-style.css', array(), HOLD_THIS_PRODUCT_VERSION );
         }
         
         if (
@@ -567,88 +495,33 @@ class HTP_Admin {
                 $this->reservations_admin->enqueue_assets();
             } else {
                 wp_enqueue_script( 'jquery' );
-                wp_enqueue_style( 'holdthisproduct-admin-style', HTP_PLUGIN_URL . 'assets/css/admin-style.css', array(), HTP_VERSION );
+                wp_enqueue_style( 'holdthisproduct-admin-style', HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/css/admin-style.css', array(), HOLD_THIS_PRODUCT_VERSION );
             }
         }
         
         if ( $hook === 'post.php' || $hook === 'post-new.php' ) {
             global $post;
             if ( $post && $post->post_type === 'product' ) {
-                wp_enqueue_script( 'jquery' );
-                wp_add_inline_script( 'jquery', $this->get_product_page_script() );
+				wp_enqueue_script( 'hold-this-product-admin-product', HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/js/admin-product.js', array( 'jquery' ), HOLD_THIS_PRODUCT_VERSION, true );
+				wp_localize_script(
+					'hold-this-product-admin-product',
+					'holdThisProductAdminProduct',
+					array(
+						'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+						'nonce' => wp_create_nonce( 'hold_this_product_admin_cancel' ),
+						'strings' => array(
+							/* translators: %s: customer name. */
+							'confirmCancel' => __( 'Are you sure you want to cancel the reservation for %s?', 'hold-this-product' ),
+							'cancelling' => __( 'Cancelling…', 'hold-this-product' ),
+							'cancelled' => __( 'Reservation cancelled successfully.', 'hold-this-product' ),
+							'errorPrefix' => __( 'Error: ', 'hold-this-product' ),
+							'requestFailed' => __( 'Request failed. Please try again.', 'hold-this-product' ),
+							'cancel' => __( 'Cancel', 'hold-this-product' ),
+						),
+					)
+				);
             }
         }
-    }
-
-
-    
-    /**
-     * Get admin inline script
-     */
-    private function get_admin_inline_script() {
-        return "
-            jQuery(document).ready(function($) {
-                $('.nav-tab').click(function(e) {
-                    e.preventDefault();
-                    $('.nav-tab').removeClass('nav-tab-active');
-                    $('.tab-content').removeClass('active');
-                    $(this).addClass('nav-tab-active');
-                    $($(this).attr('href')).addClass('active');
-                });
-
-                function toggleMaxReservations() {
-                    $('#holdthisproduct-max-reservations-wrapper').toggle(
-                        $('input[name=\"holdthisproduct_options[enable_reservation]\"]').is(':checked')
-                    );
-                }
-                
-                toggleMaxReservations();
-                
-                $('input[name=\"holdthisproduct_options[enable_reservation]\"]').on('change', function() {
-                    toggleMaxReservations();
-                });
-            });
-        ";
-    }
-    
-    /**
-     * Get product page inline script for reservation management
-     */
-    private function get_product_page_script() {
-        return "
-            jQuery(document).ready(function($) {
-                $('.htp-cancel-reservation').on('click', function() {
-                    var \$btn = $(this);
-                    var reservationId = \$btn.data('reservation-id');
-                    var customer = \$btn.data('customer');
-                    
-                    if (confirm('Are you sure you want to cancel the reservation for ' + customer + '?')) {
-                        \$btn.prop('disabled', true).text('Cancelling...');
-                        
-                        $.post(ajaxurl, {
-                            action: 'htp_cancel_admin_reservation',
-                            reservation_id: reservationId,
-                            nonce: '" . wp_create_nonce( 'htp_admin_cancel' ) . "'
-                        })
-                        .done(function(response) {
-                            if (response.success) {
-                                \$btn.closest('tr').fadeOut(function() {
-                                    $(this).remove();
-                                });
-                                alert('Reservation cancelled successfully.');
-                            } else {
-                                alert('Error: ' + response.data);
-                                \$btn.prop('disabled', false).text('Cancel');
-                            }
-                        })
-                        .fail(function() {
-                            alert('Request failed. Please try again.');
-                            \$btn.prop('disabled', false).text('Cancel');
-                        });
-                    }
-                });
-            });
-        ";
     }
 
 

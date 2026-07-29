@@ -5,7 +5,11 @@ All notable changes to HoldThisProduct will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-11-12
+## [1.0.0] - 2026-07-29
+
+### Fixed
+- Hardened reservation authorization, stock transitions, Checkout Block integration, privacy tools, and admin output handling.
+- Added deterministic WordPress.org release packaging and compatibility metadata.
 
 ### Added
 - Initial release of HoldThisProduct
@@ -68,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Technical Features
 - Custom post type for reservations
-- WordPress REST API compatible
+- WooCommerce Store API and Checkout Blocks compatible
 - WooCommerce hooks integration
 - Proper WordPress coding standards
 - Secure nonce validation

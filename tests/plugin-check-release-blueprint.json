@@ -1,11 +1,10 @@
 {
   "$schema": "https://playground.wordpress.net/blueprint-schema.json",
   "preferredVersions": { "php": "7.4", "wp": "latest" },
-  "login": true,
   "steps": [
     { "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "woocommerce" }, "options": { "activate": true } },
     { "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "plugin-check" }, "options": { "activate": true } },
-    { "step": "activatePlugin", "pluginPath": "/wordpress/wp-content/plugins/hold-this-product/HoldThisProduct.php" },
-    { "step": "runPHP", "code": "<?php define( 'HOLD_THIS_PRODUCT_INTEGRATION_TEST', true ); require '/wordpress/wp-content/plugins/hold-this-product/tests/integration-smoke.php';" }
+    { "step": "activatePlugin", "pluginPath": "/wordpress/wp-content/plugins/hold-this-product/hold-this-product.php" },
+    { "step": "wp-cli", "command": "wp plugin check hold-this-product --format=json" }
   ]
 }

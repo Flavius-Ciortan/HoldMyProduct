@@ -4,21 +4,23 @@
  * Plugin Name:       Hold This Product
  * Plugin URI:        https://github.com/Flavius-Ciortan/HoldThisProduct
  * Description:       Allows WooCommerce customers to reserve products for a limited time before purchase.
- * Version:           1.0.1
+ * Version:           1.0.0
  * Requires at least: 6.5
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
+ * WC requires at least: 8.3
+ * WC tested up to:   10.9.4
  * Author:            Flavius Ciortan, Anghel Emanuel.
  * Author URI:        https://github.com/Flavius-Ciortan
  * Text Domain:       hold-this-product
- * License:           GPLv3
+ * License:           GPLv3 or later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Check if PRO version is active
-if ( defined( 'HTP_PRO_VERSION' ) ) {
+if ( defined( 'HOLD_THIS_PRODUCT_PRO_VERSION' ) || defined( 'HTP_PRO_VERSION' ) ) {
     add_action( 'admin_init', function() {
         deactivate_plugins( plugin_basename( __FILE__ ) );
     } );
@@ -33,9 +35,9 @@ if ( defined( 'HTP_PRO_VERSION' ) ) {
 }
 
 // Define plugin constants
-define( 'HTP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'HTP_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'HTP_VERSION', '1.0.1' );
+define( 'HOLD_THIS_PRODUCT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'HOLD_THIS_PRODUCT_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'HOLD_THIS_PRODUCT_VERSION', '1.0.0' );
 
 /**
  * Main plugin class
@@ -123,19 +125,19 @@ class HoldThisProduct {
         }
         
         // Core classes
-        require_once HTP_PLUGIN_PATH . 'includes/class-htp-reservations.php';
-        require_once HTP_PLUGIN_PATH . 'includes/class-htp-email-manager.php';
+		require_once HOLD_THIS_PRODUCT_PLUGIN_PATH . 'includes/class-htp-reservations.php';
+        require_once HOLD_THIS_PRODUCT_PLUGIN_PATH . 'includes/class-htp-email-manager.php';
         
         // Admin classes
         if ( is_admin() ) {
-            require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-admin.php';
-            require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-admin-reservations.php';
-            require_once HTP_PLUGIN_PATH . 'includes/admin/class-htp-admin-analytics.php';
+            require_once HOLD_THIS_PRODUCT_PLUGIN_PATH . 'includes/admin/class-htp-admin.php';
+            require_once HOLD_THIS_PRODUCT_PLUGIN_PATH . 'includes/admin/class-htp-admin-reservations.php';
+            require_once HOLD_THIS_PRODUCT_PLUGIN_PATH . 'includes/admin/class-htp-admin-analytics.php';
         }
         
         // Frontend classes
         if ( ! is_admin() ) {
-            require_once HTP_PLUGIN_PATH . 'includes/frontend/class-htp-frontend.php';
+            require_once HOLD_THIS_PRODUCT_PLUGIN_PATH . 'includes/frontend/class-htp-frontend.php';
         }
     }
     
@@ -148,18 +150,18 @@ class HoldThisProduct {
         }
         
         // Initialize core
-        $this->reservations = new HTP_Reservations();
-        new HTP_Email_Manager();
+        $this->reservations = new Hold_This_Product_Reservations();
+        new Hold_This_Product_Email_Manager();
         
         // Initialize admin
         if ( is_admin() ) {
-            $this->admin = new HTP_Admin( $this->reservations );
-            new HTP_Analytics( $this->reservations );
+            $this->admin = new Hold_This_Product_Admin( $this->reservations );
+            new Hold_This_Product_Analytics( $this->reservations );
         }
         
         // Initialize frontend
         if ( ! is_admin() ) {
-            $this->frontend = new HTP_Frontend( $this->reservations );
+            $this->frontend = new Hold_This_Product_Frontend( $this->reservations );
         }
     }
     
@@ -172,20 +174,20 @@ class HoldThisProduct {
         }
         
         // Load reservations class to register endpoints
-        require_once HTP_PLUGIN_PATH . 'includes/class-htp-reservations.php';
-        $reservations = new HTP_Reservations();
+		require_once HOLD_THIS_PRODUCT_PLUGIN_PATH . 'includes/class-htp-reservations.php';
+        $reservations = new Hold_This_Product_Reservations();
         
         // Flush rewrite rules to register the new endpoint
         $reservations->flush_rewrite_rules();
 		$reservations->schedule_expiration();
-		update_option( 'htp_version', HTP_VERSION, false );
+		update_option( 'hold_this_product_version', HOLD_THIS_PRODUCT_VERSION, false );
     }
     
     /**
      * Plugin deactivation
      */
     public function deactivate_plugin() {
-		wp_clear_scheduled_hook( 'htp_expire_reservations' );
+		wp_clear_scheduled_hook( 'hold_this_product_expire_reservations' );
         // Flush rewrite rules on deactivation to clean up
         flush_rewrite_rules();
     }
@@ -202,27 +204,63 @@ class HoldThisProduct {
 
 	/** Normalize legacy local-offset timestamps in bounded upgrade batches. */
 	public function maybe_upgrade() {
-		if ( version_compare( (string) get_option( 'htp_version', '0' ), HTP_VERSION, '>=' ) || ! class_exists( 'HTP_Reservations' ) ) {
+		$schema_version = (string) get_option( 'hold_this_product_schema_version', '0' );
+		if ( version_compare( $schema_version, '1.0.0', '>=' ) || ! class_exists( 'Hold_This_Product_Reservations' ) ) {
 			return;
 		}
+		$this->migrate_legacy_identifiers();
 		$ids = get_posts( array(
-			'post_type' => 'htp_reservation', 'post_status' => 'publish', 'fields' => 'ids',
+			'post_type' => 'holdthisproduct_res', 'post_status' => 'publish', 'fields' => 'ids',
 			'posts_per_page' => 500, 'no_found_rows' => true,
 			'meta_query' => array(
-				array( 'key' => '_htp_expires_at', 'compare' => 'EXISTS' ),
-				array( 'key' => '_htp_timestamp_model', 'compare' => 'NOT EXISTS' ),
+				array( 'key' => '_hold_this_product_expires_at', 'compare' => 'EXISTS' ),
+				array( 'key' => '_hold_this_product_timestamp_model', 'compare' => 'NOT EXISTS' ),
 			),
 		) );
 		$offset = current_time( 'timestamp' ) - time();
 		foreach ( $ids as $reservation_id ) {
-			$expires = (int) get_post_meta( $reservation_id, '_htp_expires_at', true );
-			update_post_meta( $reservation_id, '_htp_expires_at', max( 0, $expires - $offset ) );
-			update_post_meta( $reservation_id, '_htp_timestamp_model', 'utc' );
+			$expires = (int) get_post_meta( $reservation_id, '_hold_this_product_expires_at', true );
+			update_post_meta( $reservation_id, '_hold_this_product_expires_at', max( 0, $expires - $offset ) );
+			update_post_meta( $reservation_id, '_hold_this_product_timestamp_model', 'utc' );
 		}
 		$this->reservations->schedule_expiration();
 		if ( count( $ids ) < 500 ) {
-			update_option( 'htp_version', HTP_VERSION, false );
+			update_option( 'hold_this_product_version', HOLD_THIS_PRODUCT_VERSION, false );
+			update_option( 'hold_this_product_schema_version', '1.0.0', false );
+			delete_option( 'htp_version' );
 		}
+	}
+
+	/** Migrate identifiers from pre-directory development builds without changing reservation data. */
+	private function migrate_legacy_identifiers() {
+		global $wpdb;
+		$legacy_post_ids = $wpdb->get_col(
+			"SELECT ID FROM {$wpdb->posts} WHERE post_type = 'htp_reservation'"
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared -- Fixed-value one-time migration.
+		$wpdb->query(
+			"UPDATE {$wpdb->posts} SET post_type = 'holdthisproduct_res' WHERE post_type = 'htp_reservation'"
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared -- Fixed-value one-time migration.
+		$wpdb->query(
+			"UPDATE {$wpdb->postmeta} SET meta_key = CONCAT('_hold_this_product_', SUBSTRING(meta_key, 6)) WHERE meta_key LIKE '\\_htp\\_%'"
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared -- Fixed-value one-time migration.
+		if ( isset( $wpdb->woocommerce_order_itemmeta ) ) {
+			$table = $wpdb->woocommerce_order_itemmeta;
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE %i SET meta_key = CONCAT('_hold_this_product_', SUBSTRING(meta_key, 6)) WHERE meta_key LIKE %s",
+					$table,
+					$wpdb->esc_like( '_htp_' ) . '%'
+				)
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared -- Fixed-value one-time migration.
+		}
+		$wpdb->query(
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE 'htp_lock_%'"
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.PreparedSQL.NotPrepared -- Removes obsolete short-lived locks.
+		wp_clear_scheduled_hook( 'htp_expire_reservations' );
+		foreach ( $legacy_post_ids as $legacy_post_id ) {
+			clean_post_cache( (int) $legacy_post_id );
+		}
+		flush_rewrite_rules( false );
 	}
 
 	public function add_privacy_policy_content() {

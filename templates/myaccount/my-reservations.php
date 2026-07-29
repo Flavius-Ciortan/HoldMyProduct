@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 ?>
 
-<div class="htp-reservations-container">
-    <div class="htp-reservations-wrapper">
-        <div class="htp-reservations-header">
+<div class="hold-this-product-reservations-container">
+    <div class="hold-this-product-reservations-wrapper">
+        <div class="hold-this-product-reservations-header">
             <h2><?php esc_html_e( 'My Reserved Products', 'hold-this-product' ); ?></h2>
             <p><?php esc_html_e( 'View your reservation history and manage active reservations.', 'hold-this-product' ); ?></p>
         </div>
         
-        <table class="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table htp-reservations-table">
+        <table class="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table hold-this-product-reservations-table">
     <thead>
         <tr>
             <th class="woocommerce-orders-table__header woocommerce-orders-table__header-order-product">
@@ -42,9 +42,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     <tbody>
         <?php foreach ( $reservations as $reservation ) : ?>
             <?php
-            $product_id = (int) get_post_meta( $reservation->ID, '_htp_product_id', true );
-            $status = (string) get_post_meta( $reservation->ID, '_htp_status', true );
-            $expires_ts = (int) get_post_meta( $reservation->ID, '_htp_expires_at', true );
+            $product_id = (int) get_post_meta( $reservation->ID, '_hold_this_product_product_id', true );
+            $status = (string) get_post_meta( $reservation->ID, '_hold_this_product_status', true );
+            $expires_ts = (int) get_post_meta( $reservation->ID, '_hold_this_product_expires_at', true );
             $product = wc_get_product( $product_id );
             
             if ( ! $product ) {
@@ -73,13 +73,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 						/* translators: %d: number of days remaining. */
 						$time_left = sprintf( _n( '%d day', '%d days', $days, 'hold-this-product' ), $days );
                         if ( $hours > 0 ) {
-                            $time_left .= sprintf( ', %d hours', $hours );
+							/* translators: %d: number of hours remaining. */
+							$time_left .= sprintf( _n( ', %d hour', ', %d hours', $hours, 'hold-this-product' ), $hours );
                         }
 					} elseif ( $hours > 0 ) {
 						/* translators: %d: number of hours remaining. */
 						$time_left = sprintf( _n( '%d hour', '%d hours', $hours, 'hold-this-product' ), $hours );
                         if ( $minutes > 0 ) {
-                            $time_left .= sprintf( ', %d minutes', $minutes );
+							/* translators: %d: number of minutes remaining. */
+							$time_left .= sprintf( _n( ', %d minute', ', %d minutes', $minutes, 'hold-this-product' ), $minutes );
                         }
 					} else {
 						/* translators: %d: number of minutes remaining. */
@@ -116,7 +118,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             }
 
             $add_to_cart_url = esc_url( wc_get_cart_url() . '?add-to-cart=' . $product_id );
-			$cancel_nonce = wp_create_nonce( 'htp_cancel_res_' . $reservation->ID );
+			$cancel_nonce = wp_create_nonce( 'hold_this_product_cancel_res_' . $reservation->ID );
 
             $status_map = array(
                 'active'           => esc_html__( 'Active', 'hold-this-product' ),
@@ -164,7 +166,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </a>
                 </td>
                 <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-order-status" data-title="<?php esc_attr_e( 'Status', 'hold-this-product' ); ?>">
-                    <span class="htp-status-badge htp-status-badge--<?php echo esc_attr( $badge_variant ); ?>">
+                    <span class="hold-this-product-status-badge hold-this-product-status-badge--<?php echo esc_attr( $badge_variant ); ?>">
                         <?php echo esc_html( $status_label ); ?>
                     </span>
                 </td>
@@ -204,7 +206,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 	<?php if ( isset( $total_pages, $current_page ) && $total_pages > 1 ) : ?>
 		<nav class="woocommerce-pagination" aria-label="<?php esc_attr_e( 'Reservation history pagination', 'hold-this-product' ); ?>">
-			<?php echo wp_kses_post( paginate_links( array( 'base' => add_query_arg( 'reservation-page', '%#%', wc_get_account_endpoint_url( 'htp-reservations' ) ), 'current' => $current_page, 'total' => $total_pages ) ) ); ?>
+			<?php echo wp_kses_post( paginate_links( array( 'base' => add_query_arg( 'reservation-page', '%#%', wc_get_account_endpoint_url( 'hold-this-product-reservations' ) ), 'current' => $current_page, 'total' => $total_pages ) ) ); ?>
 		</nav>
 	<?php endif; ?>
 </div>

@@ -23,8 +23,8 @@ Welcome to HoldThisProduct! This comprehensive guide will help you set up and us
 
 Before installing HoldThisProduct, ensure you have:
 
-- WordPress 5.8 or higher
-- WooCommerce 5.0 or higher
+- WordPress 6.5 or higher
+- WooCommerce 8.3 or higher
 - PHP 7.4 or higher
 - Active WooCommerce store with products
 
@@ -444,9 +444,9 @@ Have an idea? We'd love to hear it!
 ## Version Information
 
 Current Version: 1.0.0
-Last Updated: November 12, 2025
-WordPress Compatibility: 5.8+
-WooCommerce Compatibility: 5.0+
+Last Updated: July 29, 2026
+WordPress Compatibility: 6.5+
+WooCommerce Compatibility: 8.3+
 PHP Compatibility: 7.4+
 
 ---

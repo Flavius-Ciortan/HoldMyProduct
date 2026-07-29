@@ -5,18 +5,18 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Email notifications for reservations.
  */
-class HTP_Email_Manager {
+class Hold_This_Product_Email_Manager {
 
     public function __construct() {
         $this->init();
     }
 
     private function init() {
-        add_action( 'htp_reservation_created', array( $this, 'send_confirmation_email' ), 10, 2 );
-        add_action( 'htp_reservation_expired', array( $this, 'send_expiration_email' ), 10, 2 );
-        add_action( 'htp_reservation_pending_approval', array( $this, 'send_pending_approval_email' ), 10, 2 );
-        add_action( 'htp_reservation_approved', array( $this, 'send_approval_confirmation_email' ), 10, 2 );
-        add_action( 'htp_reservation_denied', array( $this, 'send_denial_email' ), 10, 3 );
+        add_action( 'hold_this_product_reservation_created', array( $this, 'send_confirmation_email' ), 10, 2 );
+        add_action( 'hold_this_product_reservation_expired', array( $this, 'send_expiration_email' ), 10, 2 );
+        add_action( 'hold_this_product_reservation_pending_approval', array( $this, 'send_pending_approval_email' ), 10, 2 );
+        add_action( 'hold_this_product_reservation_approved', array( $this, 'send_approval_confirmation_email' ), 10, 2 );
+        add_action( 'hold_this_product_reservation_denied', array( $this, 'send_denial_email' ), 10, 3 );
     }
 
     private function are_email_notifications_enabled() {
@@ -25,15 +25,15 @@ class HTP_Email_Manager {
     }
 
     private function reservation_product( $reservation_id ) {
-        return wc_get_product( (int) get_post_meta( $reservation_id, '_htp_product_id', true ) );
+        return wc_get_product( (int) get_post_meta( $reservation_id, '_hold_this_product_product_id', true ) );
     }
 
     private function send( $email, $subject, $message ) {
         $email = sanitize_email( $email );
         if ( ! $email || ! is_email( $email ) ) {
-            return;
+			return false;
         }
-        wp_mail(
+		return wp_mail(
             $email,
             wp_strip_all_tags( $subject ),
             nl2br( esc_html( $message ) ),
@@ -42,12 +42,12 @@ class HTP_Email_Manager {
     }
 
     public function send_confirmation_email( $reservation_id, $email ) {
-        if ( ! $this->are_email_notifications_enabled() ) return;
+		if ( ! $this->are_email_notifications_enabled() ) return false;
         $product = $this->reservation_product( $reservation_id );
-        if ( ! $product ) return;
+		if ( ! $product ) return false;
         $name = wp_strip_all_tags( $product->get_name() );
-        $expires = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), (int) get_post_meta( $reservation_id, '_htp_expires_at', true ) );
-        $this->send(
+        $expires = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), (int) get_post_meta( $reservation_id, '_hold_this_product_expires_at', true ) );
+		return $this->send(
             $email,
             /* translators: %s: product name. */
             sprintf( __( 'Reservation Confirmed: %s', 'hold-this-product' ), $name ),
@@ -60,17 +60,17 @@ class HTP_Email_Manager {
     }
 
     public function send_expiration_email( $reservation_id, $email ) {
-        if ( ! $this->are_email_notifications_enabled() ) return;
+		if ( ! $this->are_email_notifications_enabled() ) return false;
         $product = $this->reservation_product( $reservation_id );
-        if ( ! $product ) return;
+		if ( ! $product ) return false;
 		$name = wp_strip_all_tags( $product->get_name() );
-		$expired_from = get_post_meta( $reservation_id, '_htp_expired_from', true );
+		$expired_from = get_post_meta( $reservation_id, '_hold_this_product_expired_from', true );
 		$message = 'pending_approval' === $expired_from
 			/* translators: 1: product name, 2: product URL. */
 			? sprintf( __( "Hello,\n\nYour reservation request for %1\$s expired before it was approved.\n\nView Product: %2\$s", 'hold-this-product' ), $name, esc_url_raw( get_permalink( $product->get_id() ) ) )
 			/* translators: 1: product name, 2: product URL. */
 			: sprintf( __( "Hello,\n\nYour reservation for %1\$s has expired and the product is now available to other customers.\n\nYou can still purchase it if available: %2\$s\n\nThank you!", 'hold-this-product' ), $name, esc_url_raw( get_permalink( $product->get_id() ) ) );
-        $this->send(
+		return $this->send(
             $email,
             /* translators: %s: product name. */
             sprintf( __( 'Reservation Expired: %s', 'hold-this-product' ), $name ),
@@ -79,11 +79,11 @@ class HTP_Email_Manager {
     }
 
     public function send_pending_approval_email( $reservation_id, $email ) {
-        if ( ! $this->are_email_notifications_enabled() ) return;
+		if ( ! $this->are_email_notifications_enabled() ) return false;
         $product = $this->reservation_product( $reservation_id );
-        if ( ! $product ) return;
+		if ( ! $product ) return false;
         $name = wp_strip_all_tags( $product->get_name() );
-        $this->send(
+		return $this->send(
             $email,
             /* translators: %s: product name. */
             sprintf( __( 'Reservation Pending Approval: %s', 'hold-this-product' ), $name ),
@@ -93,12 +93,12 @@ class HTP_Email_Manager {
     }
 
     public function send_approval_confirmation_email( $reservation_id, $email ) {
-        if ( ! $this->are_email_notifications_enabled() ) return;
+		if ( ! $this->are_email_notifications_enabled() ) return false;
         $product = $this->reservation_product( $reservation_id );
-        if ( ! $product ) return;
+		if ( ! $product ) return false;
         $name = wp_strip_all_tags( $product->get_name() );
-        $expires = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), (int) get_post_meta( $reservation_id, '_htp_expires_at', true ) );
-        $this->send(
+        $expires = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), (int) get_post_meta( $reservation_id, '_hold_this_product_expires_at', true ) );
+		return $this->send(
             $email,
             /* translators: %s: product name. */
             sprintf( __( 'Reservation Approved: %s', 'hold-this-product' ), $name ),
@@ -108,14 +108,14 @@ class HTP_Email_Manager {
     }
 
     public function send_denial_email( $reservation_id, $email, $reason = '' ) {
-        if ( ! $this->are_email_notifications_enabled() ) return;
+		if ( ! $this->are_email_notifications_enabled() ) return false;
         $product = $this->reservation_product( $reservation_id );
-        if ( ! $product ) return;
+		if ( ! $product ) return false;
         $name = wp_strip_all_tags( $product->get_name() );
         $reason = sanitize_text_field( $reason );
         /* translators: %s: denial reason. */
         $reason_text = $reason ? sprintf( __( "Reason: %s\n\n", 'hold-this-product' ), $reason ) : '';
-        $this->send(
+		return $this->send(
             $email,
             /* translators: %s: product name. */
             sprintf( __( 'Reservation Not Approved: %s', 'hold-this-product' ), $name ),

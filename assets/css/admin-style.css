@@ -1,19 +1,19 @@
 :root {
-    --htp-primary: #2F89F9;
-    --htp-primary-light: #44A0FF;
-    --htp-primary-dark: #266DED;
-    --htp-secondary: #EAF4FF;
-    --htp-accent: #44A0FF;
-    --htp-text-dark: #0b1b3a;
-    --htp-text-light: #2b4a7a;
-    --htp-white: #ffffff;
-    --htp-border: rgba(255, 255, 255, 0.22);
-    --htp-border-ui: rgba(11, 27, 58, 0.16);
-    --htp-success: #10b981;
-    --htp-warning: #f59e0b;
-    --htp-error: #ef4444;
-    --htp-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --htp-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --hold-this-product-primary: #2F89F9;
+    --hold-this-product-primary-light: #44A0FF;
+    --hold-this-product-primary-dark: #266DED;
+    --hold-this-product-secondary: #EAF4FF;
+    --hold-this-product-accent: #44A0FF;
+    --hold-this-product-text-dark: #0b1b3a;
+    --hold-this-product-text-light: #2b4a7a;
+    --hold-this-product-white: #ffffff;
+    --hold-this-product-border: rgba(255, 255, 255, 0.22);
+    --hold-this-product-border-ui: rgba(11, 27, 58, 0.16);
+    --hold-this-product-success: #10b981;
+    --hold-this-product-warning: #f59e0b;
+    --hold-this-product-error: #ef4444;
+    --hold-this-product-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --hold-this-product-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /*
@@ -33,23 +33,23 @@ body #wpcontent {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
 }
 
-.htp-admin-wrapper {
+.hold-this-product-admin-wrapper {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: transparent;
     padding: 0;
 }
 
-.htp-admin-header {
+.hold-this-product-admin-header {
     background: linear-gradient(135deg, #44A0FF 0%, #2F89F9 35%, #2776EE 65%, #266DED 100%);
-    color: var(--htp-white);
+    color: var(--hold-this-product-white);
     padding: 1.25rem 1.5rem 1rem;
-    box-shadow: var(--htp-shadow-lg);
+    box-shadow: var(--hold-this-product-shadow-lg);
     position: relative;
     overflow: hidden;
     border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.htp-admin-header::before {
+.hold-this-product-admin-header::before {
     content: '';
     position: absolute;
     top: 0;
@@ -61,7 +61,7 @@ body #wpcontent {
     pointer-events: none;
 }
 
-.htp-header-content {
+.hold-this-product-header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -71,26 +71,26 @@ body #wpcontent {
     z-index: 1;
 }
 
-.htp-title-section {
+.hold-this-product-title-section {
     flex: 1;
 }
 
-.htp-main-title {
+.hold-this-product-main-title {
     font-size: 1.75rem;
     font-weight: 700;
     margin: 0 0 0.75rem 0;
-    color: var(--htp-white);
+    color: var(--hold-this-product-white);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.htp-subtitle {
+.hold-this-product-subtitle {
     font-size: 0.95rem;
     margin: 0;
     opacity: 0.9;
     font-weight: 400;
 }
 
-.htp-logo-section {
+.hold-this-product-logo-section {
     flex-shrink: 0;
     margin-left: 1.5rem;
     display: flex;
@@ -98,7 +98,7 @@ body #wpcontent {
     justify-content: center;
 }
 
-.htp-logo {
+.hold-this-product-logo {
     width: 80px;
     height: 80px;
     max-width: 100%;
@@ -106,9 +106,9 @@ body #wpcontent {
     display: block;
 }
 
-.htp-logo-fallback {
-    background: linear-gradient(135deg, var(--htp-primary) 0%, var(--htp-primary-dark) 100%);
-    color: var(--htp-white);
+.hold-this-product-logo-fallback {
+    background: linear-gradient(135deg, var(--hold-this-product-primary) 0%, var(--hold-this-product-primary-dark) 100%);
+    color: var(--hold-this-product-white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -117,48 +117,48 @@ body #wpcontent {
     letter-spacing: 1px;
 }
 
-.htp-admin-content {
+.hold-this-product-admin-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1.5rem;
 }
 
 /* Navigation Tabs */
-.htp-nav-wrapper {
+.hold-this-product-nav-wrapper {
     margin-bottom: 1.5rem;
 }
 
-.htp-nav-tabs {
+.hold-this-product-nav-tabs {
     display: flex;
     gap: 1rem;
     padding-bottom: 0;
     position: relative;
 }
 
-.htp-nav-tabs::after {
+.hold-this-product-nav-tabs::after {
     content: '';
     position: absolute;
     bottom: -4px;
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(to right, var(--htp-primary) 0%, var(--htp-primary) 40%, transparent 100%);
+    background: linear-gradient(to right, var(--hold-this-product-primary) 0%, var(--hold-this-product-primary) 40%, transparent 100%);
     z-index: 0;
 }
 
-.htp-nav-tab {
+.hold-this-product-nav-tab {
     display: flex;
     align-items: center;
     gap: 0.375rem;
     padding: 0.75rem 1.25rem;
-    background: var(--htp-white);
-    border: 2px solid var(--htp-border);
+    background: var(--hold-this-product-white);
+    border: 2px solid var(--hold-this-product-border);
     border-bottom: none;
     border-radius: 4px 4px 0 0;
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 600;
-    color: var(--htp-text-light);
+    color: var(--hold-this-product-text-light);
     transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     text-decoration: none;
     position: relative;
@@ -166,66 +166,66 @@ body #wpcontent {
     margin-bottom: -2px;
 }
 
-.htp-nav-tab:hover {
-    background: var(--htp-secondary);
-    color: var(--htp-primary);
+.hold-this-product-nav-tab:hover {
+    background: var(--hold-this-product-secondary);
+    color: var(--hold-this-product-primary);
 }
 
-.htp-nav-tab-active {
-    background: var(--htp-primary);
-    border-color: var(--htp-primary);
-    color: var(--htp-white);
-    box-shadow: var(--htp-shadow);
+.hold-this-product-nav-tab-active {
+    background: var(--hold-this-product-primary);
+    border-color: var(--hold-this-product-primary);
+    color: var(--hold-this-product-white);
+    box-shadow: var(--hold-this-product-shadow);
 }
 
-.htp-nav-tab-active:hover {
-    background: var(--htp-primary-dark);
-    border-color: var(--htp-primary-dark);
-    color: var(--htp-white);
+.hold-this-product-nav-tab-active:hover {
+    background: var(--hold-this-product-primary-dark);
+    border-color: var(--hold-this-product-primary-dark);
+    color: var(--hold-this-product-white);
 }
 
-.htp-tab-icon {
+.hold-this-product-tab-icon {
     font-size: 1rem;
 }
 
 /* Remove color from user and guests emoji icons */
-.htp-nav-tab[data-target="logged-in"] .htp-tab-icon,
-.htp-nav-tab[data-target="logged-out"] .htp-tab-icon {
+.hold-this-product-nav-tab[data-target="logged-in"] .hold-this-product-tab-icon,
+.hold-this-product-nav-tab[data-target="logged-out"] .hold-this-product-tab-icon {
     filter: grayscale(1);
 }
 
 /* Keep them colorless even when active or hover */
-.htp-nav-tab-active[data-target="logged-in"] .htp-tab-icon,
-.htp-nav-tab-active[data-target="logged-out"] .htp-tab-icon,
-.htp-nav-tab[data-target="logged-in"]:hover .htp-tab-icon,
-.htp-nav-tab[data-target="logged-out"]:hover .htp-tab-icon {
+.hold-this-product-nav-tab-active[data-target="logged-in"] .hold-this-product-tab-icon,
+.hold-this-product-nav-tab-active[data-target="logged-out"] .hold-this-product-tab-icon,
+.hold-this-product-nav-tab[data-target="logged-in"]:hover .hold-this-product-tab-icon,
+.hold-this-product-nav-tab[data-target="logged-out"]:hover .hold-this-product-tab-icon {
     filter: grayscale(1);
 }
 
-.htp-tab-text {
+.hold-this-product-tab-text {
     font-weight: 600;
 }
 
 /* Tab Content */
-.htp-tab-container {
+.hold-this-product-tab-container {
     position: relative;
 }
 
-.htp-tab-content {
+.hold-this-product-tab-content {
     display: none;
 }
 
-.htp-tab-content.htp-tab-active {
+.hold-this-product-tab-content.hold-this-product-tab-active {
     display: block;
     animation: fadeIn 0.3s ease-in-out;
 }
 
 /* Hide form actions initially until JavaScript loads */
-.htp-form-actions {
+.hold-this-product-form-actions {
     display: none;
 }
 
-.htp-form-actions.htp-ready {
+.hold-this-product-form-actions.hold-this-product-ready {
     display: block;
 }
 
@@ -235,105 +235,105 @@ body #wpcontent {
 }
 
 /* Settings Cards */
-.htp-settings-card {
+.hold-this-product-settings-card {
     background: rgba(255, 255, 255, 0.86);
     border-radius: 8px;
-    box-shadow: var(--htp-shadow);
+    box-shadow: var(--hold-this-product-shadow);
     overflow: hidden;
     transition: box-shadow 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 
-.htp-card-header {
+.hold-this-product-card-header {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(234, 244, 255, 0.8) 100%);
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--htp-border);
+    border-bottom: 1px solid var(--hold-this-product-border);
 }
 
-.htp-card-header h3 {
+.hold-this-product-card-header h3 {
     margin: 0 0 0.375rem 0;
     font-size: 1.125rem;
     font-weight: 700;
-    color: var(--htp-text-dark);
+    color: var(--hold-this-product-text-dark);
 }
 
-.htp-card-header p {
+.hold-this-product-card-header p {
     margin: 0;
-    color: var(--htp-text-light);
+    color: var(--hold-this-product-text-light);
     font-size: 0.8rem;
 }
 
-.htp-card-body {
+.hold-this-product-card-body {
     padding: 1.5rem;
 }
 
 /* Form Styles */
-.htp-settings-form {
+.hold-this-product-settings-form {
     max-width: none;
 }
 
 /* Settings tab content: allow full card width (no artificial max-width). */
-#htp-general .htp-card-body,
-#htp-logged-in .htp-card-body,
-#htp-logged-out .htp-card-body {
+#hold-this-product-general .hold-this-product-card-body,
+#hold-this-product-logged-in .hold-this-product-card-body,
+#hold-this-product-logged-out .hold-this-product-card-body {
     max-width: none;
 }
 
 /* Smaller input fields for specific settings */
-.htp-settings-form input[name="holdthisproduct_options[max_reservations]"],
-.htp-settings-form input[name="holdthisproduct_options[reservation_duration]"],
-.htp-settings-form input[name*="[border_radius]"],
-.htp-settings-form input[name*="[font_size]"] {
+.hold-this-product-settings-form input[name="holdthisproduct_options[max_reservations]"],
+.hold-this-product-settings-form input[name="holdthisproduct_options[reservation_duration]"],
+.hold-this-product-settings-form input[name*="[border_radius]"],
+.hold-this-product-settings-form input[name*="[font_size]"] {
     width: 80px !important;
     max-width: 80px !important;
 }
 
-.htp-settings-form select[name*="[font_family]"] {
+.hold-this-product-settings-form select[name*="[font_family]"] {
     width: 180px !important;
     max-width: 180px !important;
 }
 
-.htp-settings-form .form-table {
+.hold-this-product-settings-form .form-table {
     background: transparent;
     border: none;
 }
 
-.htp-settings-form .form-table th {
+.hold-this-product-settings-form .form-table th {
     background: transparent;
     padding: 0.5rem 0.75rem;
     font-weight: 600;
-    color: var(--htp-text-dark);
-    border: 1px solid var(--htp-border);
+    color: var(--hold-this-product-text-dark);
+    border: 1px solid var(--hold-this-product-border);
     border-right: none;
     border-radius: 4px 0 0 4px;
     font-size: 0.875rem;
     vertical-align: middle;
 }
 
-.htp-settings-form .form-table td {
+.hold-this-product-settings-form .form-table td {
     background: transparent;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--htp-border);
+    border: 1px solid var(--hold-this-product-border);
     border-left: none;
     border-radius: 0 4px 4px 0;
     vertical-align: middle;
     text-align: left;
 }
 
-.htp-settings-form .form-table tr {
+.hold-this-product-settings-form .form-table tr {
     margin-bottom: 0.875rem;
     display: table-row;
 }
 
-.htp-settings-form .form-table th,
-.htp-settings-form .form-table td {
+.hold-this-product-settings-form .form-table th,
+.hold-this-product-settings-form .form-table td {
     display: table-cell;
     vertical-align: middle;
     width: auto;
 }
 
-.htp-settings-form .form-table {
+.hold-this-product-settings-form .form-table {
     background: transparent;
     border-collapse: separate;
     border-spacing: 0 0.75rem;
@@ -381,7 +381,7 @@ body #wpcontent {
 }
 
 .toggle-switch input:checked + .slider {
-    background-color: var(--htp-primary);
+    background-color: var(--hold-this-product-primary);
 }
 
 .toggle-switch input:checked + .slider:before {
@@ -389,24 +389,24 @@ body #wpcontent {
 }
 
 /* Input Styles */
-.htp-settings-form input[type="text"],
-.htp-settings-form input[type="number"],
-.htp-settings-form select {
+.hold-this-product-settings-form input[type="text"],
+.hold-this-product-settings-form input[type="number"],
+.hold-this-product-settings-form select {
     width: 100%;
     max-width: 250px;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--htp-border-ui);
+    border: 1px solid var(--hold-this-product-border-ui);
     border-radius: 4px;
     font-size: 0.875rem;
-    background-color: var(--htp-white);
+    background-color: var(--hold-this-product-white);
     transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     text-align: left;
     margin-left: 0;
 }
 
-.htp-settings-form input[type="text"]:hover,
-.htp-settings-form input[type="number"]:hover,
-.htp-settings-form select:hover {
+.hold-this-product-settings-form input[type="text"]:hover,
+.hold-this-product-settings-form input[type="number"]:hover,
+.hold-this-product-settings-form select:hover {
     border-color: rgba(47, 137, 249, 0.35);
 }
 
@@ -414,7 +414,7 @@ body #wpcontent {
  * Settings layout: render the control and its description on one line.
  * This keeps alignment consistent with the label column in the table.
  */
-.htp-settings-form .htp-setting-field {
+.hold-this-product-settings-form .hold-this-product-setting-field {
     display: grid;
     grid-template-columns: max-content 1fr;
     align-items: center;
@@ -422,33 +422,33 @@ body #wpcontent {
     text-align: left;
 }
 
-.htp-settings-form .htp-setting-control {
+.hold-this-product-settings-form .hold-this-product-setting-control {
     display: flex;
     align-items: center;
     min-width: 96px;
 }
 
 /* Cancel the "push to the right" defaults when inside a settings row wrapper. */
-.htp-settings-form .htp-setting-field .toggle-switch {
+.hold-this-product-settings-form .hold-this-product-setting-field .toggle-switch {
     display: inline-block;
     margin-left: 0;
     margin-right: 0;
 }
 
-.htp-settings-form .htp-setting-field .htp-input-right-align {
+.hold-this-product-settings-form .hold-this-product-setting-field .hold-this-product-input-right-align {
     text-align: left;
 }
 
-.htp-settings-form .htp-setting-field .htp-input-right-align input {
+.hold-this-product-settings-form .hold-this-product-setting-field .hold-this-product-input-right-align input {
     margin-right: 0;
 }
 
-.htp-settings-form .htp-setting-field > .description {
+.hold-this-product-settings-form .hold-this-product-setting-field > .description {
     margin: 0;
 }
 
 @media (max-width: 782px) {
-    .htp-settings-form .htp-setting-field {
+    .hold-this-product-settings-form .hold-this-product-setting-field {
         grid-template-columns: 1fr;
         row-gap: 6px;
         align-items: start;
@@ -456,20 +456,20 @@ body #wpcontent {
 }
 
 /* Description text under form elements */
-.htp-settings-form .description {
+.hold-this-product-settings-form .description {
     font-size: 0.75rem;
-    color: var(--htp-text-light);
+    color: var(--hold-this-product-text-light);
     margin-top: 0.25rem;
     margin-bottom: 0;
     line-height: 1.4;
     opacity: 0.8;
 }
 
-.htp-settings-form input[type="text"]:focus,
-.htp-settings-form input[type="number"]:focus,
-.htp-settings-form select:focus {
+.hold-this-product-settings-form input[type="text"]:focus,
+.hold-this-product-settings-form input[type="number"]:focus,
+.hold-this-product-settings-form select:focus {
     outline: none;
-    border-color: var(--htp-primary);
+    border-color: var(--hold-this-product-primary);
     box-shadow: 0 0 0 3px rgba(39, 118, 238, 0.18);
 }
 
@@ -481,13 +481,13 @@ body #wpcontent {
 }
 
 /* Button Styles */
-.htp-form-actions {
+.hold-this-product-form-actions {
     margin-top: 1.5rem;
     padding-top: 1.25rem;
-    border-top: 1px solid var(--htp-border);
+    border-top: 1px solid var(--hold-this-product-border);
 }
 
-.htp-btn {
+.hold-this-product-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -501,28 +501,28 @@ body #wpcontent {
     text-decoration: none;
 }
 
-.htp-btn-primary {
+.hold-this-product-btn-primary {
     background: linear-gradient(135deg, #44A0FF 0%, #2F89F9 35%, #2776EE 65%, #266DED 100%);
-    color: var(--htp-white);
-    box-shadow: var(--htp-shadow);
+    color: var(--hold-this-product-white);
+    box-shadow: var(--hold-this-product-shadow);
 }
 
-.htp-btn-primary:hover {
+.hold-this-product-btn-primary:hover {
     background: linear-gradient(135deg, #2F89F9 0%, #2776EE 55%, #266DED 100%);
     transform: translateY(-2px);
-    box-shadow: var(--htp-shadow-lg);
-    color: var(--htp-white);
+    box-shadow: var(--hold-this-product-shadow-lg);
+    color: var(--hold-this-product-white);
 }
 
 /* Save Settings Button - Primary Dark Cyan Style */
-.htp-form-actions .button-primary,
-.htp-form-actions input[type="submit"],
-.htp-form-actions .htp-save-btn,
-.htp-settings-form .button-primary,
-.htp-settings-form input[type="submit"] {
-    background: var(--htp-primary) !important;
+.hold-this-product-form-actions .button-primary,
+.hold-this-product-form-actions input[type="submit"],
+.hold-this-product-form-actions .hold-this-product-save-btn,
+.hold-this-product-settings-form .button-primary,
+.hold-this-product-settings-form input[type="submit"] {
+    background: var(--hold-this-product-primary) !important;
     border: none !important;
-    color: var(--htp-white) !important;
+    color: var(--hold-this-product-white) !important;
     padding: 0.625rem 1.5rem !important;
     border-radius: 4px !important;
     box-shadow: none !important;
@@ -535,33 +535,33 @@ body #wpcontent {
     text-decoration: none !important;
 }
 
-.htp-form-actions .button-primary:hover,
-.htp-form-actions .button-primary:focus,
-.htp-form-actions input[type="submit"]:hover,
-.htp-form-actions input[type="submit"]:focus,
-.htp-form-actions .htp-save-btn:hover,
-.htp-form-actions .htp-save-btn:focus,
-.htp-settings-form .button-primary:hover,
-.htp-settings-form .button-primary:focus,
-.htp-settings-form input[type="submit"]:hover,
-.htp-settings-form input[type="submit"]:focus {
-    background: var(--htp-primary-dark) !important;
-    color: var(--htp-white) !important;
-    box-shadow: var(--htp-shadow) !important;
+.hold-this-product-form-actions .button-primary:hover,
+.hold-this-product-form-actions .button-primary:focus,
+.hold-this-product-form-actions input[type="submit"]:hover,
+.hold-this-product-form-actions input[type="submit"]:focus,
+.hold-this-product-form-actions .hold-this-product-save-btn:hover,
+.hold-this-product-form-actions .hold-this-product-save-btn:focus,
+.hold-this-product-settings-form .button-primary:hover,
+.hold-this-product-settings-form .button-primary:focus,
+.hold-this-product-settings-form input[type="submit"]:hover,
+.hold-this-product-settings-form input[type="submit"]:focus {
+    background: var(--hold-this-product-primary-dark) !important;
+    color: var(--hold-this-product-white) !important;
+    box-shadow: var(--hold-this-product-shadow) !important;
 }
 
 /* Global HTP Admin Button Overrides - Comprehensive Coverage */
-.htp-admin-wrapper .button-primary,
-.htp-admin-wrapper input[type="submit"].button-primary,
-.htp-admin-wrapper input[type="submit"][name="submit"],
-.htp-admin-wrapper .submit .button-primary,
-.htp-admin-wrapper #submit,
+.hold-this-product-admin-wrapper .button-primary,
+.hold-this-product-admin-wrapper input[type="submit"].button-primary,
+.hold-this-product-admin-wrapper input[type="submit"][name="submit"],
+.hold-this-product-admin-wrapper .submit .button-primary,
+.hold-this-product-admin-wrapper #submit,
 body.holdthisproduct_page_holdthisproduct-settings .button-primary,
 body.toplevel_page_holdthisproduct-settings .button-primary,
 body.toplevel_page_holdthisproduct-settings input[type="submit"] {
-    background: var(--htp-primary) !important;
+    background: var(--hold-this-product-primary) !important;
     border: none !important;
-    color: var(--htp-white) !important;
+    color: var(--hold-this-product-white) !important;
     font-weight: 600 !important;
     padding: 0.625rem 1.5rem !important;
     border-radius: 4px !important;
@@ -572,25 +572,25 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"] {
     transition: background-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease !important;
 }
 
-.htp-admin-wrapper .button-primary:hover,
-.htp-admin-wrapper .button-primary:focus,
-.htp-admin-wrapper input[type="submit"].button-primary:hover,
-.htp-admin-wrapper input[type="submit"].button-primary:focus,
-.htp-admin-wrapper input[type="submit"][name="submit"]:hover,
-.htp-admin-wrapper input[type="submit"][name="submit"]:focus,
-.htp-admin-wrapper .submit .button-primary:hover,
-.htp-admin-wrapper .submit .button-primary:focus,
-.htp-admin-wrapper #submit:hover,
-.htp-admin-wrapper #submit:focus,
+.hold-this-product-admin-wrapper .button-primary:hover,
+.hold-this-product-admin-wrapper .button-primary:focus,
+.hold-this-product-admin-wrapper input[type="submit"].button-primary:hover,
+.hold-this-product-admin-wrapper input[type="submit"].button-primary:focus,
+.hold-this-product-admin-wrapper input[type="submit"][name="submit"]:hover,
+.hold-this-product-admin-wrapper input[type="submit"][name="submit"]:focus,
+.hold-this-product-admin-wrapper .submit .button-primary:hover,
+.hold-this-product-admin-wrapper .submit .button-primary:focus,
+.hold-this-product-admin-wrapper #submit:hover,
+.hold-this-product-admin-wrapper #submit:focus,
 body.holdthisproduct_page_holdthisproduct-settings .button-primary:hover,
 body.holdthisproduct_page_holdthisproduct-settings .button-primary:focus,
 body.toplevel_page_holdthisproduct-settings .button-primary:hover,
 body.toplevel_page_holdthisproduct-settings .button-primary:focus,
 body.toplevel_page_holdthisproduct-settings input[type="submit"]:hover,
 body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
-    background: var(--htp-primary-dark) !important;
-    color: var(--htp-white) !important;
-    box-shadow: var(--htp-shadow) !important;
+    background: var(--hold-this-product-primary-dark) !important;
+    color: var(--hold-this-product-white) !important;
+    box-shadow: var(--hold-this-product-shadow) !important;
 }
 
 #holdthisproduct-max-reservations-wrapper {
@@ -601,25 +601,25 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     width: 11%;
 }
 
-.htp-reservations-stats {
-    background: linear-gradient(135deg, var(--htp-secondary) 0%, #e0f2fe 100%);
-    border-left: 4px solid var(--htp-primary);
+.hold-this-product-reservations-stats {
+    background: linear-gradient(135deg, var(--hold-this-product-secondary) 0%, #e0f2fe 100%);
+    border-left: 4px solid var(--hold-this-product-primary);
     padding: 1.5rem 2rem;
     margin: 1.5rem 0;
     border-radius: 8px;
-    box-shadow: var(--htp-shadow);
+    box-shadow: var(--hold-this-product-shadow);
 }
 
-.htp-reservations-stats p {
+.hold-this-product-reservations-stats p {
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--htp-text-dark);
+    color: var(--hold-this-product-text-dark);
 }
 
-.htp-cancel-reservation {
-    background: var(--htp-primary) !important;
-    color: var(--htp-white) !important;
+.hold-this-product-cancel-reservation {
+    background: var(--hold-this-product-primary) !important;
+    color: var(--hold-this-product-white) !important;
     border: none !important;
     padding: 6px 12px !important;
     font-size: 12px !important;
@@ -630,21 +630,21 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     letter-spacing: 0.5px !important;
 }
 
-.htp-cancel-reservation:hover {
-    background: var(--htp-primary-dark) !important;
-    box-shadow: var(--htp-shadow) !important;
+.hold-this-product-cancel-reservation:hover {
+    background: var(--hold-this-product-primary-dark) !important;
+    box-shadow: var(--hold-this-product-shadow) !important;
 }
 
-.htp-cancel-reservation:disabled {
+.hold-this-product-cancel-reservation:disabled {
     background: #e5e7eb !important;
     color: #9ca3af !important;
     cursor: not-allowed !important;
     transform: none !important;
 }
 
-.htp-delete-reservation {
-    background: linear-gradient(135deg, var(--htp-error) 0%, #dc2626 100%) !important;
-    color: var(--htp-white) !important;
+.hold-this-product-delete-reservation {
+    background: linear-gradient(135deg, var(--hold-this-product-error) 0%, #dc2626 100%) !important;
+    color: var(--hold-this-product-white) !important;
     border: none !important;
     padding: 6px 12px !important;
     font-size: 12px !important;
@@ -655,21 +655,21 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     letter-spacing: 0.5px !important;
 }
 
-.htp-delete-reservation:hover {
+.hold-this-product-delete-reservation:hover {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
-    box-shadow: var(--htp-shadow) !important;
+    box-shadow: var(--hold-this-product-shadow) !important;
 }
 
-.htp-delete-reservation:disabled {
+.hold-this-product-delete-reservation:disabled {
     background: #e5e7eb !important;
     color: #9ca3af !important;
     cursor: not-allowed !important;
     transform: none !important;
 }
 
-.htp-approve-reservation {
-    background: linear-gradient(135deg, var(--htp-success) 0%, #059669 100%) !important;
-    color: var(--htp-white) !important;
+.hold-this-product-approve-reservation {
+    background: linear-gradient(135deg, var(--hold-this-product-success) 0%, #059669 100%) !important;
+    color: var(--hold-this-product-white) !important;
     border: none !important;
     padding: 6px 12px !important;
     font-size: 12px !important;
@@ -680,21 +680,21 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     letter-spacing: 0.5px !important;
 }
 
-.htp-approve-reservation:hover {
+.hold-this-product-approve-reservation:hover {
     background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-    box-shadow: var(--htp-shadow) !important;
+    box-shadow: var(--hold-this-product-shadow) !important;
 }
 
-.htp-approve-reservation:disabled {
+.hold-this-product-approve-reservation:disabled {
     background: #e5e7eb !important;
     color: #9ca3af !important;
     cursor: not-allowed !important;
     transform: none !important;
 }
 
-.htp-deny-reservation {
-    background: linear-gradient(135deg, var(--htp-error) 0%, #dc2626 100%) !important;
-    color: var(--htp-white) !important;
+.hold-this-product-deny-reservation {
+    background: linear-gradient(135deg, var(--hold-this-product-error) 0%, #dc2626 100%) !important;
+    color: var(--hold-this-product-white) !important;
     border: none !important;
     padding: 6px 12px !important;
     font-size: 12px !important;
@@ -705,12 +705,12 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     letter-spacing: 0.5px !important;
 }
 
-.htp-deny-reservation:hover {
+.hold-this-product-deny-reservation:hover {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
-    box-shadow: var(--htp-shadow) !important;
+    box-shadow: var(--hold-this-product-shadow) !important;
 }
 
-.htp-deny-reservation:disabled {
+.hold-this-product-deny-reservation:disabled {
     background: #e5e7eb !important;
     color: #9ca3af !important;
     cursor: not-allowed !important;
@@ -721,12 +721,12 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
  * WP core uses special styles for `.button-link-delete` and other admin buttons.
  * Increase specificity so our flat button styles stay consistent.
  */
-.wp-core-ui .button.htp-cancel-reservation,
-.wp-core-ui .button.htp-approve-reservation,
-.wp-core-ui .button.htp-deny-reservation,
-.wp-core-ui .button.button-link-delete.htp-deny-reservation,
-.wp-core-ui .button.htp-delete-reservation,
-.wp-core-ui .button.button-link-delete.htp-delete-reservation {
+.wp-core-ui .button.hold-this-product-cancel-reservation,
+.wp-core-ui .button.hold-this-product-approve-reservation,
+.wp-core-ui .button.hold-this-product-deny-reservation,
+.wp-core-ui .button.button-link-delete.hold-this-product-deny-reservation,
+.wp-core-ui .button.hold-this-product-delete-reservation,
+.wp-core-ui .button.button-link-delete.hold-this-product-delete-reservation {
     /* Normalize WP button defaults for consistent sizing in the list table. */
     height: 30px !important;
     min-height: 30px !important;
@@ -738,72 +738,72 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     box-sizing: border-box !important;
 }
 
-.wp-core-ui .button.htp-cancel-reservation,
-.wp-core-ui .button.htp-approve-reservation,
-.wp-core-ui .button.htp-deny-reservation,
-.wp-core-ui .button.button-link-delete.htp-deny-reservation,
-.wp-core-ui .button.htp-delete-reservation,
-.wp-core-ui .button.button-link-delete.htp-delete-reservation {
+.wp-core-ui .button.hold-this-product-cancel-reservation,
+.wp-core-ui .button.hold-this-product-approve-reservation,
+.wp-core-ui .button.hold-this-product-deny-reservation,
+.wp-core-ui .button.button-link-delete.hold-this-product-deny-reservation,
+.wp-core-ui .button.hold-this-product-delete-reservation,
+.wp-core-ui .button.button-link-delete.hold-this-product-delete-reservation {
     background-image: none !important;
     border: none !important;
-    color: var(--htp-white) !important;
+    color: var(--hold-this-product-white) !important;
 }
 
-.wp-core-ui .button.htp-cancel-reservation:focus,
-.wp-core-ui .button.htp-cancel-reservation:focus-visible,
-.wp-core-ui .button.htp-approve-reservation:focus,
-.wp-core-ui .button.htp-approve-reservation:focus-visible,
-.wp-core-ui .button.htp-deny-reservation:focus,
-.wp-core-ui .button.htp-deny-reservation:focus-visible,
-.wp-core-ui .button.button-link-delete.htp-deny-reservation:focus,
-.wp-core-ui .button.button-link-delete.htp-deny-reservation:focus-visible,
-.wp-core-ui .button.htp-delete-reservation:focus,
-.wp-core-ui .button.htp-delete-reservation:focus-visible,
-.wp-core-ui .button.button-link-delete.htp-delete-reservation:focus,
-.wp-core-ui .button.button-link-delete.htp-delete-reservation:focus-visible {
+.wp-core-ui .button.hold-this-product-cancel-reservation:focus,
+.wp-core-ui .button.hold-this-product-cancel-reservation:focus-visible,
+.wp-core-ui .button.hold-this-product-approve-reservation:focus,
+.wp-core-ui .button.hold-this-product-approve-reservation:focus-visible,
+.wp-core-ui .button.hold-this-product-deny-reservation:focus,
+.wp-core-ui .button.hold-this-product-deny-reservation:focus-visible,
+.wp-core-ui .button.button-link-delete.hold-this-product-deny-reservation:focus,
+.wp-core-ui .button.button-link-delete.hold-this-product-deny-reservation:focus-visible,
+.wp-core-ui .button.hold-this-product-delete-reservation:focus,
+.wp-core-ui .button.hold-this-product-delete-reservation:focus-visible,
+.wp-core-ui .button.button-link-delete.hold-this-product-delete-reservation:focus,
+.wp-core-ui .button.button-link-delete.hold-this-product-delete-reservation:focus-visible {
     outline: none !important;
     /* Replace WP's default focus styles with a consistent ring. */
     box-shadow: 0 0 0 3px rgba(47, 137, 249, 0.28) !important;
 }
 
-.wp-core-ui .button.htp-deny-reservation:focus,
-.wp-core-ui .button.htp-deny-reservation:focus-visible,
-.wp-core-ui .button.button-link-delete.htp-deny-reservation:focus,
-.wp-core-ui .button.button-link-delete.htp-deny-reservation:focus-visible,
-.wp-core-ui .button.htp-delete-reservation:focus,
-.wp-core-ui .button.htp-delete-reservation:focus-visible,
-.wp-core-ui .button.button-link-delete.htp-delete-reservation:focus,
-.wp-core-ui .button.button-link-delete.htp-delete-reservation:focus-visible {
+.wp-core-ui .button.hold-this-product-deny-reservation:focus,
+.wp-core-ui .button.hold-this-product-deny-reservation:focus-visible,
+.wp-core-ui .button.button-link-delete.hold-this-product-deny-reservation:focus,
+.wp-core-ui .button.button-link-delete.hold-this-product-deny-reservation:focus-visible,
+.wp-core-ui .button.hold-this-product-delete-reservation:focus,
+.wp-core-ui .button.hold-this-product-delete-reservation:focus-visible,
+.wp-core-ui .button.button-link-delete.hold-this-product-delete-reservation:focus,
+.wp-core-ui .button.button-link-delete.hold-this-product-delete-reservation:focus-visible {
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
 }
 
-.wp-core-ui .button.htp-cancel-reservation {
-    background-color: var(--htp-primary) !important;
+.wp-core-ui .button.hold-this-product-cancel-reservation {
+    background-color: var(--hold-this-product-primary) !important;
 }
 
-.wp-core-ui .button.htp-cancel-reservation:hover {
-    background-color: var(--htp-primary-dark) !important;
+.wp-core-ui .button.hold-this-product-cancel-reservation:hover {
+    background-color: var(--hold-this-product-primary-dark) !important;
 }
 
-.wp-core-ui .button.htp-approve-reservation {
-    background-color: var(--htp-success) !important;
+.wp-core-ui .button.hold-this-product-approve-reservation {
+    background-color: var(--hold-this-product-success) !important;
 }
 
-.wp-core-ui .button.htp-approve-reservation:hover {
+.wp-core-ui .button.hold-this-product-approve-reservation:hover {
     background-color: #059669 !important;
 }
 
-.wp-core-ui .button.htp-deny-reservation,
-.wp-core-ui .button.button-link-delete.htp-deny-reservation,
-.wp-core-ui .button.htp-delete-reservation,
-.wp-core-ui .button.button-link-delete.htp-delete-reservation {
+.wp-core-ui .button.hold-this-product-deny-reservation,
+.wp-core-ui .button.button-link-delete.hold-this-product-deny-reservation,
+.wp-core-ui .button.hold-this-product-delete-reservation,
+.wp-core-ui .button.button-link-delete.hold-this-product-delete-reservation {
     background-color: #ef4444 !important;
 }
 
-.wp-core-ui .button.htp-deny-reservation:hover,
-.wp-core-ui .button.button-link-delete.htp-deny-reservation:hover,
-.wp-core-ui .button.htp-delete-reservation:hover,
-.wp-core-ui .button.button-link-delete.htp-delete-reservation:hover {
+.wp-core-ui .button.hold-this-product-deny-reservation:hover,
+.wp-core-ui .button.button-link-delete.hold-this-product-deny-reservation:hover,
+.wp-core-ui .button.hold-this-product-delete-reservation:hover,
+.wp-core-ui .button.button-link-delete.hold-this-product-delete-reservation:hover {
     background-color: #dc2626 !important;
 }
 
@@ -813,12 +813,12 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     height: 30px;
     min-height: 30px;
     padding: 0 10px;
-    border: 1px solid var(--htp-border-ui);
+    border: 1px solid var(--hold-this-product-border-ui);
     border-radius: 4px;
     font-size: 13px;
     line-height: normal;
     box-sizing: border-box;
-    background-color: var(--htp-white);
+    background-color: var(--hold-this-product-white);
     transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
@@ -835,7 +835,7 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 #reservation-search:focus,
 #reservation-search:focus-visible {
     outline: none;
-    border-color: var(--htp-primary);
+    border-color: var(--hold-this-product-primary);
     box-shadow: 0 0 0 3px rgba(39, 118, 238, 0.18);
 }
 
@@ -864,13 +864,13 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 
 .wp-core-ui #filter-reservations {
     background-image: none !important;
-    background-color: var(--htp-primary) !important;
-    color: var(--htp-white) !important;
+    background-color: var(--hold-this-product-primary) !important;
+    color: var(--hold-this-product-white) !important;
 }
 
 .wp-core-ui #filter-reservations:hover {
-    background-color: var(--htp-primary-dark) !important;
-    box-shadow: var(--htp-shadow) !important;
+    background-color: var(--hold-this-product-primary-dark) !important;
+    box-shadow: var(--hold-this-product-shadow) !important;
 }
 
 .wp-core-ui #filter-reservations:focus,
@@ -882,12 +882,12 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 .wp-core-ui #clear-filters {
     background-image: none !important;
     background-color: #ef4444 !important;
-    color: var(--htp-white) !important;
+    color: var(--hold-this-product-white) !important;
 }
 
 .wp-core-ui #clear-filters:hover {
     background-color: #dc2626 !important;
-    box-shadow: var(--htp-shadow) !important;
+    box-shadow: var(--hold-this-product-shadow) !important;
 }
 
 .wp-core-ui #clear-filters:focus,
@@ -901,7 +901,7 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
     margin-top: 1rem;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: var(--htp-shadow);
+    box-shadow: var(--hold-this-product-shadow);
 }
 
 .options_group table.widefat th,
@@ -915,25 +915,25 @@ body.toplevel_page_holdthisproduct-settings input[type="submit"]:focus {
 }
 
 .options_group table.widefat td {
-    background: var(--htp-white);
-    border-bottom: 1px solid var(--htp-border);
+    background: var(--hold-this-product-white);
+    border-bottom: 1px solid var(--hold-this-product-border);
 }
 
 .options_group table.widefat tr:nth-child(even) td {
-    background: var(--htp-secondary);
+    background: var(--hold-this-product-secondary);
 }
 
-.htp-reservation-row {
+.hold-this-product-reservation-row {
     transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
 }
 
-.htp-reservation-row:hover {
-    background-color: var(--htp-secondary) !important;
+.hold-this-product-reservation-row:hover {
+    background-color: var(--hold-this-product-secondary) !important;
     transform: translateY(-1px);
-    box-shadow: var(--htp-shadow);
+    box-shadow: var(--hold-this-product-shadow);
 }
 
-.htp-reservation-row.cancelled {
+.hold-this-product-reservation-row.cancelled {
     opacity: 0.6;
     background-color: #f9fafb !important;
 }
@@ -943,7 +943,7 @@ td:nth-child(5) {
 }
 
 .time-left-warning {
-    color: var(--htp-warning);
+    color: var(--hold-this-product-warning);
     font-weight: 700;
     background: #fffbeb;
     padding: 4px 8px;
@@ -952,7 +952,7 @@ td:nth-child(5) {
 }
 
 .time-left-critical {
-    color: var(--htp-error);
+    color: var(--hold-this-product-error);
     font-weight: 700;
     background: #fef2f2;
     padding: 4px 8px;
@@ -967,16 +967,16 @@ td:nth-child(5) {
     100% { opacity: 1; transform: scale(1); }
 }
 
-.notice.htp-success {
-    border-left-color: var(--htp-success);
+.notice.hold-this-product-success {
+    border-left-color: var(--hold-this-product-success);
     background: #f0fdf4;
 }
 
 .wp-list-table.widefat.fixed.striped {
-    border: 1px solid var(--htp-border);
+    border: 1px solid var(--hold-this-product-border);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: var(--htp-shadow);
+    box-shadow: var(--hold-this-product-shadow);
 }
 
 .wp-list-table th {
@@ -985,7 +985,7 @@ td:nth-child(5) {
 }
 
 .wp-list-table tr:nth-child(even) {
-    background-color: var(--htp-secondary);
+    background-color: var(--hold-this-product-secondary);
 }
 
 .wp-list-table tr:hover {
@@ -994,45 +994,45 @@ td:nth-child(5) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .htp-header-content {
+    .hold-this-product-header-content {
         flex-direction: column;
         text-align: center;
         gap: 1.5rem;
     }
     
-    .htp-logo-section {
+    .hold-this-product-logo-section {
         margin-left: 0;
     }
     
-    .htp-nav-tabs {
+    .hold-this-product-nav-tabs {
         flex-direction: column;
         gap: 0.5rem;
     }
     
-    .htp-nav-tab {
+    .hold-this-product-nav-tab {
         justify-content: center;
         border-radius: 4px;
-        border: 2px solid var(--htp-border);
+        border: 2px solid var(--hold-this-product-border);
         top: 0;
     }
     
-    .htp-admin-content {
+    .hold-this-product-admin-content {
         padding: 1rem;
     }
     
-    .htp-card-body {
+    .hold-this-product-card-body {
         padding: 1.25rem;
     }
     
-    .htp-card-header {
+    .hold-this-product-card-header {
         padding: 1rem 1.25rem;
     }
     
-    .htp-settings-form .form-table th,
-    .htp-settings-form .form-table td {
+    .hold-this-product-settings-form .form-table th,
+    .hold-this-product-settings-form .form-table td {
         display: block;
         width: 100%;
-        border: 1px solid var(--htp-border);
+        border: 1px solid var(--hold-this-product-border);
         border-radius: 8px;
         margin-bottom: 0.5rem;
     }
@@ -1062,7 +1062,7 @@ td:nth-child(5) {
 
 /* Status styling for analytics */
 .status-active {
-    color: var(--htp-primary);
+    color: var(--hold-this-product-primary);
 }
 
 .status-expired {
@@ -1087,7 +1087,7 @@ td:nth-child(5) {
 }
 
 /* Analytics stat cards */
-.htp-stats-grid .htp-stat-card h3 {
+.hold-this-product-stats-grid .hold-this-product-stat-card h3 {
     margin: 0 0 10px 0;
     font-size: 14px;
     color: #666;
@@ -1097,59 +1097,59 @@ td:nth-child(5) {
 }
 
 /* Popup Customization Sub-tabs */
-#htp-popup-tabs-wrapper {
+#hold-this-product-popup-tabs-wrapper {
     margin-bottom: 1.5rem;
 }
 
-#htp-popup-tabs {
+#hold-this-product-popup-tabs {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
-    border-bottom: 2px solid var(--htp-border);
+    border-bottom: 2px solid var(--hold-this-product-border);
     padding-bottom: 0;
 }
 
-.htp-popup-tab {
+.hold-this-product-popup-tab {
     padding: 0.5rem 1rem;
-    background: var(--htp-white);
-    border: 2px solid var(--htp-border);
+    background: var(--hold-this-product-white);
+    border: 2px solid var(--hold-this-product-border);
     border-bottom: none;
     border-radius: 6px 6px 0 0;
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--htp-text-light);
+    color: var(--hold-this-product-text-light);
     transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     position: relative;
     top: 2px;
 }
 
-.htp-popup-tab:hover {
-    background: var(--htp-secondary);
-    color: var(--htp-primary);
+.hold-this-product-popup-tab:hover {
+    background: var(--hold-this-product-secondary);
+    color: var(--hold-this-product-primary);
     transform: translateY(-2px);
 }
 
-.htp-popup-tab-active {
-    background: var(--htp-accent);
-    border-color: var(--htp-accent);
-    color: var(--htp-white);
-    box-shadow: var(--htp-shadow);
+.hold-this-product-popup-tab-active {
+    background: var(--hold-this-product-accent);
+    border-color: var(--hold-this-product-accent);
+    color: var(--hold-this-product-white);
+    box-shadow: var(--hold-this-product-shadow);
 }
 
-.htp-popup-tab-active:hover {
-    background: var(--htp-primary);
-    border-color: var(--htp-primary);
-    color: var(--htp-white);
+.hold-this-product-popup-tab-active:hover {
+    background: var(--hold-this-product-primary);
+    border-color: var(--hold-this-product-primary);
+    color: var(--hold-this-product-white);
 }
 
-.htp-popup-tab-content {
+.hold-this-product-popup-tab-content {
     padding: 1rem 0;
 }
 
-.htp-popup-customization-fields-logged-in,
-.htp-popup-customization-fields-guests {
-    background: var(--htp-secondary);
+.hold-this-product-popup-customization-fields-logged-in,
+.hold-this-product-popup-customization-fields-guests {
+    background: var(--hold-this-product-secondary);
     border-radius: 8px;
     padding: 1rem;
     margin-top: 1rem;
@@ -1158,10 +1158,10 @@ td:nth-child(5) {
 }
 
 /* Right-align input fields to match toggle position */
-.htp-input-right-align {
+.hold-this-product-input-right-align {
     text-align: right;
 }
 
-.htp-input-right-align input {
+.hold-this-product-input-right-align input {
     margin-right: 1.25rem;
 }

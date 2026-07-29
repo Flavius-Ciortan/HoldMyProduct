@@ -1,0 +1,10 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "preferredVersions": { "php": "7.4", "wp": "latest" },
+  "login": true,
+  "steps": [
+    { "step": "installPlugin", "pluginData": { "resource": "wordpress.org/plugins", "slug": "woocommerce" }, "options": { "activate": true } },
+    { "step": "activatePlugin", "pluginPath": "/wordpress/wp-content/plugins/hold-this-product/hold-this-product.php" },
+    { "step": "runPHP", "code": "<?php require '/wordpress/wp-load.php'; if ( ! class_exists( 'HoldThisProduct' ) || ! HoldThisProduct::get_instance()->reservations instanceof Hold_This_Product_Reservations ) { throw new Exception( 'Release artifact failed to initialize.' ); } echo 'Release artifact initialized successfully.';" }
+  ]
+}

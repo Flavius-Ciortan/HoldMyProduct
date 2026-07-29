@@ -5,27 +5,74 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Admin reservations management (list, filters, actions, AJAX).
  */
-class HTP_Admin_Reservations {
+class Hold_This_Product_Admin_Reservations {
 	private $reservations;
 
 	public function __construct( $reservations = null ) {
-		$this->reservations = $reservations instanceof HTP_Reservations ? $reservations : null;
-        add_action( 'wp_ajax_htp_cancel_admin_reservation', array( $this, 'handle_admin_cancel_reservation' ) );
-        add_action( 'wp_ajax_htp_delete_admin_reservation', array( $this, 'handle_admin_delete_reservation' ) );
-        add_action( 'wp_ajax_htp_approve_reservation', array( $this, 'handle_approve_reservation' ) );
-        add_action( 'wp_ajax_htp_deny_reservation', array( $this, 'handle_deny_reservation' ) );
+		$this->reservations = $reservations instanceof Hold_This_Product_Reservations ? $reservations : null;
+        add_action( 'wp_ajax_hold_this_product_cancel_admin_reservation', array( $this, 'handle_admin_cancel_reservation' ) );
+        add_action( 'wp_ajax_hold_this_product_delete_admin_reservation', array( $this, 'handle_admin_delete_reservation' ) );
+        add_action( 'wp_ajax_hold_this_product_approve_reservation', array( $this, 'handle_approve_reservation' ) );
+        add_action( 'wp_ajax_hold_this_product_deny_reservation', array( $this, 'handle_deny_reservation' ) );
     }
 
 	private function get_reservations_handler() {
 		if ( ! $this->reservations ) {
-			$this->reservations = new HTP_Reservations();
+			$this->reservations = new Hold_This_Product_Reservations();
 		}
 		return $this->reservations;
 	}
 
     public function enqueue_assets() {
-        wp_enqueue_script( 'jquery' );
-        wp_enqueue_style( 'holdthisproduct-admin-style', HTP_PLUGIN_URL . 'assets/css/admin-style.css', array(), HTP_VERSION );
+		wp_enqueue_script(
+			'hold-this-product-admin-reservations',
+			HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/js/admin-reservations.js',
+			array( 'jquery' ),
+			HOLD_THIS_PRODUCT_VERSION,
+			true
+		);
+		wp_localize_script(
+			'hold-this-product-admin-reservations',
+			'holdThisProductReservations',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonces' => array(
+					'cancel' => wp_create_nonce( 'hold_this_product_admin_cancel' ),
+					'delete' => wp_create_nonce( 'hold_this_product_admin_delete' ),
+					'approve' => wp_create_nonce( 'hold_this_product_admin_approve' ),
+					'deny' => wp_create_nonce( 'hold_this_product_admin_deny' ),
+				),
+				'strings' => array(
+					'thisProduct' => __( 'this product', 'hold-this-product' ),
+					/* translators: 1: customer name, 2: product name. */
+					'confirmDelete' => __( 'Are you sure you want to permanently delete the reservation for %1$s on %2$s? This action cannot be undone.', 'hold-this-product' ),
+					/* translators: 1: customer name, 2: product name. */
+					'confirmApprove' => __( 'Are you sure you want to approve the reservation for %1$s on %2$s?', 'hold-this-product' ),
+					/* translators: 1: customer name, 2: product name. */
+					'confirmCancel' => __( 'Are you sure you want to cancel the reservation for %1$s on %2$s?', 'hold-this-product' ),
+					'denialPrompt' => __( 'Please provide a reason for denying this reservation (optional):', 'hold-this-product' ),
+					'deleting' => __( 'Deleting…', 'hold-this-product' ),
+					'approving' => __( 'Approving…', 'hold-this-product' ),
+					'denying' => __( 'Denying…', 'hold-this-product' ),
+					'cancelling' => __( 'Cancelling…', 'hold-this-product' ),
+					'delete' => __( 'Delete', 'hold-this-product' ),
+					'approve' => __( 'Approve', 'hold-this-product' ),
+					'deny' => __( 'Deny', 'hold-this-product' ),
+					'cancel' => __( 'Cancel', 'hold-this-product' ),
+					'active' => __( 'Active', 'hold-this-product' ),
+					'deniedStatus' => __( 'Denied', 'hold-this-product' ),
+					'deleted' => __( 'Reservation deleted successfully.', 'hold-this-product' ),
+					'approved' => __( 'Reservation approved successfully.', 'hold-this-product' ),
+					'denied' => __( 'Reservation denied successfully.', 'hold-this-product' ),
+					'missingId' => __( 'Missing reservation ID.', 'hold-this-product' ),
+					'requestFailed' => __( 'Request failed. Please try again.', 'hold-this-product' ),
+					'errorPrefix' => __( 'Error: ', 'hold-this-product' ),
+					/* translators: %d: number of reservations. */
+					'reservationCount' => __( '%d reservations', 'hold-this-product' ),
+				),
+			)
+		);
+        wp_enqueue_style( 'holdthisproduct-admin-style', HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/css/admin-style.css', array(), HOLD_THIS_PRODUCT_VERSION );
     }
 
     public function render_page() {
@@ -45,15 +92,15 @@ class HTP_Admin_Reservations {
         <div class="wrap">
             <h1><?php esc_html_e( 'Manage Reservations', 'hold-this-product' ); ?></h1>
 
-            <div class="htp-reservations-stats">
+            <div class="hold-this-product-reservations-stats">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
-                    <div><strong>Pending Approval:</strong> <?php echo esc_html( $stats['pending_approval'] ); ?></div>
-                    <div><strong>Active:</strong> <?php echo esc_html( $stats['active'] ); ?></div>
-                    <div><strong>Expired:</strong> <?php echo esc_html( $stats['expired'] ); ?></div>
-                    <div><strong>Cancelled:</strong> <?php echo esc_html( $stats['cancelled'] ); ?></div>
-                    <div><strong>Fulfilled:</strong> <?php echo esc_html( $stats['fulfilled'] ); ?></div>
-                    <div><strong>Denied:</strong> <?php echo esc_html( $stats['denied'] ); ?></div>
-                    <div><strong>Total:</strong> <?php echo esc_html( $stats['total'] ); ?></div>
+					<div><strong><?php esc_html_e( 'Pending Approval:', 'hold-this-product' ); ?></strong> <?php echo esc_html( $stats['pending_approval'] ); ?></div>
+					<div><strong><?php esc_html_e( 'Active:', 'hold-this-product' ); ?></strong> <?php echo esc_html( $stats['active'] ); ?></div>
+					<div><strong><?php esc_html_e( 'Expired:', 'hold-this-product' ); ?></strong> <?php echo esc_html( $stats['expired'] ); ?></div>
+					<div><strong><?php esc_html_e( 'Cancelled:', 'hold-this-product' ); ?></strong> <?php echo esc_html( $stats['cancelled'] ); ?></div>
+					<div><strong><?php esc_html_e( 'Fulfilled:', 'hold-this-product' ); ?></strong> <?php echo esc_html( $stats['fulfilled'] ); ?></div>
+					<div><strong><?php esc_html_e( 'Denied:', 'hold-this-product' ); ?></strong> <?php echo esc_html( $stats['denied'] ); ?></div>
+					<div><strong><?php esc_html_e( 'Total:', 'hold-this-product' ); ?></strong> <?php echo esc_html( $stats['total'] ); ?></div>
                 </div>
             </div>
 
@@ -114,273 +161,76 @@ class HTP_Admin_Reservations {
             <?php endif; ?>
         </div>
 
-        <script>
-        jQuery(document).ready(function($) {
-            $('#filter-reservations').on('click', function() {
-                var status = $('#status-filter').val();
-                var searchType = $('#search-type').val();
-                var search = $('#reservation-search').val();
-
-                var url = new URL(window.location);
-                url.searchParams.set('status', status);
-                url.searchParams.set('search_type', searchType);
-                if (search) {
-                    url.searchParams.set('search', search);
-                } else {
-                    url.searchParams.delete('search');
-                }
-                window.location.href = url.toString();
-            });
-
-            $('#clear-filters').on('click', function() {
-                var url = new URL(window.location);
-                url.searchParams.delete('status');
-                url.searchParams.delete('search');
-                url.searchParams.delete('search_type');
-                window.location.href = url.toString();
-            });
-
-            $('#reservation-search').on('keypress', function(e) {
-                if (e.which === 13) {
-                    $('#filter-reservations').click();
-                }
-            });
-
-            $(document).on('click', '.htp-delete-reservation', function() {
-                var $btn = $(this);
-                var reservationId = $btn.data('reservation-id');
-                var customer = $btn.data('customer');
-                var product = $btn.data('product') || 'this product';
-
-                if (confirm('Are you sure you want to permanently delete the reservation for ' + customer + ' on ' + product + '? This action cannot be undone.')) {
-                    $btn.prop('disabled', true).text('Deleting...');
-
-                    $.post(ajaxurl, {
-                        action: 'htp_delete_admin_reservation',
-                        reservation_id: reservationId,
-                        nonce: '<?php echo esc_js( wp_create_nonce( 'htp_admin_delete' ) ); ?>'
-                    })
-                    .done(function(response) {
-                        if (response.success) {
-                            $btn.closest('tr').fadeOut(function() {
-                                $(this).remove();
-                                var $displayNum = $('.displaying-num');
-                                if ($displayNum.length > 0) {
-                                    var currentText = $displayNum.text();
-                                    var currentNum = parseInt(currentText.match(/\\d+/));
-                                    if (currentNum > 0) {
-                                        $displayNum.text((currentNum - 1) + ' reservations');
-                                    }
-                                }
-                            });
-
-                            if ($('.notice.notice-success').length === 0) {
-                                $('<div class="notice notice-success is-dismissible"><p>Reservation deleted successfully.</p></div>')
-                                    .insertAfter('.wrap h1');
-                            }
-                        } else {
-                            alert('Error: ' + response.data);
-                            $btn.prop('disabled', false).text('Delete');
-                        }
-                    })
-                    .fail(function() {
-                        alert('Request failed. Please try again.');
-                        $btn.prop('disabled', false).text('Delete');
-                    });
-                }
-            });
-
-            $(document).on('click', '.htp-approve-reservation', function() {
-                var $btn = $(this);
-                var reservationId = $btn.data('reservation-id');
-                var customer = $btn.data('customer');
-                var product = $btn.data('product') || 'this product';
-
-                if (confirm('Are you sure you want to approve the reservation for ' + customer + ' on ' + product + '?')) {
-                    $btn.prop('disabled', true).text('Approving...');
-
-                    $.post(ajaxurl, {
-                        action: 'htp_approve_reservation',
-                        reservation_id: reservationId,
-                        nonce: '<?php echo esc_js( wp_create_nonce( 'htp_admin_approve' ) ); ?>'
-                    })
-                    .done(function(response) {
-                        if (response.success) {
-                            var $row = $btn.closest('tr');
-                            var $actionsCell = $row.find('td:last-child');
-                            $actionsCell.html('<button type="button" class="button button-small htp-cancel-reservation" ' +
-                                'data-reservation-id="' + reservationId + '" ' +
-                                'data-customer="' + customer + '" ' +
-                                'data-product="' + product + '">Cancel</button>');
-
-                            var $statusCell = $row.find('td:nth-child(3) span');
-                            $statusCell.removeClass('status-pending-approval').addClass('status-active').text('Active');
-
-                            if ($('.notice.notice-success').length === 0) {
-                                $('<div class="notice notice-success is-dismissible"><p>Reservation approved successfully.</p></div>')
-                                    .insertAfter('.wrap h1');
-                            }
-                        } else {
-                            alert('Error: ' + response.data);
-                            $btn.prop('disabled', false).text('Approve');
-                        }
-                    })
-                    .fail(function() {
-                        alert('Request failed. Please try again.');
-                        $btn.prop('disabled', false).text('Approve');
-                    });
-                }
-            });
-
-            $(document).on('click', '.htp-deny-reservation', function() {
-                var $btn = $(this);
-                var reservationId = $btn.data('reservation-id');
-                var customer = $btn.data('customer');
-                var product = $btn.data('product') || 'this product';
-
-                var reason = prompt('Please provide a reason for denying this reservation (optional):');
-                if (reason !== null) {
-                    $btn.prop('disabled', true).text('Denying...');
-
-                    $.post(ajaxurl, {
-                        action: 'htp_deny_reservation',
-                        reservation_id: reservationId,
-                        reason: reason,
-                        nonce: '<?php echo esc_js( wp_create_nonce( 'htp_admin_deny' ) ); ?>'
-                    })
-                    .done(function(response) {
-                        if (response.success) {
-                            var $row = $btn.closest('tr');
-                            var $actionsCell = $row.find('td:last-child');
-                            $actionsCell.html('<button type="button" class="button button-small button-link-delete htp-delete-reservation" ' +
-                                'data-reservation-id="' + reservationId + '" ' +
-                                'data-customer="' + customer + '" ' +
-                                'data-product="' + product + '">Delete</button>');
-
-                            var $statusCell = $row.find('td:nth-child(3) span');
-                            $statusCell.removeClass('status-pending-approval').addClass('status-denied').text('Denied');
-
-                            $row.find('td:nth-child(6)').text('—').removeClass('time-left-critical time-left-warning');
-
-                            if ($('.notice.notice-success').length === 0) {
-                                $('<div class="notice notice-success is-dismissible"><p>Reservation denied successfully.</p></div>')
-                                    .insertAfter('.wrap h1');
-                            }
-                        } else {
-                            alert('Error: ' + response.data);
-                            $btn.prop('disabled', false).text('Deny');
-                        }
-                    })
-                    .fail(function() {
-                        alert('Request failed. Please try again.');
-                        $btn.prop('disabled', false).text('Deny');
-                    });
-                }
-            });
-
-            $(document).on('click', '.htp-cancel-reservation', function() {
-                var $btn = $(this);
-                var reservationId = $btn.data('reservation-id');
-                var customer = $btn.data('customer');
-                var product = $btn.data('product') || 'this product';
-
-                if (!reservationId) {
-                    alert('Missing reservation ID.');
-                    return;
-                }
-
-                if (confirm('Are you sure you want to cancel the reservation for ' + customer + ' on ' + product + '?')) {
-                    $btn.prop('disabled', true).text('Cancelling...');
-
-                    $.post(ajaxurl, {
-                        action: 'htp_cancel_admin_reservation',
-                        reservation_id: reservationId,
-                        nonce: '<?php echo esc_js( wp_create_nonce( 'htp_admin_cancel' ) ); ?>'
-                    })
-                    .done(function(response) {
-                        if (response.success) {
-                            window.location.reload();
-                        } else {
-                            alert('Error: ' + response.data);
-                            $btn.prop('disabled', false).text('Cancel');
-                        }
-                    })
-                    .fail(function() {
-                        alert('Request failed. Please try again.');
-                        $btn.prop('disabled', false).text('Cancel');
-                    });
-                }
-            });
-        });
-        </script>
         <?php
     }
 
     public function handle_admin_cancel_reservation() {
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Insufficient permissions.' );
+			wp_send_json_error( __( 'Insufficient permissions.', 'hold-this-product' ), 403 );
         }
 
-        check_ajax_referer( 'htp_admin_cancel', 'nonce' );
+        check_ajax_referer( 'hold_this_product_admin_cancel', 'nonce' );
 
 		$reservation_id = isset( $_POST['reservation_id'] ) ? absint( wp_unslash( $_POST['reservation_id'] ) ) : 0;
-		if ( ! $reservation_id || 'htp_reservation' !== get_post_type( $reservation_id ) ) {
-            wp_send_json_error( 'Invalid reservation ID.' );
+		if ( ! $reservation_id || 'holdthisproduct_res' !== get_post_type( $reservation_id ) ) {
+			wp_send_json_error( __( 'Invalid reservation ID.', 'hold-this-product' ), 400 );
         }
 
-        $status = get_post_meta( $reservation_id, '_htp_status', true );
+        $status = get_post_meta( $reservation_id, '_hold_this_product_status', true );
         if ( $status !== 'active' ) {
-            wp_send_json_error( 'Reservation is not active.' );
+			wp_send_json_error( __( 'Reservation is not active.', 'hold-this-product' ), 409 );
         }
 
-		$this->get_reservations_handler()->cancel_reservation( $reservation_id );
+			if ( ! $this->get_reservations_handler()->cancel_reservation( $reservation_id ) ) {
+				wp_send_json_error( __( 'The reservation changed before it could be cancelled. Please refresh and try again.', 'hold-this-product' ), 409 );
+			}
 
-		update_post_meta( $reservation_id, '_htp_cancelled_by_admin', time() );
-        update_post_meta( $reservation_id, '_htp_cancelled_by_user', get_current_user_id() );
+		update_post_meta( $reservation_id, '_hold_this_product_cancelled_by_admin', time() );
+        update_post_meta( $reservation_id, '_hold_this_product_cancelled_by_user', get_current_user_id() );
 
-        wp_send_json_success( 'Reservation cancelled successfully.' );
+		wp_send_json_success( __( 'Reservation cancelled successfully.', 'hold-this-product' ) );
     }
 
     public function handle_admin_delete_reservation() {
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Insufficient permissions.' );
+			wp_send_json_error( __( 'Insufficient permissions.', 'hold-this-product' ), 403 );
         }
 
-        check_ajax_referer( 'htp_admin_delete', 'nonce' );
+        check_ajax_referer( 'hold_this_product_admin_delete', 'nonce' );
 
 		$reservation_id = isset( $_POST['reservation_id'] ) ? absint( wp_unslash( $_POST['reservation_id'] ) ) : 0;
-		if ( ! $reservation_id || 'htp_reservation' !== get_post_type( $reservation_id ) ) {
-            wp_send_json_error( 'Invalid reservation ID.' );
+		if ( ! $reservation_id || 'holdthisproduct_res' !== get_post_type( $reservation_id ) ) {
+			wp_send_json_error( __( 'Invalid reservation ID.', 'hold-this-product' ), 400 );
         }
 
-        $status = get_post_meta( $reservation_id, '_htp_status', true );
+        $status = get_post_meta( $reservation_id, '_hold_this_product_status', true );
         if ( $status === 'active' ) {
-            wp_send_json_error( 'Cannot delete active reservations. Cancel them first.' );
+			wp_send_json_error( __( 'Cannot delete active reservations. Cancel them first.', 'hold-this-product' ), 409 );
         }
 
         $result = wp_delete_post( $reservation_id, true );
         if ( $result ) {
-            wp_send_json_success( 'Reservation deleted successfully.' );
+			wp_send_json_success( __( 'Reservation deleted successfully.', 'hold-this-product' ) );
         }
 
-        wp_send_json_error( 'Failed to delete reservation.' );
+		wp_send_json_error( __( 'Failed to delete reservation.', 'hold-this-product' ), 500 );
     }
 
     public function handle_approve_reservation() {
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Insufficient permissions.' );
+			wp_send_json_error( __( 'Insufficient permissions.', 'hold-this-product' ), 403 );
         }
 
-        check_ajax_referer( 'htp_admin_approve', 'nonce' );
+        check_ajax_referer( 'hold_this_product_admin_approve', 'nonce' );
 
 		$reservation_id = isset( $_POST['reservation_id'] ) ? absint( wp_unslash( $_POST['reservation_id'] ) ) : 0;
         if ( ! $reservation_id ) {
-            wp_send_json_error( 'Invalid reservation ID.' );
+			wp_send_json_error( __( 'Invalid reservation ID.', 'hold-this-product' ), 400 );
         }
 
         $post = get_post( $reservation_id );
-        if ( ! $post || $post->post_type !== 'htp_reservation' ) {
-            wp_send_json_error( 'Invalid reservation.' );
+        if ( ! $post || $post->post_type !== 'holdthisproduct_res' ) {
+			wp_send_json_error( __( 'Invalid reservation.', 'hold-this-product' ), 400 );
         }
 
 		$result = $this->get_reservations_handler()->approve_reservation( $reservation_id );
@@ -388,38 +238,38 @@ class HTP_Admin_Reservations {
         if ( is_wp_error( $result ) ) {
             wp_send_json_error( $result->get_error_message() );
         } elseif ( $result ) {
-            wp_send_json_success( 'Reservation approved successfully.' );
+			wp_send_json_success( __( 'Reservation approved successfully.', 'hold-this-product' ) );
         }
 
-        wp_send_json_error( 'Failed to approve reservation.' );
+		wp_send_json_error( __( 'Failed to approve reservation.', 'hold-this-product' ), 500 );
     }
 
     public function handle_deny_reservation() {
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Insufficient permissions.' );
+			wp_send_json_error( __( 'Insufficient permissions.', 'hold-this-product' ), 403 );
         }
 
-        check_ajax_referer( 'htp_admin_deny', 'nonce' );
+        check_ajax_referer( 'hold_this_product_admin_deny', 'nonce' );
 
 		$reservation_id = isset( $_POST['reservation_id'] ) ? absint( wp_unslash( $_POST['reservation_id'] ) ) : 0;
 		$reason         = isset( $_POST['reason'] ) ? sanitize_text_field( wp_unslash( $_POST['reason'] ) ) : '';
 
         if ( ! $reservation_id ) {
-            wp_send_json_error( 'Invalid reservation ID.' );
+			wp_send_json_error( __( 'Invalid reservation ID.', 'hold-this-product' ), 400 );
         }
 
         $post = get_post( $reservation_id );
-        if ( ! $post || $post->post_type !== 'htp_reservation' ) {
-            wp_send_json_error( 'Invalid reservation.' );
+        if ( ! $post || $post->post_type !== 'holdthisproduct_res' ) {
+			wp_send_json_error( __( 'Invalid reservation.', 'hold-this-product' ), 400 );
         }
 
 		$result = $this->get_reservations_handler()->deny_reservation( $reservation_id, $reason );
 
         if ( $result ) {
-            wp_send_json_success( 'Reservation denied successfully.' );
+			wp_send_json_success( __( 'Reservation denied successfully.', 'hold-this-product' ) );
         }
 
-        wp_send_json_error( 'Failed to deny reservation.' );
+		wp_send_json_error( __( 'Failed to deny reservation.', 'hold-this-product' ), 500 );
     }
 
 	private function get_filtered_reservations( $status_filter = 'all', $search_query = '', $search_type = 'email', $page = 1 ) {
@@ -430,7 +280,7 @@ class HTP_Admin_Reservations {
 
         if ( $status_filter !== 'all' ) {
             $meta_query[] = array(
-                'key'     => '_htp_status',
+                'key'     => '_hold_this_product_status',
                 'value'   => $status_filter,
                 'compare' => '=',
             );
@@ -440,7 +290,7 @@ class HTP_Admin_Reservations {
             switch ( $search_type ) {
                 case 'email':
                     $meta_query[] = array(
-                        'key'     => '_htp_email',
+                        'key'     => '_hold_this_product_email',
                         'value'   => $search_query,
                         'compare' => 'LIKE',
                     );
@@ -453,11 +303,12 @@ class HTP_Admin_Reservations {
                     ) );
 
                     if ( empty( $product_ids ) ) {
-                        return array();
+						$args['post__in'] = array( 0 );
+						break;
                     }
 
                     $meta_query[] = array(
-                        'key'     => '_htp_product_id',
+                        'key'     => '_hold_this_product_product_id',
                         'value'   => $product_ids,
                         'compare' => 'IN',
                     );
@@ -465,10 +316,11 @@ class HTP_Admin_Reservations {
 
                 case 'product_id':
                     if ( ! is_numeric( $search_query ) ) {
-                        return array();
+						$args['post__in'] = array( 0 );
+						break;
                     }
                     $meta_query[] = array(
-                        'key'     => '_htp_product_id',
+                        'key'     => '_hold_this_product_product_id',
                         'value'   => absint( $search_query ),
                         'compare' => '=',
                     );
@@ -481,7 +333,7 @@ class HTP_Admin_Reservations {
         }
 
         $args = array(
-            'post_type'      => 'htp_reservation',
+            'post_type'      => 'holdthisproduct_res',
             'post_status'    => 'publish',
 			'posts_per_page' => 25,
 			'paged'          => max( 1, absint( $page ) ),
@@ -507,8 +359,8 @@ class HTP_Admin_Reservations {
         global $wpdb;
 		$rows = $wpdb->get_results(
 			"SELECT pm.meta_value AS reservation_status, COUNT(*) AS reservation_count
-			FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_htp_status'
-			WHERE p.post_type = 'htp_reservation' AND p.post_status = 'publish' GROUP BY pm.meta_value",
+			FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_hold_this_product_status'
+			WHERE p.post_type = 'holdthisproduct_res' AND p.post_status = 'publish' GROUP BY pm.meta_value",
 			OBJECT_K
 		); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- No external values are interpolated.
 		$summary = array( 'total' => 0, 'pending_approval' => 0, 'active' => 0, 'expired' => 0, 'cancelled' => 0, 'fulfilled' => 0, 'denied' => 0 );
@@ -523,21 +375,21 @@ class HTP_Admin_Reservations {
     }
 
     private function render_row( $reservation ) {
-        $product_id  = (int) get_post_meta( $reservation->ID, '_htp_product_id', true );
-        $email       = get_post_meta( $reservation->ID, '_htp_email', true );
-        $name        = get_post_meta( $reservation->ID, '_htp_name', true );
-        $surname     = get_post_meta( $reservation->ID, '_htp_surname', true );
-        $expires_ts  = (int) get_post_meta( $reservation->ID, '_htp_expires_at', true );
-        $status      = get_post_meta( $reservation->ID, '_htp_status', true );
+        $product_id  = (int) get_post_meta( $reservation->ID, '_hold_this_product_product_id', true );
+        $email       = get_post_meta( $reservation->ID, '_hold_this_product_email', true );
+        $name        = get_post_meta( $reservation->ID, '_hold_this_product_name', true );
+        $surname     = get_post_meta( $reservation->ID, '_hold_this_product_surname', true );
+        $expires_ts  = (int) get_post_meta( $reservation->ID, '_hold_this_product_expires_at', true );
+        $status      = get_post_meta( $reservation->ID, '_hold_this_product_status', true );
 
         $product          = wc_get_product( $product_id );
-        $product_name     = $product ? $product->get_name() : 'Unknown Product (ID: ' . $product_id . ')';
+		$product_name     = $product ? $product->get_name() : sprintf( /* translators: %d: product ID. */ __( 'Unknown Product (ID: %d)', 'hold-this-product' ), $product_id );
         $product_edit_url = $product ? admin_url( 'post.php?post=' . $product_id . '&action=edit' ) : '#';
 
         if ( $reservation->post_author ) {
             $user           = get_userdata( $reservation->post_author );
-            $customer       = $user ? $user->display_name . ' (' . $user->user_email . ')' : 'Unknown User';
-            $customer_short = $user ? $user->display_name : 'Unknown User';
+			$customer       = $user ? $user->display_name . ' (' . $user->user_email . ')' : __( 'Unknown User', 'hold-this-product' );
+			$customer_short = $user ? $user->display_name : __( 'Unknown User', 'hold-this-product' );
         } else {
             $customer_full = trim( $name . ' ' . $surname );
             if ( $customer_full === '' ) {
@@ -562,11 +414,11 @@ class HTP_Admin_Reservations {
                 $minutes = floor( ( $diff % HOUR_IN_SECONDS ) / MINUTE_IN_SECONDS );
 
                 if ( $days > 0 ) {
-                    $time_left = sprintf( '%dd %dh', $days, $hours );
+					$time_left = sprintf( /* translators: 1: days, 2: hours. */ __( '%1$dd %2$dh', 'hold-this-product' ), $days, $hours );
                 } elseif ( $hours > 0 ) {
-                    $time_left = sprintf( '%dh %dm', $hours, $minutes );
+					$time_left = sprintf( /* translators: 1: hours, 2: minutes. */ __( '%1$dh %2$dm', 'hold-this-product' ), $hours, $minutes );
                 } else {
-                    $time_left = sprintf( '%dm', $minutes );
+					$time_left = sprintf( /* translators: %d: minutes. */ __( '%dm', 'hold-this-product' ), $minutes );
                 }
 
                 if ( $diff < 2 * HOUR_IN_SECONDS ) {
@@ -575,13 +427,22 @@ class HTP_Admin_Reservations {
                     $time_class = 'time-left-warning';
                 }
             } else {
-                $time_left  = 'Expired';
+				$time_left  = __( 'Expired', 'hold-this-product' );
                 $time_class = 'time-left-critical';
             }
         }
 
         $status_class   = 'status-' . str_replace( '_', '-', $status );
-        $status_display = str_replace( '_', ' ', ucfirst( $status ) );
+		$status_labels = array(
+			'pending_approval' => __( 'Pending approval', 'hold-this-product' ),
+			'active' => __( 'Active', 'hold-this-product' ),
+			'expired' => __( 'Expired', 'hold-this-product' ),
+			'cancelled' => __( 'Cancelled', 'hold-this-product' ),
+			'fulfilled' => __( 'Fulfilled', 'hold-this-product' ),
+			'denied' => __( 'Denied', 'hold-this-product' ),
+			'order_cancelled' => __( 'Order cancelled', 'hold-this-product' ),
+		);
+		$status_display = isset( $status_labels[ $status ] ) ? $status_labels[ $status ] : __( 'Unknown', 'hold-this-product' );
 
         echo '<tr>';
         echo '<td>';
@@ -599,28 +460,28 @@ class HTP_Admin_Reservations {
         echo '<td>';
 
         if ( $status === 'pending_approval' ) {
-            echo '<button type="button" class="button button-small htp-approve-reservation" ';
+            echo '<button type="button" class="button button-small hold-this-product-approve-reservation" ';
             echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
             echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
             echo 'data-product="' . esc_attr( $product_name ) . '" style="margin-right: 5px;">';
             echo esc_html__( 'Approve', 'hold-this-product' );
             echo '</button>';
 
-            echo '<button type="button" class="button button-small button-link-delete htp-deny-reservation" ';
+            echo '<button type="button" class="button button-small button-link-delete hold-this-product-deny-reservation" ';
             echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
             echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
             echo 'data-product="' . esc_attr( $product_name ) . '">';
             echo esc_html__( 'Deny', 'hold-this-product' );
             echo '</button>';
         } elseif ( $status === 'active' ) {
-            echo '<button type="button" class="button button-small htp-cancel-reservation" ';
+            echo '<button type="button" class="button button-small hold-this-product-cancel-reservation" ';
             echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
             echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
             echo 'data-product="' . esc_attr( $product_name ) . '">';
             echo esc_html__( 'Cancel', 'hold-this-product' );
             echo '</button>';
         } else {
-            echo '<button type="button" class="button button-small button-link-delete htp-delete-reservation" ';
+            echo '<button type="button" class="button button-small button-link-delete hold-this-product-delete-reservation" ';
             echo 'data-reservation-id="' . esc_attr( $reservation->ID ) . '" ';
             echo 'data-customer="' . esc_attr( $customer_short ) . '" ';
             echo 'data-product="' . esc_attr( $product_name ) . '">';

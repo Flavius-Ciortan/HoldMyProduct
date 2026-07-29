@@ -61,8 +61,8 @@ if ( $enable_popup_customization ) {
 }
 ?>
 
-<div id="reservation-modal" class="modal-overlay htp-modal-overlay" title="<?php esc_attr_e( 'Reserve Product', 'hold-this-product' ); ?>" aria-hidden="true" style="display: none;">
-    <div class="modal-box htp-modal-box<?php echo $enable_popup_customization ? ' htp-modal-box--custom' : ''; ?>" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Reserve Product', 'hold-this-product' ); ?>" tabindex="-1" style="<?php echo esc_attr( $modal_box_style ); ?>">
+<div id="reservation-modal" class="modal-overlay hold-this-product-modal-overlay" title="<?php esc_attr_e( 'Reserve Product', 'hold-this-product' ); ?>" aria-hidden="true" style="display: none;">
+    <div class="modal-box hold-this-product-modal-box<?php echo $enable_popup_customization ? ' hold-this-product-modal-box--custom' : ''; ?>" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Reserve Product', 'hold-this-product' ); ?>" tabindex="-1" style="<?php echo esc_attr( $modal_box_style ); ?>">
         <form id="reservation-form">
             <input type="hidden" name="action" value="holdthisproduct_reserve">
             <input type="hidden" name="security" value="<?php echo esc_attr( wp_create_nonce( 'holdthisproduct_nonce' ) ); ?>">
@@ -79,7 +79,7 @@ if ( $enable_popup_customization ) {
                 ?>
             </p>
 
-			<button type="submit" class="submit-btn htp-button-primary"><?php esc_html_e( 'Yes, Reserve', 'hold-this-product' ); ?></button>
+			<button type="submit" class="submit-btn hold-this-product-button-primary"><?php esc_html_e( 'Yes, Reserve', 'hold-this-product' ); ?></button>
         </form>
     </div>
 </div>

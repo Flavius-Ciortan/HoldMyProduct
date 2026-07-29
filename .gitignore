@@ -11,6 +11,9 @@ node_modules/
 # Ignore composer vendor folder if using composer
 vendor/
 
+# Ignore generated release archives
+release/
+
 # Ignore common system files
 .DS_Store
 Thumbs.db
@@ -26,4 +29,3 @@ Thumbs.db
 *.bak
 *.tmp
 *.swp
-

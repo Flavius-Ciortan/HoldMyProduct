@@ -12,16 +12,16 @@
 
 ## Requirements
 
-- WordPress 5.0 or higher
+- WordPress 6.5 or higher
 - WooCommerce plugin installed and activated
 - PHP 7.4 or higher (PHP 8.x compatible)
 
 ## Installation
 
 1. Ensure WooCommerce is installed and activated.
-2. Upload the `holdthisproduct` folder to the `/wp-content/plugins/` directory.
+2. Upload the `hold-this-product` folder to the `/wp-content/plugins/` directory.
 3. Activate the plugin via the WordPress "Plugins" menu.
-4. Configure reservation time and other settings in the plugin options panel (found under WooCommerce settings).
+4. Configure reservation time and other settings under **Hold This Product** in the WordPress administration menu.
 
 ## Usage
 
@@ -42,7 +42,7 @@ We welcome contributions to HoldThisProduct!
 
 ## License
 
-This project is licensed under the **GNU General Public License v3.0**.  
+This project is licensed under the **GNU General Public License v3.0 or later**.
 See the [LICENSE](LICENSE) file for full license terms.
 
 ---

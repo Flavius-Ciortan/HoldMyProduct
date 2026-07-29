@@ -8,20 +8,20 @@ jQuery(document).ready(function($) {
 			$(modalOpener).trigger('focus');
 		}
 	}
-	$(document).on('click', '.htp-reservations-table .cancel-reservation[data-reservation-id]', function(e) {
+	$(document).on('click', '.hold-this-product-reservations-table .cancel-reservation[data-reservation-id]', function(e) {
 		e.preventDefault();
 		var $link = $(this);
 		if (!window.confirm($link.data('confirm'))) {
 			return;
 		}
 		$('<form>', { method: 'post', action: window.location.href })
-			.append($('<input>', { type: 'hidden', name: 'htp_cancel_res', value: $link.data('reservation-id') }))
+			.append($('<input>', { type: 'hidden', name: 'hold_this_product_cancel_res', value: $link.data('reservation-id') }))
 			.append($('<input>', { type: 'hidden', name: '_wpnonce', value: $link.data('cancel-nonce') }))
 			.appendTo('body')
 			.trigger('submit');
 	});
 
-    $('#htp_reserve_product').on('click', function(e) {
+    $('#hold_this_product_reserve_product').on('click', function(e) {
         e.preventDefault();
         var productId = $(this).data('productid');
 		modalOpener = this;

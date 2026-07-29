@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Frontend functionality
  */
-class HTP_Frontend {
+class Hold_This_Product_Frontend {
     
     /**
      * Reservations instance
@@ -26,7 +26,7 @@ class HTP_Frontend {
      * Constructor
      */
     public function __construct( $reservations = null ) {
-        $this->reservations = $reservations instanceof HTP_Reservations ? $reservations : new HTP_Reservations();
+        $this->reservations = $reservations instanceof Hold_This_Product_Reservations ? $reservations : new Hold_This_Product_Reservations();
         $this->init();
     }
     
@@ -62,9 +62,9 @@ class HTP_Frontend {
         if ( ! $this->reservations->is_product_reservable( $product->get_id() ) ) {
             // Show message for non-logged-in users or when reservations are disabled
             if ( ! is_user_logged_in() ) {
-				printf( '<p class="htp-reserve-unavailable" style="margin-top:8px;">%1$s <a href="%2$s">%3$s</a> %4$s <a href="%5$s">%6$s</a> %7$s</p>', esc_html__( 'Please', 'hold-this-product' ), esc_url( wp_login_url( get_permalink() ) ), esc_html__( 'log in', 'hold-this-product' ), esc_html__( 'or', 'hold-this-product' ), esc_url( wp_registration_url() ), esc_html__( 'create an account', 'hold-this-product' ), esc_html__( 'to reserve this product.', 'hold-this-product' ) );
+				printf( '<p class="hold-this-product-reserve-unavailable" style="margin-top:8px;">%1$s <a href="%2$s">%3$s</a> %4$s <a href="%5$s">%6$s</a> %7$s</p>', esc_html__( 'Please', 'hold-this-product' ), esc_url( wp_login_url( get_permalink() ) ), esc_html__( 'log in', 'hold-this-product' ), esc_html__( 'or', 'hold-this-product' ), esc_url( wp_registration_url() ), esc_html__( 'create an account', 'hold-this-product' ), esc_html__( 'to reserve this product.', 'hold-this-product' ) );
             } else {
-				echo '<p class="htp-reserve-unavailable" style="margin-top:8px;">' . esc_html__( 'Reservations are not available for this product.', 'hold-this-product' ) . '</p>';
+				echo '<p class="hold-this-product-reserve-unavailable" style="margin-top:8px;">' . esc_html__( 'Reservations are not available for this product.', 'hold-this-product' ) . '</p>';
             }
             return;
         }
@@ -82,16 +82,16 @@ class HTP_Frontend {
 		}
         wp_enqueue_style(
             'holdthisproduct-style',
-            HTP_PLUGIN_URL . 'assets/css/style.css',
+            HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/css/style.css',
             array(),
-            HTP_VERSION
+            HOLD_THIS_PRODUCT_VERSION
         );
         
         wp_enqueue_script(
             'holdthisproduct-js',
-            HTP_PLUGIN_URL . 'assets/js/holdthisproduct.js',
+            HOLD_THIS_PRODUCT_PLUGIN_URL . 'assets/js/holdthisproduct.js',
             array( 'jquery' ),
-            HTP_VERSION,
+            HOLD_THIS_PRODUCT_VERSION,
             true
         );
         
@@ -113,7 +113,7 @@ class HTP_Frontend {
      * Include the form template
      */
     private function include_form_template() {
-        include HTP_PLUGIN_PATH . 'templates/form_template.php';
+        include HOLD_THIS_PRODUCT_PLUGIN_PATH . 'templates/form_template.php';
     }
 
     /**
@@ -138,6 +138,6 @@ class HTP_Frontend {
         }
 
         $this->did_render_modal = true;
-        include HTP_PLUGIN_PATH . 'templates/modal_template.php';
+        include HOLD_THIS_PRODUCT_PLUGIN_PATH . 'templates/modal_template.php';
     }
 }
